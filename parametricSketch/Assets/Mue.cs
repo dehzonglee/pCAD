@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Mue : Coordinate
 {
-    public override float Value => _parent.Value + _mue;
+    public override float Value { get { return _parent.Value + _mue; } }
     public Mue(Coordinate parent, float mue)
     {
         _parent = parent;
+
         _mue = mue;
     }
 

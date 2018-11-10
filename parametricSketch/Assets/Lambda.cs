@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Lambda : Coordinate
 {
-    public override float Value => (1f - _lambda) * _parent0.Value + _lambda * _parent1.Value;
+    public override float Value
+    {
+        get
+        {
+            return (1f - _lambda) * _parent0.Value + _lambda * _parent1.Value;
+        }
+    }
     public Lambda(Coordinate parent0, Coordinate parent1, float lambda)
     {
         _parent0 = parent0;
