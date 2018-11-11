@@ -6,6 +6,9 @@ using UnityEngine;
 public class CoordinateSystemUI : MonoBehaviour
 {
     [SerializeField]
+    AnchorUI _anchorUIPrefab;
+
+    [SerializeField]
     CoordinateUI _coordinateUIPrefab;
 
     [SerializeField]
@@ -22,6 +25,9 @@ public class CoordinateSystemUI : MonoBehaviour
     {
         _modelChangeRequest = modelChangeRequest;
         _coordinateSystem = cs;
+
+        var anchorUI = Instantiate(_anchorUIPrefab);
+        anchorUI.Initalize(_coordinateSystem.GetAnchorPosition());
     }
 
     void Update()

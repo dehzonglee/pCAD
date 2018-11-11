@@ -15,6 +15,14 @@ public class ParametricPosition
         z.ValueChangedEvent += PositionChangedEvent;
     }
 
+    public void SetCoordinate(Coordinate coordinate, int dimension)
+    {
+        var oldCoordinate = _coordinates[dimension];
+        oldCoordinate.ValueChangedEvent -= PositionChangedEvent;
+        _coordinates[dimension] = coordinate;
+        coordinate.ValueChangedEvent += PositionChangedEvent;
+    }
+
     public Vector3 Value
     {
         get

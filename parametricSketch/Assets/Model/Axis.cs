@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Axis
 {
+    public event Action AnchorChangedEvent;
     public List<Coordinate> Coordinates { get { return _coordinates; } }
     public Axis()
     {
@@ -25,9 +26,17 @@ public class Axis
         return newCoordinate;
     }
 
-    public void SetAnchor(float position)
+    public Coordinate GetAnchor()
+    {
+        return _anchor;
+    }
+
+    public Coordinate SetAnchor(float position)
     {
         _anchor = FindClosestCoordinate(position);
+        if (AnchorChangedEvent != null)
+            AnchorChangedEvent();
+        return _anchor;
     }
 
     private Coordinate FindClosestCoordinate(float position)

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// [RequireComponent(typeof(MouseInput))]
 public class Sketch : MonoBehaviour
 {
     [SerializeField]
@@ -12,6 +11,8 @@ public class Sketch : MonoBehaviour
     {
         _coordinateSystem = new CoordinateSystem();
         GetComponent<CoordinateSystemUI>().Initialize(_coordinateSystem, ModelChangeRequest);
+
+
     }
 
     void Update()
@@ -19,14 +20,14 @@ public class Sketch : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             var mousePosition = MouseInput.WorldSpacePosition;
-            _coordinateSystem.SetAnchor(mousePosition);
+            _coordinateSystem.SetAnchorPosition(mousePosition);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             var mousePosition = MouseInput.WorldSpacePosition;
             var position = _coordinateSystem.GetParametricPosition(mousePosition);
-            _coordinateSystem.SetAnchor(position.Value);
+            _coordinateSystem.SetAnchorPosition(position.Value);
             if (_nextLine == null)
             {
                 _nextLine = Instantiate(_linePrefab);
@@ -34,7 +35,8 @@ public class Sketch : MonoBehaviour
                 return;
             }
             _nextLine.SetSecondPosition(position);
-            _nextLine = null;
+            _nextLine = Instantiate(_linePrefab);
+            _nextLine.SetFirstPosition(position);
         }
     }
 
