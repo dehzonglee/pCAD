@@ -10,9 +10,21 @@ public class ParametricPosition
     public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
     {
         _coordinates = new Coordinate[] { x, y, z };
-        x.ValueChangedEvent += PositionChangedEvent;
-        y.ValueChangedEvent += PositionChangedEvent;
-        z.ValueChangedEvent += PositionChangedEvent;
+        x.ValueChangedEvent += () =>
+        {
+            PositionChangedEvent();
+            Debug.Log("pos changed");
+        };
+        y.ValueChangedEvent += () =>
+        {
+            PositionChangedEvent();
+            Debug.Log("pos changed");
+        };
+        z.ValueChangedEvent += () =>
+        {
+            PositionChangedEvent();
+            Debug.Log("pos changed");
+        };
     }
 
     public void SetCoordinate(Coordinate coordinate, int dimension)
@@ -33,6 +45,10 @@ public class ParametricPosition
             return new Vector3(x, y, z);
         }
     }
+
+    public Coordinate X { get { return _coordinates[Dimensions.X]; } }
+    public Coordinate Y { get { return _coordinates[Dimensions.Y]; } }
+    public Coordinate Z { get { return _coordinates[Dimensions.Z]; } }
 
     Coordinate[] _coordinates;
 }

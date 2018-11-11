@@ -12,7 +12,9 @@ public abstract class Coordinate
         get { return _parameter; }
         set
         {
+            Debug.LogFormat("Set parameter {0} to {1}", _parameter, value);
             _parameter = value;
+
             InvokeValueChanged();
         }
     }
@@ -20,9 +22,11 @@ public abstract class Coordinate
     protected void InvokeValueChanged()
     {
         if (ValueChangedEvent != null)
+        {
+            Debug.LogFormat("Value canges");
             ValueChangedEvent();
+        }
     }
-
     public event Action ValueChangedEvent;
 
 }

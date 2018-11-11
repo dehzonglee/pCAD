@@ -216,6 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d8d9dd0af3e131499d9d165ebe0bfae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _anchorUIPrefab: {fileID: 0}
   _linePrefab: {fileID: 114988689777610748, guid: 1add48eb7bf037540884138c1b79e809,
+    type: 2}
+  _rectanglePrefab: {fileID: 114336721495925412, guid: 27e84c93730d2c242bf68ebbe85060ba,
     type: 2}

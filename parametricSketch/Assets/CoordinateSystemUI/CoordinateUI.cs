@@ -15,13 +15,16 @@ public class CoordinateUI : MonoBehaviour
 
     private Action<Coordinate, float> _modelChangeRequest;
 
+    private const float EPSILON = 0.001f;
+
     void Update()
     {
         var target = 2 * transform.position - _camera.transform.position;
         var camUp = _camera.transform.TransformVector(Vector3.up);
         transform.LookAt(target, camUp);
 
-        if (_parameter != _coordinate.Value)
+        // Debug.LogFormat("{0} != {1}", _parameter, _coordinate.Parameter);
+        if (Mathf.Abs(_parameter - _coordinate.Parameter) > EPSILON)
         {
             _modelChangeRequest.Invoke(_coordinate, _parameter);
         }
