@@ -43,12 +43,13 @@ public class CoordinateSystemUI : MonoBehaviour
 
     private void RenderAxis(Transform container, Axis axis, Vector3 direction)
     {
-        foreach (var c in axis.Coordinates)
+        for (int i = 0; i < axis.Coordinates.Count; i++)
         {
+            var c = axis.Coordinates[i];
             if (!_ui.ContainsKey(c))
             {
                 var ui = Instantiate(_coordinateUIPrefab, container);
-                ui.Initalize(c, direction, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
+                ui.Initalize(c, direction, i, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
                 _ui.Add(c, ui);
             }
         }

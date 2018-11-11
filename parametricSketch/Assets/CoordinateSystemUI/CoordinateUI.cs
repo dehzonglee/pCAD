@@ -8,6 +8,8 @@ public class CoordinateUI : MonoBehaviour
     [SerializeField] float _parameter;
 
     [SerializeField] TMPro.TMP_Text _label;
+    [SerializeField] LineRenderer _line;
+    [SerializeField] float _padding;
 
     private Coordinate _coordinate;
 
@@ -25,19 +27,37 @@ public class CoordinateUI : MonoBehaviour
         }
     }
 
-    public void Initalize(Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
+    public void Initalize(Coordinate c, Vector3 direction, int coordinateIndex, Action<Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
         _coordinate = c;
-        _coordinate.ValueChangedEvent += () => UpdateUI(c, direction);
-        UpdateUI(c, direction);
+        _coordinate.ValueChangedEvent += () => UpdateUI(c, direction, coordinateIndex);
+        UpdateUI(c, direction, coordinateIndex);
     }
 
-    private void UpdateUI(Coordinate c, Vector3 direction)
+    private void UpdateUI(Coordinate c, Vector3 direction, int coordinateIndex)
     {
-        transform.position = direction * c.Parameter;
         _label.text = c.Parameter.ToString("F");
         _parameter = c.Parameter;
+
+        var offsetDirection = Quaternion.AngleAxis(90f, _camera.transform.TransformDirection(Vector3.forward)) * direction;
+        var offset = offsetDirection * coordinateIndex * _padding;
+
+        var coordinateUIPosition = direction * c.Value + offset;
+        transform.position = coordinateUIPosition;
+
+        var mue = _coordinate as Mue;
+        if (mue == null)
+        {
+            _line.enabled = false;
+            return;
+        }
+
+        var parentCoordinateUIPosition = direction * mue.ParentValue + offset;
+        _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f;
+        _line.SetPosition(0, coordinateUIPosition);
+        _line.SetPosition(1, parentCoordinateUIPosition);
+
     }
 
 
