@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class Position
 {
-    public Position(Coordinate[] coordinates)
+    public Position(Coordinate x, Coordinate y, Coordinate z)
     {
-        _coordinates = coordinates;
+        _coordinates = new Coordinate[] { x, y, z };
     }
 
-    public Vector2 Value
+    public Vector3 Value
     {
         get
         {
             var x = _coordinates[Dimensions.X].Value;
             var y = _coordinates[Dimensions.Y].Value;
-            return new Vector2(x, y);
+            var z = _coordinates[Dimensions.Z].Value;
+            return new Vector3(x, y, z);
         }
     }
 

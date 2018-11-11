@@ -2,38 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// [RequireComponent(typeof(MouseInput))]
 public class Sketch : MonoBehaviour
 {
+    [SerializeField]
+    Line _linePrefab;
+
     void Start()
     {
-        var oX = new Origin();
-        var oY = new Origin();
-        var oZ = new Origin();
-        _origin = new Coordinate[] { oX, oY, oZ };
-
-        _anchor = new Dictionary<int, Coordinate>();
-        _anchor.Add(Dimensions.X, oX);
-        _anchor.Add(Dimensions.Y, oY);
-        _anchor.Add(Dimensions.Z, oZ);
+        // _mouseInput = GetComponent<MouseInput>();
+        _axis = new Dictionary<int, Axis>();
+        _axis.Add(Dimensions.X, new Axis());
+        _axis.Add(Dimensions.Y, new Axis());
+        _axis.Add(Dimensions.Z, new Axis());
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            var position = MouseInput.WorldSpaceXZPosition;
+            var mousePosition = MouseInput.WorldSpacePosition;
+            var x = _axis[Dimensions.X].GetCoordiante(mousePosition.x);
+            var y = _axis[Dimensions.Y].GetCoordiante(mousePosition.y);
+            var z = _axis[Dimensions.Z].GetCoordiante(mousePosition.z);
+            var position = new Position(x, y, z);
             if (_nextLine == null)
             {
-                _nextLine = new Line();
-                // _nextLine.SetFirstPosition(position);
+                _nextLine = Instantiate(_linePrefab);
+                _nextLine.SetFirstPosition(position);
+                return;
             }
+            _nextLine.SetSecondPosition(position);
+            _nextLine = null;
         }
     }
 
-
-
-    private Dictionary<int, Coordinate> _anchor;
-
+    // private MouseInput _mouseInput;
+    private Dictionary<int, Axis> _axis;
     private Line _nextLine;
     private Coordinate[] _origin;
 }

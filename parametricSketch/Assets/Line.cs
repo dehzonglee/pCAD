@@ -27,6 +27,7 @@ public class Line : MonoBehaviour
         Gizmos.DrawLine(_p0.Value, _p1.Value);
     }
 
+
     private bool _isInititalized { get { return _p0 != null && _p1 != null; } }
 
     private Position _p0;
