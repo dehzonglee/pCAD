@@ -11,6 +11,7 @@ public class Sketch : MonoBehaviour
     void Start()
     {
         _coordinateSystem = new CoordinateSystem();
+        GetComponent<CoordinateSystemUI>().Initialize(_coordinateSystem);
     }
 
     void Update()

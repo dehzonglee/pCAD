@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Axis
 {
+    public List<Coordinate> Coordinates { get { return _coordinates; } }
     public Axis()
     {
         _origin = new Origin();
