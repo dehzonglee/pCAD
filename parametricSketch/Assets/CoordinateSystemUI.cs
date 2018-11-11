@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,8 +8,9 @@ public class CoordinateSystemUI : MonoBehaviour
     [SerializeField]
     CoordinateUI _coordinateUIPrefab;
 
-    public void Initialize(CoordinateSystem cs)
+    public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
+        _modelChangeRequest = modelChangeRequest;
         _coordinateSystem = cs;
     }
 
@@ -30,14 +32,14 @@ public class CoordinateSystemUI : MonoBehaviour
             if (!_ui.ContainsKey(c))
             {
                 var ui = Instantiate(_coordinateUIPrefab, transform);
-                ui.Initalize(c, direction);
+                ui.Initalize(c, direction, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
                 _ui.Add(c, ui);
             }
-            // _ui[c].Initalize()
         }
     }
 
 
+    private Action<Axis, Coordinate, float> _modelChangeRequest;
     private CoordinateSystem _coordinateSystem;
     private Dictionary<Coordinate, CoordinateUI> _ui = new Dictionary<Coordinate, CoordinateUI>();
 }

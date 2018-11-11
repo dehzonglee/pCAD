@@ -1,12 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ParametricPosition
 {
+    public event Action PositionChangedEvent;
+
     public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
     {
         _coordinates = new Coordinate[] { x, y, z };
+        x.ValueChangedEvent += PositionChangedEvent;
+        y.ValueChangedEvent += PositionChangedEvent;
+        z.ValueChangedEvent += PositionChangedEvent;
     }
 
     public Vector3 Value

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,5 +49,4 @@ public class Axis
     private List<Coordinate> _coordinates = new List<Coordinate>();
     private Coordinate _origin;
     private Coordinate _anchor;
-    private Coordinate _selectedCoordinate;
 }

@@ -13,11 +13,13 @@ public class Line : MonoBehaviour
     public void SetFirstPosition(ParametricPosition p0)
     {
         _p0 = p0;
+        _p0.PositionChangedEvent += UpdateLine;
     }
 
     public void SetSecondPosition(ParametricPosition p1)
     {
         _p1 = p1;
+        _p1.PositionChangedEvent += UpdateLine;
     }
 
     void OnDrawGizmos()
@@ -27,6 +29,10 @@ public class Line : MonoBehaviour
         Gizmos.DrawLine(_p0.Value, _p1.Value);
     }
 
+    private void UpdateLine()
+    {
+
+    }
 
     private bool _isInititalized { get { return _p0 != null && _p1 != null; } }
 

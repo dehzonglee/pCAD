@@ -366,7 +366,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 742496997}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75a42f1dfe70f7e419b9240447f8183a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2da06d0cc060e374fa584c17bd2fd997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _coordinateUIPrefab: {fileID: 114438840388194568, guid: bb80e564e042af849ae2bb17e5569012,

@@ -11,7 +11,7 @@ public class Sketch : MonoBehaviour
     void Start()
     {
         _coordinateSystem = new CoordinateSystem();
-        GetComponent<CoordinateSystemUI>().Initialize(_coordinateSystem);
+        GetComponent<CoordinateSystemUI>().Initialize(_coordinateSystem, ModelChangeRequest);
     }
 
     void Update()
@@ -34,7 +34,14 @@ public class Sketch : MonoBehaviour
             }
             _nextLine.SetSecondPosition(position);
             _nextLine = null;
+            // _coordinateSystem.SetAnchor(position.Value);
         }
+    }
+
+    private void ModelChangeRequest(Axis axis, Coordinate coordinate, float value)
+    {
+        coordinate.Parameter = value;
+
     }
 
     private CoordinateSystem _coordinateSystem;
