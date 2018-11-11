@@ -8,6 +8,16 @@ public class CoordinateSystemUI : MonoBehaviour
     [SerializeField]
     CoordinateUI _coordinateUIPrefab;
 
+    [SerializeField]
+    Transform _xUIContainer;
+
+    [SerializeField]
+    Transform _yUIContainer;
+
+    [SerializeField]
+    Transform _zUIContainer;
+
+
     public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
@@ -19,19 +29,19 @@ public class CoordinateSystemUI : MonoBehaviour
         if (_coordinateSystem == null)
             return;
 
-        RenderAxis(_coordinateSystem.Axes[Dimensions.X], Vector3.right);
-        RenderAxis(_coordinateSystem.Axes[Dimensions.Y], Vector3.up);
-        RenderAxis(_coordinateSystem.Axes[Dimensions.Z], Vector3.forward);
+        RenderAxis(_xUIContainer, _coordinateSystem.Axes[Dimensions.X], Vector3.right);
+        RenderAxis(_yUIContainer, _coordinateSystem.Axes[Dimensions.Y], Vector3.up);
+        RenderAxis(_zUIContainer, _coordinateSystem.Axes[Dimensions.Z], Vector3.forward);
 
     }
 
-    private void RenderAxis(Axis axis, Vector3 direction)
+    private void RenderAxis(Transform container, Axis axis, Vector3 direction)
     {
         foreach (var c in axis.Coordinates)
         {
             if (!_ui.ContainsKey(c))
             {
-                var ui = Instantiate(_coordinateUIPrefab, transform);
+                var ui = Instantiate(_coordinateUIPrefab, container);
                 ui.Initalize(c, direction, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
                 _ui.Add(c, ui);
             }

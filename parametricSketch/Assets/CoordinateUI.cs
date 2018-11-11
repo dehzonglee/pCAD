@@ -35,7 +35,7 @@ public class CoordinateUI : MonoBehaviour
 
     private void UpdateUI(Coordinate c, Vector3 direction)
     {
-        transform.position = direction * c.Parameter;
+        transform.position = direction * c.Value;
         _label.text = c.Parameter.ToString("F");
         _parameter = c.Parameter;
     }

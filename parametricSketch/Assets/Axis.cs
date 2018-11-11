@@ -15,11 +15,12 @@ public class Axis
     public Coordinate GetCoordiante(float position)
     {
         var closestCoordinate = FindClosestCoordinate(position);
-        var distance = Mathf.Abs(closestCoordinate.Value - position);
+        var distance = Mathf.Abs(position - closestCoordinate.Value);
         if (distance < SNAP_RADIUS)
             return closestCoordinate;
 
-        var newCoordinate = new Mue(_anchor, position);
+        var delta = position - _anchor.Value;
+        var newCoordinate = new Mue(_anchor, delta);
         _coordinates.Add(newCoordinate);
         return newCoordinate;
     }

@@ -26,6 +26,7 @@ public class Sketch : MonoBehaviour
         {
             var mousePosition = MouseInput.WorldSpacePosition;
             var position = _coordinateSystem.GetParametricPosition(mousePosition);
+            _coordinateSystem.SetAnchor(position.Value);
             if (_nextLine == null)
             {
                 _nextLine = Instantiate(_linePrefab);
@@ -34,14 +35,12 @@ public class Sketch : MonoBehaviour
             }
             _nextLine.SetSecondPosition(position);
             _nextLine = null;
-            // _coordinateSystem.SetAnchor(position.Value);
         }
     }
 
     private void ModelChangeRequest(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
-
     }
 
     private CoordinateSystem _coordinateSystem;
