@@ -10,11 +10,7 @@ public class Sketch : MonoBehaviour
 
     void Start()
     {
-        // _mouseInput = GetComponent<MouseInput>();
-        _axis = new Dictionary<int, Axis>();
-        _axis.Add(Dimensions.X, new Axis());
-        _axis.Add(Dimensions.Y, new Axis());
-        _axis.Add(Dimensions.Z, new Axis());
+        _coordinateSystem = new CoordinateSystem();
     }
 
     void Update()
@@ -22,10 +18,7 @@ public class Sketch : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             var mousePosition = MouseInput.WorldSpacePosition;
-            var x = _axis[Dimensions.X].GetCoordiante(mousePosition.x);
-            var y = _axis[Dimensions.Y].GetCoordiante(mousePosition.y);
-            var z = _axis[Dimensions.Z].GetCoordiante(mousePosition.z);
-            var position = new Position(x, y, z);
+            var position = _coordinateSystem.GetParametricPosition(mousePosition);
             if (_nextLine == null)
             {
                 _nextLine = Instantiate(_linePrefab);
@@ -37,8 +30,6 @@ public class Sketch : MonoBehaviour
         }
     }
 
-    // private MouseInput _mouseInput;
-    private Dictionary<int, Axis> _axis;
+    private CoordinateSystem _coordinateSystem;
     private Line _nextLine;
-    private Coordinate[] _origin;
 }

@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Line : MonoBehaviour
 {
-    public void SetPositions(Position p0, Position p1)
+    public void SetPositions(ParametricPosition p0, ParametricPosition p1)
     {
         _p0 = p0;
         _p1 = p1;
     }
 
-    public void SetFirstPosition(Position p0)
+    public void SetFirstPosition(ParametricPosition p0)
     {
         _p0 = p0;
     }
 
-    public void SetSecondPosition(Position p1)
+    public void SetSecondPosition(ParametricPosition p1)
     {
         _p1 = p1;
     }
@@ -30,6 +30,6 @@ public class Line : MonoBehaviour
 
     private bool _isInititalized { get { return _p0 != null && _p1 != null; } }
 
-    private Position _p0;
-    private Position _p1;
+    private ParametricPosition _p0;
+    private ParametricPosition _p1;
 }

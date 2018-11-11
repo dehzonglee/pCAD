@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Position
+public class ParametricPosition
 {
-    public Position(Coordinate x, Coordinate y, Coordinate z)
+    public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
     {
         _coordinates = new Coordinate[] { x, y, z };
     }
