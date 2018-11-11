@@ -15,6 +15,12 @@ public class Sketch : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            var mousePosition = MouseInput.WorldSpacePosition;
+            _coordinateSystem.SetAnchor(mousePosition);
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             var mousePosition = MouseInput.WorldSpacePosition;
