@@ -12,9 +12,14 @@ public class Axis
 
     public Coordinate GetCoordiante(float position)
     {
-        var coordinate = new Mue(_anchor, position);
-        _coordinates.Add(coordinate);
-        return coordinate;
+        var closestCoordinate = FindClosestCoordinate(position);
+        var distance = Mathf.Abs(closestCoordinate.Value - position);
+        if (distance < SNAP_RADIUS)
+            return closestCoordinate;
+
+        var newCoordinate = new Mue(_anchor, position);
+        _coordinates.Add(newCoordinate);
+        return newCoordinate;
     }
 
     public void SetAnchor(float position)
@@ -38,6 +43,7 @@ public class Axis
         return closestCoordinate;
     }
 
+    private const float SNAP_RADIUS = 0.01f;
     private List<Coordinate> _coordinates = new List<Coordinate>();
     private Coordinate _origin;
     private Coordinate _anchor;
