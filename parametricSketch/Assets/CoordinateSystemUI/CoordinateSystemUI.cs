@@ -35,26 +35,39 @@ public class CoordinateSystemUI : MonoBehaviour
         if (_coordinateSystem == null)
             return;
 
-        RenderAxis(_xUIContainer, _coordinateSystem.Axes[Dimensions.X], Vector3.right);
-        RenderAxis(_yUIContainer, _coordinateSystem.Axes[Dimensions.Y], Vector3.up);
-        RenderAxis(_zUIContainer, _coordinateSystem.Axes[Dimensions.Z], Vector3.forward);
+        var xAxis = _coordinateSystem.Axes[Dimensions.X];
+        var yAxis = _coordinateSystem.Axes[Dimensions.Y];
+        var zAxis = _coordinateSystem.Axes[Dimensions.Z];
+
+        AddNewCoordinateUIs(_xUIContainer, xAxis, Vector3.right, zAxis.SmallestValue);
+        AddNewCoordinateUIs(_yUIContainer, yAxis, Vector3.up, 0f);
+        AddNewCoordinateUIs(_zUIContainer, zAxis, Vector3.forward, xAxis.SmallestValue);
 
     }
 
-    private void RenderAxis(Transform container, Axis axis, Vector3 direction)
+    private void AddNewCoordinateUIs(Transform container, Axis axis, Vector3 direction, float orthogonalAnchor)
     {
         for (int i = 0; i < axis.Coordinates.Count; i++)
         {
             var c = axis.Coordinates[i];
+
+            var layoutInfo = new CoordinateUI.LayoutInfo()
+            {
+                Direction = direction,
+                Index = i,
+                OrthogonalAnchor = orthogonalAnchor,
+            };
+
             if (!_ui.ContainsKey(c))
             {
                 var ui = Instantiate(_coordinateUIPrefab, container);
-                ui.Initalize(c, direction, i, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
+                ui.Initalize(c, (coordinate, parameter) => _modelChangeRequest(axis, coordinate, parameter));
                 _ui.Add(c, ui);
             }
+
+            _ui[c].UpdateUI(layoutInfo);
         }
     }
-
 
     private Action<Axis, Coordinate, float> _modelChangeRequest;
     private CoordinateSystem _coordinateSystem;

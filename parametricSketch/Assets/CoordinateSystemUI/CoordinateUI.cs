@@ -30,23 +30,37 @@ public class CoordinateUI : MonoBehaviour
         }
     }
 
-    public void Initalize(Coordinate c, Vector3 direction, int coordinateIndex, Action<Coordinate, float> modelChangeRequest)
+    public void Initalize(Coordinate c, Action<Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
         _coordinate = c;
-        _coordinate.ValueChangedEvent += () => UpdateUI(c, direction, coordinateIndex);
-        UpdateUI(c, direction, coordinateIndex);
+        // _coordinate.ValueChangedEvent += () => UpdateUI(c, layoutInfo);
+        // UpdateUI(c, layoutInfo);
     }
 
-    private void UpdateUI(Coordinate c, Vector3 direction, int coordinateIndex)
+    public struct LayoutInfo
+    {
+        public Vector3 Direction;
+        public int Index;
+        public float OrthogonalAnchor;
+    }
+
+    public void UpdateUI(LayoutInfo layoutInfo)
+    {
+        UpdateUI(_coordinate, layoutInfo);
+    }
+
+    private void UpdateUI(Coordinate c, LayoutInfo layoutInfo)
     {
         _label.text = c.Parameter.ToString("F");
         _parameter = c.Parameter;
 
-        var offsetDirection = Quaternion.AngleAxis(90f, _camera.transform.TransformDirection(Vector3.forward)) * direction;
-        var offset = offsetDirection * coordinateIndex * _padding;
+        var orthogonalRotation = Quaternion.AngleAxis(90f, _camera.transform.TransformDirection(Vector3.forward));
+        var offsetDirection = orthogonalRotation * layoutInfo.Direction;
 
-        var coordinateUIPosition = direction * c.Value + offset;
+        var offset = offsetDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
+
+        var coordinateUIPosition = layoutInfo.Direction * c.Value + offset;
         transform.position = coordinateUIPosition;
 
         var mue = _coordinate as Mue;
@@ -56,13 +70,11 @@ public class CoordinateUI : MonoBehaviour
             return;
         }
 
-        var parentCoordinateUIPosition = direction * mue.ParentValue + offset;
+        var parentCoordinateUIPosition = layoutInfo.Direction * mue.ParentValue + offset;
         _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f;
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
-
     }
-
 
     private Camera _cameraCache;
     private Camera _camera

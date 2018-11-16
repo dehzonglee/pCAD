@@ -31,6 +31,21 @@ public class Axis
         return _anchor;
     }
 
+    public float SmallestValue
+    {
+        get
+        {
+            var smallesValue = float.PositiveInfinity;
+            foreach (var c in _coordinates)
+            {
+                if (c.Value < smallesValue)
+                    smallesValue = c.Value;
+            }
+            return smallesValue;
+        }
+    }
+
+
     public Coordinate SetAnchor(float position)
     {
         _anchor = FindClosestCoordinate(position);
