@@ -34,8 +34,6 @@ public class CoordinateUI : MonoBehaviour
     {
         _modelChangeRequest = modelChangeRequest;
         _coordinate = c;
-        // _coordinate.ValueChangedEvent += () => UpdateUI(c, layoutInfo);
-        // UpdateUI(c, layoutInfo);
     }
 
     public struct LayoutInfo
@@ -43,22 +41,17 @@ public class CoordinateUI : MonoBehaviour
         public Vector3 Direction;
         public int Index;
         public float OrthogonalAnchor;
+        public Vector3 OrthogonalDirection;
     }
 
-    public void UpdateUI(LayoutInfo layoutInfo)
-    {
-        UpdateUI(_coordinate, layoutInfo);
-    }
-
-    private void UpdateUI(Coordinate c, LayoutInfo layoutInfo)
+    public void UpdateUI(Coordinate c, LayoutInfo layoutInfo)
     {
         _label.text = c.Parameter.ToString("F");
         _parameter = c.Parameter;
 
-        var orthogonalRotation = Quaternion.AngleAxis(90f, _camera.transform.TransformDirection(Vector3.forward));
-        var offsetDirection = orthogonalRotation * layoutInfo.Direction;
+        // var offsetDirection = layoutInfo.OrthogonalDirection * layoutInfo.Direction;
 
-        var offset = offsetDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
 
         var coordinateUIPosition = layoutInfo.Direction * c.Value + offset;
         transform.position = coordinateUIPosition;

@@ -30,22 +30,23 @@ public class CoordinateSystemUI : MonoBehaviour
         anchorUI.Initalize(_coordinateSystem.GetAnchorPosition());
     }
 
-    void Update()
+
+    public void UpdateUI()
     {
         if (_coordinateSystem == null)
             return;
 
         var xAxis = _coordinateSystem.Axes[Dimensions.X];
-        var yAxis = _coordinateSystem.Axes[Dimensions.Y];
+        // var yAxis = _coordinateSystem.Axes[Dimensions.Y];
         var zAxis = _coordinateSystem.Axes[Dimensions.Z];
 
-        AddNewCoordinateUIs(_xUIContainer, xAxis, Vector3.right, zAxis.SmallestValue);
-        AddNewCoordinateUIs(_yUIContainer, yAxis, Vector3.up, 0f);
-        AddNewCoordinateUIs(_zUIContainer, zAxis, Vector3.forward, xAxis.SmallestValue);
+        UpdateCoordinateUIs(_xUIContainer, xAxis, Vector3.right, Vector3.back, zAxis.SmallestValue);
+        // UpdateCoordinateUIs(_yUIContainer, yAxis, Vector3.up, Vector3.up, 0f);
+        UpdateCoordinateUIs(_zUIContainer, zAxis, Vector3.forward, Vector3.right, xAxis.SmallestValue);
 
     }
 
-    private void AddNewCoordinateUIs(Transform container, Axis axis, Vector3 direction, float orthogonalAnchor)
+    private void UpdateCoordinateUIs(Transform container, Axis axis, Vector3 direction, Vector3 orthogonalDirection, float orthogonalAnchor)
     {
         for (int i = 0; i < axis.Coordinates.Count; i++)
         {
@@ -56,6 +57,7 @@ public class CoordinateSystemUI : MonoBehaviour
                 Direction = direction,
                 Index = i,
                 OrthogonalAnchor = orthogonalAnchor,
+                OrthogonalDirection = orthogonalDirection,
             };
 
             if (!_ui.ContainsKey(c))
@@ -65,7 +67,7 @@ public class CoordinateSystemUI : MonoBehaviour
                 _ui.Add(c, ui);
             }
 
-            _ui[c].UpdateUI(layoutInfo);
+            _ui[c].UpdateUI(c, layoutInfo);
         }
     }
 

@@ -13,9 +13,8 @@ public class Sketch : MonoBehaviour
     void Start()
     {
         _coordinateSystem = new CoordinateSystem();
-        GetComponent<CoordinateSystemUI>().Initialize(_coordinateSystem, ModelChangeRequest);
-
-
+        _coordinateSystemUI = GetComponent<CoordinateSystemUI>();
+        _coordinateSystemUI.Initialize(_coordinateSystem, ModelChangeRequestHandler);
     }
 
     void Update()
@@ -35,18 +34,23 @@ public class Sketch : MonoBehaviour
             {
                 _nextRectangle = Instantiate(_rectanglePrefab);
                 _nextRectangle.SetFirstPosition(position);
-                return;
             }
-            _nextRectangle.SetSecondPosition(position);
-            _nextRectangle = null;
+            else
+            {
+                _nextRectangle.SetSecondPosition(position);
+                _nextRectangle = null;
+            }
+            _coordinateSystemUI.UpdateUI();
         }
     }
 
-    private void ModelChangeRequest(Axis axis, Coordinate coordinate, float value)
+    private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
     }
 
+
+    private CoordinateSystemUI _coordinateSystemUI;
     private CoordinateSystem _coordinateSystem;
     private Rectangle _nextRectangle;
 }
