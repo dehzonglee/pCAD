@@ -40,7 +40,7 @@ public class CoordinateSystemUI : MonoBehaviour
         // var yAxis = _coordinateSystem.Axes[Dimensions.Y];
         var zAxis = _coordinateSystem.Axes[Dimensions.Z];
 
-        UpdateCoordinateUIs(_xUIContainer, xAxis, Vector3.right, Vector3.back, zAxis.SmallestValue);
+        UpdateCoordinateUIs(_xUIContainer, xAxis, Vector3.right, Vector3.forward, zAxis.SmallestValue);
         // UpdateCoordinateUIs(_yUIContainer, yAxis, Vector3.up, Vector3.up, 0f);
         UpdateCoordinateUIs(_zUIContainer, zAxis, Vector3.forward, Vector3.right, xAxis.SmallestValue);
 
@@ -55,7 +55,7 @@ public class CoordinateSystemUI : MonoBehaviour
             var layoutInfo = new CoordinateUI.LayoutInfo()
             {
                 Direction = direction,
-                Index = i,
+                Index = -i,
                 OrthogonalAnchor = orthogonalAnchor,
                 OrthogonalDirection = orthogonalDirection,
             };

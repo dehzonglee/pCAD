@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MouseInput
 {
-    public static Vector3 WorldSpacePosition
+    public static Vector3 RaycastPosition
     {
         get
         {
@@ -18,4 +18,20 @@ public static class MouseInput
             return Vector3.zero;
         }
     }
+
+    public static CoordinateUI RaycastCoordinateUI
+    {
+        get
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                return hit.transform.GetComponentInParent<CoordinateUI>();
+            }
+            return null;
+        }
+    }
+
 }

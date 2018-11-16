@@ -23,7 +23,6 @@ public class CoordinateUI : MonoBehaviour
         var camUp = _camera.transform.TransformVector(Vector3.up);
         transform.LookAt(target, camUp);
 
-        // Debug.LogFormat("{0} != {1}", _parameter, _coordinate.Parameter);
         if (Mathf.Abs(_parameter - _coordinate.Parameter) > EPSILON)
         {
             _modelChangeRequest.Invoke(_coordinate, _parameter);
@@ -49,8 +48,6 @@ public class CoordinateUI : MonoBehaviour
         _label.text = c.Parameter.ToString("F");
         _parameter = c.Parameter;
 
-        // var offsetDirection = layoutInfo.OrthogonalDirection * layoutInfo.Direction;
-
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
 
         var coordinateUIPosition = layoutInfo.Direction * c.Value + offset;
@@ -67,6 +64,11 @@ public class CoordinateUI : MonoBehaviour
         _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f;
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
+    }
+
+    internal void ManipulateCoordinate(Vector3 raycastPosition)
+    {
+        throw new NotImplementedException();
     }
 
     private Camera _cameraCache;
