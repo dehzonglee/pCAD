@@ -15,12 +15,14 @@ public class CoordinateSystemUI : MonoBehaviour
 
     public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
+        _coordinateSystem = cs;
+
         var xUI = Instantiate(_axisUIPrefab);
         var yUI = Instantiate(_axisUIPrefab);
         var zUI = Instantiate(_axisUIPrefab);
-        xUI.Initialize(cs.Axes[Dimensions.X], modelChangeRequest);
-        yUI.Initialize(cs.Axes[Dimensions.Y], modelChangeRequest);
-        zUI.Initialize(cs.Axes[Dimensions.Z], modelChangeRequest);
+        xUI.Initialize(cs.Axes[Dimensions.X], modelChangeRequest, Vector3.right);
+        yUI.Initialize(cs.Axes[Dimensions.Y], modelChangeRequest, Vector3.up);
+        zUI.Initialize(cs.Axes[Dimensions.Z], modelChangeRequest, Vector3.forward);
         _axisUIs.Add(Dimensions.X, xUI);
         _axisUIs.Add(Dimensions.Y, yUI);
         _axisUIs.Add(Dimensions.Z, zUI);
@@ -31,9 +33,25 @@ public class CoordinateSystemUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        _axisUIs[Dimensions.X].UpdateCoordinateUIs(Vector3.right, Vector3.forward);
-        _axisUIs[Dimensions.Y].UpdateCoordinateUIs(Vector3.up, Vector3.up);
-        _axisUIs[Dimensions.Z].UpdateCoordinateUIs(Vector3.forward, Vector3.right);
+        _axisUIs[Dimensions.X].UpdateCoordinateUIs(Vector3.forward, GetOrthogonalAxis(Dimensions.X).SmallestValue);
+        _axisUIs[Dimensions.Y].UpdateCoordinateUIs(Vector3.up, GetOrthogonalAxis(Dimensions.Y).SmallestValue);
+        _axisUIs[Dimensions.Z].UpdateCoordinateUIs(Vector3.right, GetOrthogonalAxis(Dimensions.Z).SmallestValue);
 
     }
+
+    private Axis GetOrthogonalAxis(int dimension)
+    {
+        switch (dimension)
+        {
+            case Dimensions.X:
+                return _coordinateSystem.Axes[Dimensions.Z];
+            case Dimensions.Y:
+                return _coordinateSystem.Axes[Dimensions.Y];
+            case Dimensions.Z:
+            default:
+                return _coordinateSystem.Axes[Dimensions.X];
+        }
+    }
+
+    private CoordinateSystem _coordinateSystem;
 }

@@ -295,12 +295,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114298641709222428, guid: 97211cfa6f797b548a710f1fdd9f7e96,
-        type: 2}
-      propertyPath: _axisUIPrefab
-      value: 
-      objectReference: {fileID: 114933441742685344, guid: a8ff77bce06ae4c589cc8bcd05e304ed,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97211cfa6f797b548a710f1fdd9f7e96, type: 2}
   m_IsPrefabAsset: 0

@@ -5,13 +5,17 @@ using UnityEngine;
 
 public class CoordinateUI : MonoBehaviour
 {
-    [SerializeField] float _parameter;
+    [SerializeField] float _uiExposedParameter;
 
     [SerializeField] TMPro.TMP_Text _label;
+
     [SerializeField] LineRenderer _line;
+
     [SerializeField] float _padding;
 
     private Coordinate _coordinate;
+
+    private Vector3 _direction;
 
     private Action<Coordinate, float> _modelChangeRequest;
 
@@ -19,38 +23,32 @@ public class CoordinateUI : MonoBehaviour
 
     void Update()
     {
-        var target = 2 * transform.position - _camera.transform.position;
-        var camUp = _camera.transform.TransformVector(Vector3.up);
-        transform.LookAt(target, camUp);
-
-        if (Mathf.Abs(_parameter - _coordinate.Parameter) > EPSILON)
-        {
-            _modelChangeRequest.Invoke(_coordinate, _parameter);
-        }
+        MakeBillboard();
+        CheckForParameterManipultation();
     }
 
-    public void Initalize(Coordinate c, Action<Coordinate, float> modelChangeRequest)
+    public void Initalize(Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
+        _direction = direction;
         _coordinate = c;
     }
 
     public struct LayoutInfo
     {
-        public Vector3 Direction;
         public int Index;
         public float OrthogonalAnchor;
         public Vector3 OrthogonalDirection;
     }
 
-    public void UpdateUI(Coordinate c, LayoutInfo layoutInfo)
+    public void UpdateUI(LayoutInfo layoutInfo)
     {
-        _label.text = c.Parameter.ToString("F");
-        _parameter = c.Parameter;
+        _label.text = _coordinate.Parameter.ToString("F");
+        _uiExposedParameter = _coordinate.Parameter;
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
 
-        var coordinateUIPosition = layoutInfo.Direction * c.Value + offset;
+        var coordinateUIPosition = _direction * _coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
         var mue = _coordinate as Mue;
@@ -60,15 +58,35 @@ public class CoordinateUI : MonoBehaviour
             return;
         }
 
-        var parentCoordinateUIPosition = layoutInfo.Direction * mue.ParentValue + offset;
+        var parentCoordinateUIPosition = _direction * mue.ParentValue + offset;
         _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f;
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
     }
 
-    internal void ManipulateCoordinate(Vector3 raycastPosition)
+    private void MakeBillboard()
     {
-        throw new NotImplementedException();
+        var target = 2 * transform.position - _camera.transform.position;
+        var camUp = _camera.transform.TransformVector(Vector3.up);
+        transform.LookAt(target, camUp);
+    }
+
+    private void CheckForParameterManipultation()
+    {
+        if (Mathf.Abs(_uiExposedParameter - _coordinate.Parameter) > EPSILON)
+        {
+            _modelChangeRequest.Invoke(_coordinate, _uiExposedParameter);
+        }
+    }
+
+    public void ManipulateCoordinate(Vector3 raycastPosition)
+    {
+        _modelChangeRequest(_coordinate, MousePositionToParameter(raycastPosition));
+    }
+
+    private float MousePositionToParameter(Vector3 mouseWorldPosition)
+    {
+        return Vector3.Dot(mouseWorldPosition, _direction) - _coordinate.ParentValue;
     }
 
     private Camera _cameraCache;

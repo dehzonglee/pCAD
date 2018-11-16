@@ -31,7 +31,6 @@ public class Rectangle : MonoBehaviour
 
     private void UpdateLine()
     {
-        Debug.Log("UpdateLine");
         var positionValues = new Vector3[4];
         for (int i = 0; i < _positions.Length; i++)
         {

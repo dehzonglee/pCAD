@@ -38,10 +38,8 @@ public class Axis
             var smallesValue = float.PositiveInfinity;
             foreach (var c in _coordinates)
             {
-                Debug.LogFormat("{0} <? {1}", c.Value, smallesValue);
                 if (c.Value < smallesValue)
                 {
-                    Debug.LogFormat("{0} < {1}", c.Value, smallesValue);
                     smallesValue = c.Value;
                 }
             }

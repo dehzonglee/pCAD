@@ -13,17 +13,14 @@ public class ParametricPosition
         x.ValueChangedEvent += () =>
         {
             PositionChangedEvent();
-            Debug.Log("pos changed");
         };
         y.ValueChangedEvent += () =>
         {
             PositionChangedEvent();
-            Debug.Log("pos changed");
         };
         z.ValueChangedEvent += () =>
         {
             PositionChangedEvent();
-            Debug.Log("pos changed");
         };
     }
 

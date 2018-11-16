@@ -12,7 +12,6 @@ public abstract class Coordinate
         get { return _parameter; }
         set
         {
-            Debug.LogFormat("Set parameter {0} to {1}", _parameter, value);
             _parameter = value;
 
             InvokeValueChanged();
@@ -27,6 +26,9 @@ public abstract class Coordinate
             ValueChangedEvent();
         }
     }
+
+    protected Coordinate _parent;
+    public float ParentValue { get { return _parent.Value; } }
     public event Action ValueChangedEvent;
 
 }

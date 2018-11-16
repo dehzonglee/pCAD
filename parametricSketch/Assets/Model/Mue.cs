@@ -11,6 +11,4 @@ public class Mue : Coordinate
         Parameter = mue;
     }
 
-    public float ParentValue { get { return _parent.Value; } }
-    private Coordinate _parent;
 }

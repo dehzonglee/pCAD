@@ -73,6 +73,7 @@ public class Sketch : MonoBehaviour
     private void UpdateDrag()
     {
         _draggedCoordinateUI.ManipulateCoordinate(MouseInput.RaycastPosition);
+        _coordinateSystemUI.UpdateUI();
     }
 
     private void CompleteDrag()
@@ -84,6 +85,7 @@ public class Sketch : MonoBehaviour
     private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
+        _coordinateSystemUI.UpdateUI();
     }
 
 
