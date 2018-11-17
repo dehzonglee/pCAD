@@ -11,6 +11,8 @@ public class CoordinateUI : MonoBehaviour
 
     [SerializeField] LineRenderer _line;
 
+    [SerializeField] LineRenderer _gridLine;
+
     [SerializeField] float _padding;
 
     private Coordinate _coordinate;
@@ -58,10 +60,17 @@ public class CoordinateUI : MonoBehaviour
             return;
         }
 
+        var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * _padding;
+
         var parentCoordinateUIPosition = _direction * mue.ParentValue + offset;
-        _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f;
+        _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f + labelOffset;
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
+
+        _gridLine.positionCount = 2;
+        _gridLine.useWorldSpace = true;
+        _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
+        _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
     }
 
     private void MakeBillboard()

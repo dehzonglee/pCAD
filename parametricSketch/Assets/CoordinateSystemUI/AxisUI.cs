@@ -21,7 +21,6 @@ public class AxisUI : MonoBehaviour
 
     public void UpdateCoordinateUIs(Vector3 orthogonalDirection, float orthogonalAnchor)
     {
-        Debug.Log(orthogonalAnchor);
         for (int i = 0; i < _axis.Coordinates.Count; i++)
         {
             var c = _axis.Coordinates[i];
