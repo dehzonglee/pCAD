@@ -11,7 +11,6 @@ public class CoordinateSystemUI : MonoBehaviour
     [SerializeField]
     AnchorUI _anchorUIPrefab;
 
-    private Dictionary<int, AxisUI> _axisUIs = new Dictionary<int, AxisUI>();
 
     public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
@@ -27,8 +26,8 @@ public class CoordinateSystemUI : MonoBehaviour
         _axisUIs.Add(Dimensions.Y, yUI);
         _axisUIs.Add(Dimensions.Z, zUI);
 
-        var anchorUI = Instantiate(_anchorUIPrefab);
-        anchorUI.Initalize(cs.GetAnchorPosition());
+        _anchorUI = Instantiate(_anchorUIPrefab);
+        _anchorUI.Initalize(cs.GetAnchorPosition());
     }
 
     public void UpdateUI()
@@ -36,7 +35,7 @@ public class CoordinateSystemUI : MonoBehaviour
         _axisUIs[Dimensions.X].UpdateCoordinateUIs(Vector3.forward, GetOrthogonalAxis(Dimensions.X).SmallestValue);
         _axisUIs[Dimensions.Y].UpdateCoordinateUIs(Vector3.up, GetOrthogonalAxis(Dimensions.Y).SmallestValue);
         _axisUIs[Dimensions.Z].UpdateCoordinateUIs(Vector3.right, GetOrthogonalAxis(Dimensions.Z).SmallestValue);
-
+        _anchorUI.UpdateUI();
     }
 
     private Axis GetOrthogonalAxis(int dimension)
@@ -53,5 +52,7 @@ public class CoordinateSystemUI : MonoBehaviour
         }
     }
 
+    private AnchorUI _anchorUI;
+    private Dictionary<int, AxisUI> _axisUIs = new Dictionary<int, AxisUI>();
     private CoordinateSystem _coordinateSystem;
 }
