@@ -42,7 +42,7 @@ public class CoordinateSystem
 
     private void SetAnchorPosition(float value, int dimension)
     {
-        var coordinate = _axes[dimension].SetAnchor(value);
+        var coordinate = _axes[dimension].SetAnchorFromExistingCoordinates(value);
         _anchorPosition.SetCoordinate(coordinate, dimension);
     }
 

@@ -10,25 +10,73 @@ public class Axis
     {
         _origin = new Origin();
         _coordinates.Add(_origin);
-        _anchor = _origin;
+        _primaryAnchor = _origin;
+        _secondaryAnchor = _origin;
     }
 
     public Coordinate GetCoordiante(float position)
     {
-        var closestCoordinate = FindClosestCoordinate(position);
-        var distance = Mathf.Abs(position - closestCoordinate.Value);
-        if (distance < SNAP_RADIUS)
+        var closestCoordinate = GetClosestCoordinateInSnapRadius(position);
+        if (closestCoordinate != null)
             return closestCoordinate;
 
-        var delta = position - _anchor.Value;
-        var newCoordinate = new Mue(_anchor, delta);
+        var newCoordinate = AddNewMueCoordiante(position);
+        return newCoordinate;
+    }
+
+    private Coordinate AddNewMueCoordiante(float position)
+    {
+        var delta = position - _primaryAnchor.Value;
+        var newCoordinate = new Mue(_primaryAnchor, delta);
         _coordinates.Add(newCoordinate);
         return newCoordinate;
     }
 
+    private Coordinate GetClosestCoordinateInSnapRadius(float position)
+    {
+        var closestCoordinate = FindClosestCoordinate(position);
+        var distanceToClosestCoordinate = Mathf.Abs(position - closestCoordinate.Value);
+        var distanceToLambdaCoordiante = DistanceToLambdaCoordiante(position);
+
+        if (distanceToClosestCoordinate > SNAP_RADIUS && distanceToLambdaCoordiante > SNAP_RADIUS)
+            return null;
+
+        if (distanceToClosestCoordinate < distanceToLambdaCoordiante)
+            return closestCoordinate;
+
+        return AddLambdaCoordinateBetweenAnchors();
+    }
+
+    private Lambda AddLambdaCoordinateBetweenAnchors()
+    {
+        var newLambda = new Lambda(_primaryAnchor, _secondaryAnchor, 0.5f);
+        _coordinates.Add(newLambda);
+        return newLambda;
+    }
+
+    private float DistanceToLambdaCoordiante(float position)
+    {
+        //todo: quick fix to catch undefined lambda if anchors match
+        if (_primaryAnchor == _secondaryAnchor) return float.PositiveInfinity;
+
+        var lambdaPosition = (_primaryAnchor.Value + _secondaryAnchor.Value) / 2f;
+        return Mathf.Abs(position - lambdaPosition);
+    }
+
     public Coordinate GetAnchor()
     {
-        return _anchor;
+        return _primaryAnchor;
+    }
+
+    public void RemoveUnusedCoordinate()
+    {
+        var cleanList = new List<Coordinate>();
+        foreach (var c in _coordinates)
+        {
+            if (c.IsUsed)
+                cleanList.Add(c);
+        }
+        _coordinates = cleanList;
     }
 
     public float SmallestValue
@@ -48,12 +96,13 @@ public class Axis
     }
 
 
-    public Coordinate SetAnchor(float position)
+    public Coordinate SetAnchorFromExistingCoordinates(float position)
     {
-        _anchor = FindClosestCoordinate(position);
+        _secondaryAnchor = _primaryAnchor;
+        _primaryAnchor = FindClosestCoordinate(position);
         if (AnchorChangedEvent != null)
             AnchorChangedEvent();
-        return _anchor;
+        return _primaryAnchor;
     }
 
     private Coordinate FindClosestCoordinate(float position)
@@ -69,11 +118,13 @@ public class Axis
                 closestDistance = distance;
             }
         }
+
         return closestCoordinate;
     }
 
     private const float SNAP_RADIUS = 0.01f;
     private List<Coordinate> _coordinates = new List<Coordinate>();
     private Coordinate _origin;
-    private Coordinate _anchor;
+    private Coordinate _primaryAnchor;
+    private Coordinate _secondaryAnchor;
 }

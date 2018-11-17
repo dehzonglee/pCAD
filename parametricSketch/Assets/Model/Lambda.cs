@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class Lambda : Coordinate
 {
+    public override string Name { get { return "Lambda"; } }
     public override float Value
     {
         get
         {
-            return (1f - Parameter) * _parent0.Value + Parameter * _parent1.Value;
+            return (1f - Parameter) * _parent.Value + Parameter * _secondParent.Value;
         }
     }
 
+    public float SecondaryParentValue { get { return _secondParent.Value; } }
+
     public Lambda(Coordinate parent0, Coordinate parent1, float lambda)
     {
-        _parent0 = parent0;
-        _parent0.ValueChangedEvent += () => InvokeValueChanged();
-        _parent1 = parent1;
-        _parent1.ValueChangedEvent += () => InvokeValueChanged();
+        _parent = parent0;
+        _parent.ValueChangedEvent += () => InvokeValueChanged();
+        _secondParent = parent1;
+        _secondParent.ValueChangedEvent += () => InvokeValueChanged();
         Parameter = lambda;
     }
 
-    private Coordinate _parent0;
-    private Coordinate _parent1;
+
+    private Coordinate _secondParent;
 }

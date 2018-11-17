@@ -3,25 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoordinateUI : MonoBehaviour
+public abstract class CoordinateUI : MonoBehaviour
 {
-    [SerializeField] float _uiExposedParameter;
+    [SerializeField] protected float _uiExposedParameter;
 
-    [SerializeField] TMPro.TMP_Text _label;
+    [SerializeField] protected TMPro.TMP_Text _label;
 
-    [SerializeField] LineRenderer _line;
+    [SerializeField] protected LineRenderer _line;
 
-    [SerializeField] LineRenderer _gridLine;
+    [SerializeField] protected LineRenderer _gridLine;
 
-    [SerializeField] float _padding;
-
-    private Coordinate _coordinate;
-
-    private Vector3 _direction;
-
-    private Action<Coordinate, float> _modelChangeRequest;
-
-    private const float EPSILON = 0.001f;
+    [SerializeField] protected float _padding;
 
     void Update()
     {
@@ -31,6 +23,7 @@ public class CoordinateUI : MonoBehaviour
 
     public void Initalize(Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
     {
+        gameObject.name = c.Name;
         _modelChangeRequest = modelChangeRequest;
         _direction = direction;
         _coordinate = c;
@@ -43,35 +36,7 @@ public class CoordinateUI : MonoBehaviour
         public Vector3 OrthogonalDirection;
     }
 
-    public void UpdateUI(LayoutInfo layoutInfo)
-    {
-        _label.text = _coordinate.Parameter.ToString("F");
-        _uiExposedParameter = _coordinate.Parameter;
-
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
-
-        var coordinateUIPosition = _direction * _coordinate.Value + offset;
-        transform.position = coordinateUIPosition;
-
-        var mue = _coordinate as Mue;
-        if (mue == null)
-        {
-            _line.enabled = false;
-            return;
-        }
-
-        var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * _padding;
-
-        var parentCoordinateUIPosition = _direction * mue.ParentValue + offset;
-        _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f + labelOffset;
-        _line.SetPosition(0, coordinateUIPosition);
-        _line.SetPosition(1, parentCoordinateUIPosition);
-
-        _gridLine.positionCount = 2;
-        _gridLine.useWorldSpace = true;
-        _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
-        _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
-    }
+    public abstract void UpdateUI(LayoutInfo layoutInfo);
 
     private void MakeBillboard()
     {
@@ -97,6 +62,14 @@ public class CoordinateUI : MonoBehaviour
     {
         return Vector3.Dot(mouseWorldPosition, _direction) - _coordinate.ParentValue;
     }
+
+    protected Coordinate _coordinate;
+
+    protected Vector3 _direction;
+
+    protected Action<Coordinate, float> _modelChangeRequest;
+
+    protected const float EPSILON = 0.001f;
 
     private Camera _cameraCache;
     private Camera _camera

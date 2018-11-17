@@ -5,8 +5,11 @@ using UnityEngine;
 
 public abstract class Coordinate
 {
+    public float ParentValue { get { return _parent.Value; } }
+    public event Action ValueChangedEvent;
+    public abstract string Name { get; }
     public abstract float Value { get; }
-    private float _parameter;
+    public bool IsUsed { get { return ValueChangedEvent != null; } }
     public float Parameter
     {
         get { return _parameter; }
@@ -22,13 +25,10 @@ public abstract class Coordinate
     {
         if (ValueChangedEvent != null)
         {
-            Debug.LogFormat("Value canges");
             ValueChangedEvent();
         }
     }
 
     protected Coordinate _parent;
-    public float ParentValue { get { return _parent.Value; } }
-    public event Action ValueChangedEvent;
-
+    private float _parameter;
 }

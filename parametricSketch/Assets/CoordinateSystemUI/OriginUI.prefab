@@ -72,10 +72,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4350166254574992}
-  - component: {fileID: 114438840388194568}
   - component: {fileID: 120726057498905804}
+  - component: {fileID: 114279801275401390}
   m_Layer: 0
-  m_Name: CoordinateUI
+  m_Name: OriginUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,7 +207,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1474096986553396}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114438840388194568
+--- !u!114 &114279801275401390
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1941014123790818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dfb3a2a96609c34b92bfd52c557643b, type: 3}
+  m_Script: {fileID: 11500000, guid: ac0c55b6503a94ccca1cbb97ae6d4202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _uiExposedParameter: 0

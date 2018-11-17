@@ -7,7 +7,13 @@ public class AxisUI : MonoBehaviour
 {
 
     [SerializeField]
-    CoordinateUI _coordinateUIPrefab;
+    MueUI _mueUIPrefab;
+
+    [SerializeField]
+    LambdaUI _lambdaUIPrefab;
+
+    [SerializeField]
+    OriginUI _originUIPrefab;
 
     private Axis _axis;
     private Vector3 _direction;
@@ -34,7 +40,15 @@ public class AxisUI : MonoBehaviour
 
             if (!_ui.ContainsKey(c))
             {
-                var ui = Instantiate(_coordinateUIPrefab, transform);
+                CoordinateUI ui;
+                if (c as Mue != null)
+                    ui = Instantiate(_mueUIPrefab, transform);
+                else if (c as Lambda != null)
+                    ui = Instantiate(_lambdaUIPrefab, transform);
+                else
+                    ui = Instantiate(_originUIPrefab, transform);
+
+
                 ui.Initalize(c, _direction, (coordinate, parameter) => _modelChangeRequest(_axis, coordinate, parameter));
                 _ui.Add(c, ui);
             }
