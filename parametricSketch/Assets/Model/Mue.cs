@@ -8,6 +8,7 @@ public class Mue : Coordinate
     public Mue(Coordinate parent, float mue)
     {
         _parent = parent;
+        _parent.ValueChangedEvent += () => InvokeValueChanged();
         Parameter = mue;
     }
 
