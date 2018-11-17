@@ -44,6 +44,7 @@ public class Sketch : MonoBehaviour
         {
             var mousePosition = MouseInput.RaycastPosition;
             _coordinateSystem.SetAnchorPosition(mousePosition);
+            _coordinateSystemUI.UpdateUI();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))

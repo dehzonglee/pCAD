@@ -12,7 +12,7 @@ public class AnchorUI : MonoBehaviour
         UpdateUI();
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         transform.position = _anchorPosition.Value;
     }
