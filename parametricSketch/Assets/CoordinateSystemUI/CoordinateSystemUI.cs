@@ -16,15 +16,14 @@ public class CoordinateSystemUI : MonoBehaviour
     {
         _coordinateSystem = cs;
 
-        var xUI = Instantiate(_axisUIPrefab);
-        var yUI = Instantiate(_axisUIPrefab);
-        var zUI = Instantiate(_axisUIPrefab);
-        xUI.Initialize(cs.Axes[Dimensions.X], modelChangeRequest, Vector3.right);
-        yUI.Initialize(cs.Axes[Dimensions.Y], modelChangeRequest, Vector3.up);
-        zUI.Initialize(cs.Axes[Dimensions.Z], modelChangeRequest, Vector3.forward);
-        _axisUIs.Add(Dimensions.X, xUI);
-        _axisUIs.Add(Dimensions.Y, yUI);
-        _axisUIs.Add(Dimensions.Z, zUI);
+        _xAxisUI = Instantiate(_axisUIPrefab);
+        _xAxisUI.Initialize(cs.XAxis, modelChangeRequest, Vector3.right);
+
+        _yAxisUI = Instantiate(_axisUIPrefab);
+        _yAxisUI.Initialize(cs.YAxis, modelChangeRequest, Vector3.up);
+
+        _zAxisUI = Instantiate(_axisUIPrefab);
+        _zAxisUI.Initialize(cs.ZAxis, modelChangeRequest, Vector3.forward);
 
         _anchorUI = Instantiate(_anchorUIPrefab);
         _anchorUI.Initalize(cs.GetAnchorPosition());
@@ -32,9 +31,9 @@ public class CoordinateSystemUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        _axisUIs[Dimensions.X].UpdateCoordinateUIs(Vector3.forward, GetOrthogonalAxis(Dimensions.X).SmallestValue);
-        _axisUIs[Dimensions.Y].UpdateCoordinateUIs(Vector3.up, GetOrthogonalAxis(Dimensions.Y).SmallestValue);
-        _axisUIs[Dimensions.Z].UpdateCoordinateUIs(Vector3.right, GetOrthogonalAxis(Dimensions.Z).SmallestValue);
+        _xAxisUI.UpdateCoordinateUIs(Vector3.forward, GetOrthogonalAxis(Dimensions.X).SmallestValue);
+        _yAxisUI.UpdateCoordinateUIs(Vector3.up, GetOrthogonalAxis(Dimensions.Y).SmallestValue);
+        _zAxisUI.UpdateCoordinateUIs(Vector3.right, GetOrthogonalAxis(Dimensions.Z).SmallestValue);
         _anchorUI.UpdateUI();
     }
 
@@ -43,16 +42,33 @@ public class CoordinateSystemUI : MonoBehaviour
         switch (dimension)
         {
             case Dimensions.X:
-                return _coordinateSystem.Axes[Dimensions.Z];
+                return _coordinateSystem.ZAxis;
             case Dimensions.Y:
-                return _coordinateSystem.Axes[Dimensions.Y];
+                return _coordinateSystem.YAxis;
             case Dimensions.Z:
             default:
-                return _coordinateSystem.Axes[Dimensions.X];
+                return _coordinateSystem.XAxis;
         }
     }
 
+    private AxisUI _xAxisUI
+    {
+        get { return _axisUIs[0]; }
+        set { _axisUIs[0] = value; }
+    }
+
+    private AxisUI _yAxisUI
+    {
+        get { return _axisUIs[1]; }
+        set { _axisUIs[1] = value; }
+    }
+
+    private AxisUI _zAxisUI
+    {
+        get { return _axisUIs[2]; }
+        set { _axisUIs[2] = value; }
+    }
     private AnchorUI _anchorUI;
-    private Dictionary<int, AxisUI> _axisUIs = new Dictionary<int, AxisUI>();
+    private AxisUI[] _axisUIs = new AxisUI[3];
     private CoordinateSystem _coordinateSystem;
 }

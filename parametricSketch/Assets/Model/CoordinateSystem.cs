@@ -5,14 +5,27 @@ using UnityEngine;
 
 public class CoordinateSystem
 {
-    public Dictionary<int, Axis> Axes { get { return _axes; } }
+    public Axis XAxis
+    {
+        get { return _axes[0]; }
+        set { _axes[0] = value; }
+    }
+    public Axis YAxis
+    {
+        get { return _axes[1]; }
+        set { _axes[1] = value; }
+    }
+    public Axis ZAxis
+    {
+        get { return _axes[2]; }
+        set { _axes[2] = value; }
+    }
 
     public CoordinateSystem()
     {
-        _axes = new Dictionary<int, Axis>();
-        _axes.Add(Dimensions.X, new Axis());
-        _axes.Add(Dimensions.Y, new Axis());
-        _axes.Add(Dimensions.Z, new Axis());
+        XAxis = new Axis();
+        YAxis = new Axis();
+        ZAxis = new Axis();
 
         var xAnchorCoordinate = _axes[Dimensions.X].GetAnchor();
         var yAnchorCoordinate = _axes[Dimensions.Y].GetAnchor();
@@ -48,5 +61,5 @@ public class CoordinateSystem
 
     private ParametricPosition _anchorPosition;
 
-    private Dictionary<int, Axis> _axes;
+    private Axis[] _axes = new Axis[3];
 }
