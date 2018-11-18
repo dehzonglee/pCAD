@@ -26,7 +26,7 @@ public class CoordinateSystemUI : MonoBehaviour
         _zAxisUI.Initialize(cs.ZAxis, modelChangeRequest, Vector3.forward);
 
         _anchorUI = Instantiate(_anchorUIPrefab);
-        _anchorUI.Initalize(cs.GetAnchorPosition());
+        _anchorUI.Initalize(cs.GetAnchor());
     }
 
     public void UpdateUI()

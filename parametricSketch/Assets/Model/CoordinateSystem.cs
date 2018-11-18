@@ -27,10 +27,10 @@ public class CoordinateSystem
         YAxis = new Axis();
         ZAxis = new Axis();
 
-        var xAnchorCoordinate = _axes[Dimensions.X].GetAnchor();
-        var yAnchorCoordinate = _axes[Dimensions.Y].GetAnchor();
-        var zAnchorCoordinate = _axes[Dimensions.Z].GetAnchor();
-        _anchorPosition = new ParametricPosition(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
+        var xAnchorCoordinate = XAxis.Anchor;
+        var yAnchorCoordinate = YAxis.Anchor;
+        var zAnchorCoordinate = ZAxis.Anchor;
+        _anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
     }
 
     public ParametricPosition GetParametricPosition(Vector3 position)
@@ -41,25 +41,19 @@ public class CoordinateSystem
         return new ParametricPosition(x, y, z);
     }
 
-    public ParametricPosition GetAnchorPosition()
+    public Anchor GetAnchor()
     {
-        return _anchorPosition;
+        return _anchor;
     }
 
     public void SetAnchorPosition(Vector3 position)
     {
-        SetAnchorPosition(position.x, Dimensions.X);
-        SetAnchorPosition(position.y, Dimensions.Y);
-        SetAnchorPosition(position.z, Dimensions.Z);
+        XAxis.SnapAnchorToClosestCoordinate(position.x);
+        YAxis.SnapAnchorToClosestCoordinate(position.y);
+        ZAxis.SnapAnchorToClosestCoordinate(position.z);
     }
 
-    private void SetAnchorPosition(float value, int dimension)
-    {
-        var coordinate = _axes[dimension].SetAnchorFromExistingCoordinates(value);
-        _anchorPosition.SetCoordinate(coordinate, dimension);
-    }
-
-    private ParametricPosition _anchorPosition;
+    private Anchor _anchor;
 
     private Axis[] _axes = new Axis[3];
 }

@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class AnchorUI : MonoBehaviour
 {
-    public void Initalize(ParametricPosition anchorPosition)
+    [SerializeField]
+    Transform _primaryAnchorUI;
+    [SerializeField]
+    Transform _secondaryAnchorUI;
+
+    public void Initalize(Anchor anchor)
     {
-        _anchorPosition = anchorPosition;
-        _anchorPosition.PositionChangedEvent += UpdateUI;
-        UpdateUI();
+        _anchor = anchor;
     }
 
     public void UpdateUI()
     {
-        transform.position = _anchorPosition.Value;
+        _primaryAnchorUI.position = _anchor.PrimaryPosition;
+        _secondaryAnchorUI.position = _anchor.SecondaryPosition;
     }
 
-    private ParametricPosition _anchorPosition;
+    private Anchor _anchor;
 }
