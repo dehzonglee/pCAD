@@ -73,9 +73,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4350166254574992}
   - component: {fileID: 120726057498905804}
-  - component: {fileID: 114279801275401390}
+  - component: {fileID: 114199161206364966}
   m_Layer: 0
-  m_Name: OriginUI
+  m_Name: MueUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,7 +207,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1474096986553396}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114279801275401390
+--- !u!114 &114199161206364966
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -215,14 +215,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1941014123790818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0c55b6503a94ccca1cbb97ae6d4202, type: 3}
+  m_Script: {fileID: 11500000, guid: e86a29034db9d4ffcbb5162c2cf116fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _uiExposedParameter: 0
   _label: {fileID: 114763946974457138}
   _line: {fileID: 120726057498905804}
   _gridLine: {fileID: 120275545991104528}
-  _padding: 0.01
+  _padding: 0.1
 --- !u!114 &114763946974457138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.27365112, g: 0, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
@@ -318,7 +318,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
