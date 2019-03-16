@@ -1,51 +1,60 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ParametricPosition
+namespace Model
 {
-    public event Action PositionChangedEvent;
-
-    public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
+    public class ParametricPosition
     {
-        _coordinates = new Coordinate[] { x, y, z };
-        x.ValueChangedEvent += () =>
-        {
-            PositionChangedEvent();
-        };
-        y.ValueChangedEvent += () =>
-        {
-            PositionChangedEvent();
-        };
-        z.ValueChangedEvent += () =>
-        {
-            PositionChangedEvent();
-        };
-    }
+        public event Action PositionChangedEvent;
 
-    public void SetCoordinate(Coordinate coordinate, int dimension)
-    {
-        var oldCoordinate = _coordinates[dimension];
-        oldCoordinate.ValueChangedEvent -= PositionChangedEvent;
-        _coordinates[dimension] = coordinate;
-        coordinate.ValueChangedEvent += PositionChangedEvent;
-    }
+        public Vector3 Value => new Vector3(_x.Value, _y.Value, _z.Value);
 
-    public Vector3 Value
-    {
-        get
+        public Coordinate X
         {
-            var x = _coordinates[Dimensions.X].Value;
-            var y = _coordinates[Dimensions.Y].Value;
-            var z = _coordinates[Dimensions.Z].Value;
-            return new Vector3(x, y, z);
+            get => _x;
+            set
+            {
+                _x.ValueChangedEvent -= PositionChangedEvent;
+                _x = value;
+                _x.ValueChangedEvent += PositionChangedEvent;
+            }
         }
+
+        public Coordinate Y
+        {
+            get => _y;
+            set
+            {
+                _y.ValueChangedEvent -= PositionChangedEvent;
+                _y = value;
+                _y.ValueChangedEvent += PositionChangedEvent;
+            }
+        }
+
+        public Coordinate Z
+        {
+            get => _z;
+            set
+            {
+                _z.ValueChangedEvent -= PositionChangedEvent;
+                _z = value;
+                _z.ValueChangedEvent += PositionChangedEvent;
+            }
+        }
+
+        public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
+        {
+            _x = x;
+            _y = y;
+            _z = z;
+            x.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
+            y.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
+            z.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
+        }
+
+
+        private Coordinate _x;
+        private Coordinate _y;
+        private Coordinate _z;
     }
-
-    public Coordinate X { get { return _coordinates[Dimensions.X]; } }
-    public Coordinate Y { get { return _coordinates[Dimensions.Y]; } }
-    public Coordinate Z { get { return _coordinates[Dimensions.Z]; } }
-
-    Coordinate[] _coordinates;
 }
