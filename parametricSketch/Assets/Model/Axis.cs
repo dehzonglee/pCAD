@@ -8,13 +8,15 @@ namespace Model
     public class Axis
     {
         public event Action AnchorChangedEvent;
+        private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates => _coordinates;
 
-        public Axis()
+        public Axis(Action axisChangedCallback)
         {
-            _origin = new Origin();
+            _origin = new Origin(OnCoordinateChanged);
             _coordinates.Add(_origin);
             Anchor = new AnchorCoordinates(_origin, _origin);
+            _axisChangedEvent += axisChangedCallback;
         }
 
         public Coordinate GetCoordinate(float position)
@@ -50,13 +52,17 @@ namespace Model
             return Anchor;
         }
 
-
         private Coordinate AddNewMueCoordinate(float position)
         {
             var delta = position - Anchor.PrimaryCoordinate.Value;
-            var newCoordinate = new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeprecated);
+            var newCoordinate = new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeprecated, OnCoordinateChanged);
             _coordinates.Add(newCoordinate);
             return newCoordinate;
+        }
+
+        private void OnCoordinateChanged()
+        {
+            _axisChangedEvent?.Invoke();
         }
 
         private void OnCoordinateDeprecated(Coordinate deprecatedCoordinate)
@@ -85,7 +91,8 @@ namespace Model
                 Anchor.PrimaryCoordinate,
                 Anchor.SecondaryCoordinate,
                 0.5f,
-                OnCoordinateDeprecated
+                OnCoordinateDeprecated,
+                OnCoordinateChanged
             );
             _coordinates.Add(newLambda);
             return newLambda;

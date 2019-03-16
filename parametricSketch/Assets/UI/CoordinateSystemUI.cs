@@ -1,19 +1,19 @@
 ﻿using System;
 using Model;
+using UI;
 using UnityEngine;
 
 public class CoordinateSystemUI : MonoBehaviour
 {
-    [SerializeField]
-    AxisUI _axisUIPrefab;
+    [SerializeField] AxisUI _axisUIPrefab;
 
-    [SerializeField]
-    AnchorUI _anchorUIPrefab;
+    [SerializeField] AnchorUI _anchorUIPrefab;
 
 
     public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
         _coordinateSystem = cs;
+        cs.CoordinateSystemChangedEvent += UpdateUI;
 
         _xAxisUI = Instantiate(_axisUIPrefab);
         _xAxisUI.Initialize(cs.XAxis, modelChangeRequest, Vector3.right);
@@ -52,21 +52,22 @@ public class CoordinateSystemUI : MonoBehaviour
 
     private AxisUI _xAxisUI
     {
-        get { return _axisUIs[0]; }
-        set { _axisUIs[0] = value; }
+        get => _axisUIs[0];
+        set => _axisUIs[0] = value;
     }
 
     private AxisUI _yAxisUI
     {
-        get { return _axisUIs[1]; }
-        set { _axisUIs[1] = value; }
+        get => _axisUIs[1];
+        set => _axisUIs[1] = value;
     }
 
     private AxisUI _zAxisUI
     {
-        get { return _axisUIs[2]; }
-        set { _axisUIs[2] = value; }
+        get => _axisUIs[2];
+        set => _axisUIs[2] = value;
     }
+
     private AnchorUI _anchorUI;
     private AxisUI[] _axisUIs = new AxisUI[3];
     private CoordinateSystem _coordinateSystem;

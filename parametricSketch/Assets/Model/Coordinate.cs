@@ -5,6 +5,7 @@ public abstract class Coordinate
 {
     public float ParentValue => _parent.Value;
     protected event Action<Coordinate> CoordinateDeprecatedEvent;
+    protected event Action CoordinateChangedEvent;
     public event Action ValueChangedEvent;
     public abstract string Name { get; }
     public abstract float Value { get; }
@@ -31,7 +32,10 @@ public abstract class Coordinate
         Debug.Log($"unregister {this}");
         ValueChangedEvent -= OnValueChanged;
         if (OnValueChanged == null)
+        {
             CoordinateDeprecatedEvent?.Invoke(this);
+            CoordinateChangedEvent?.Invoke();
+        }
     }
 
     protected void InvokeValueChangedFromChildClass()

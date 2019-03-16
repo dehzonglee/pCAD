@@ -6,11 +6,16 @@ public class Mue : Coordinate
 
     public override string Name => "Mue";
 
-    public Mue(Coordinate parent, float mue, Action<Coordinate> OnCoordinateDeprecated)
+    public Mue(
+        Coordinate parent,
+        float mue,
+        Action<Coordinate> onCoordinateDeprecated,
+        Action onCoordinateChangedCallback)
     {
         _parent = parent;
         _parent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         Parameter = mue;
-        CoordinateDeprecatedEvent += OnCoordinateDeprecated;
+        CoordinateDeprecatedEvent += onCoordinateDeprecated;
+        CoordinateChangedEvent += onCoordinateChangedCallback;
     }
 }

@@ -1,96 +1,113 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 public class Sketch : MonoBehaviour
 {
-    [SerializeField]
-    Line _linePrefab;
+    [SerializeField] private Line _linePrefab;
 
-    [SerializeField]
-    Rectangle _rectanglePrefab;
+    [SerializeField] private Rectangle _rectanglePrefab;
 
-    void Start()
+    private void Start()
     {
         _coordinateSystem = new CoordinateSystem();
-        _coordinateSystemUI = GetComponent<CoordinateSystemUI>();
-        _coordinateSystemUI.Initialize(_coordinateSystem, ModelChangeRequestHandler);
+        _coordinateSystemUi = GetComponent<CoordinateSystemUI>();
+        _coordinateSystemUi.Initialize(_coordinateSystem, ModelChangeRequestHandler);
     }
 
-    private bool _isDragging
-    {
-        get { return _draggedCoordinateUI != null; }
-    }
+    private ParametricPosition _nextPosition;
 
-    private CoordinateUI _draggedCoordinateUI;
+    private bool _isDragging => _draggedCoordinateUi != null;
 
-    void Update()
+    private CoordinateUI _draggedCoordinateUi;
+
+    private void Update()
     {
+//        if (_nextPosition != null)
+//            _nextPosition.Remove();
+//            
+//            _nextPosition = GeneratePositionAtMousePosition();
+//
+
         if (Input.GetMouseButtonDown(0))
         {
             TryStartDrag();
         }
+
         if (Input.GetMouseButton(0) && _isDragging)
         {
             UpdateDrag();
         }
+
         if (Input.GetMouseButtonUp(0) && _isDragging)
         {
             CompleteDrag();
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            var p = GeneratePositionAtMousePosition();
+            p.Remove();
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
             var mousePosition = MouseInput.RaycastPosition;
             _coordinateSystem.SetAnchorPosition(mousePosition);
-            _coordinateSystemUI.UpdateUI();
+            _coordinateSystemUi.UpdateUI();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            var mousePosition = MouseInput.RaycastPosition;
-            var position = _coordinateSystem.GetParametricPosition(mousePosition);
-            _coordinateSystem.SetAnchorPosition(position.Value);
-            if (_nextRectangle == null)
-            {
-                _nextRectangle = Instantiate(_rectanglePrefab);
-                _nextRectangle.SetFirstPosition(position);
-            }
-            else
-            {
-                _nextRectangle.SetSecondPosition(position);
-                _nextRectangle = null;
-            }
-            _coordinateSystemUI.UpdateUI();
+            var position = GeneratePositionAtMousePosition();
+
+//
+//            if (_nextRectangle == null)
+//            {
+//                _nextRectangle = Instantiate(_rectanglePrefab);
+//                _nextRectangle.SetFirstPosition(position);
+//            }
+//
+//            else
+//            {
+//                _nextRectangle.SetSecondPosition(position);
+//                _nextRectangle = null;
+//            }
+
+            _coordinateSystemUi.UpdateUI();
         }
+    }
+
+    private ParametricPosition GeneratePositionAtMousePosition()
+    {
+        var mousePosition = MouseInput.RaycastPosition;
+        var position = _coordinateSystem.GetParametricPosition(mousePosition);
+        _coordinateSystem.SetAnchorPosition(position.Value);
+        return position;
     }
 
     private void TryStartDrag()
     {
-        _draggedCoordinateUI = MouseInput.RaycastCoordinateUI;
+        _draggedCoordinateUi = MouseInput.RaycastCoordinateUI;
     }
 
     private void UpdateDrag()
     {
-        _draggedCoordinateUI.ManipulateCoordinate(MouseInput.RaycastPosition);
-        _coordinateSystemUI.UpdateUI();
+        _draggedCoordinateUi.ManipulateCoordinate(MouseInput.RaycastPosition);
+        _coordinateSystemUi.UpdateUI();
     }
 
     private void CompleteDrag()
     {
-        _draggedCoordinateUI = null;
+        _draggedCoordinateUi = null;
     }
-
 
     private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
-        _coordinateSystemUI.UpdateUI();
+        _coordinateSystemUi.UpdateUI();
     }
 
-
-    private CoordinateSystemUI _coordinateSystemUI;
+    private CoordinateSystemUI _coordinateSystemUi;
     private CoordinateSystem _coordinateSystem;
     private Rectangle _nextRectangle;
 }

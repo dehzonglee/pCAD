@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Model;
 using UnityEngine;
 
-namespace CoordinateSystemUI
+namespace UI
 {
     public class AxisUI : MonoBehaviour
     {
-        [SerializeField] MueUI _mueUIPrefab;
+        [SerializeField] MueUI _mueUiPrefab;
 
-        [SerializeField] LambdaUI _lambdaUIPrefab;
+        [SerializeField] LambdaUI _lambdaUiPrefab;
 
-        [SerializeField] OriginUI _originUIPrefab;
+        [SerializeField] OriginUI _originUiPrefab;
 
         private Axis _axis;
         private Vector3 _direction;
@@ -26,7 +26,28 @@ namespace CoordinateSystemUI
 
         public void UpdateCoordinateUIs(Vector3 orthogonalDirection, float orthogonalAnchor)
         {
-            for (int i = 0; i < _axis.Coordinates.Count; i++)
+            //remove deprecated uis
+            var uisToDelete = new List<Coordinate>();
+            foreach (var kvp in _ui)
+            {
+                if (_axis.Coordinates.Contains(kvp.Key))
+                    continue;
+                uisToDelete.Add(kvp.Key);
+            }
+
+            foreach (var c in uisToDelete)
+            {
+                var ui = _ui[c];
+                Debug.Log($"destroy {c.Value}");
+
+                Destroy(_ui[c].gameObject);
+
+                _ui.Remove(c);
+            }
+
+            for (var i = 0;
+                i < _axis.Coordinates.Count;
+                i++)
             {
                 var c = _axis.Coordinates[i];
 
@@ -40,12 +61,18 @@ namespace CoordinateSystemUI
                 if (!_ui.ContainsKey(c))
                 {
                     CoordinateUI ui;
-                    if (c as Mue != null)
-                        ui = Instantiate(_mueUIPrefab, transform);
-                    else if (c as Lambda != null)
-                        ui = Instantiate(_lambdaUIPrefab, transform);
-                    else
-                        ui = Instantiate(_originUIPrefab, transform);
+                    switch (c)
+                    {
+                        case Mue _:
+                            ui = Instantiate(_mueUiPrefab, transform);
+                            break;
+                        case Lambda _:
+                            ui = Instantiate(_lambdaUiPrefab, transform);
+                            break;
+                        default:
+                            ui = Instantiate(_originUiPrefab, transform);
+                            break;
+                    }
 
 
                     ui.Initalize(c, _direction,
@@ -57,6 +84,6 @@ namespace CoordinateSystemUI
             }
         }
 
-        private Dictionary<Coordinate, CoordinateUI> _ui = new Dictionary<Coordinate, CoordinateUI>();
+        private readonly Dictionary<Coordinate, CoordinateUI> _ui = new Dictionary<Coordinate, CoordinateUI>();
     }
 }

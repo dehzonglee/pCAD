@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Model
 {
     public class CoordinateSystem
     {
+        public event Action CoordinateSystemChangedEvent;
+
         public Axis XAxis { get; private set; }
 
         public Axis YAxis { get; private set; }
@@ -12,9 +15,9 @@ namespace Model
 
         public CoordinateSystem()
         {
-            XAxis = new Axis();
-            YAxis = new Axis();
-            ZAxis = new Axis();
+            XAxis = new Axis(OnAxisChanged);
+            YAxis = new Axis(OnAxisChanged);
+            ZAxis = new Axis(OnAxisChanged);
 
             var xAnchorCoordinate = XAxis.Anchor;
             var yAnchorCoordinate = YAxis.Anchor;
@@ -44,6 +47,11 @@ namespace Model
             XAxis.SnapAnchorToClosestCoordinate(position.x);
             YAxis.SnapAnchorToClosestCoordinate(position.y);
             ZAxis.SnapAnchorToClosestCoordinate(position.z);
+        }
+
+        private void OnAxisChanged()
+        {
+            CoordinateSystemChangedEvent?.Invoke();
         }
 
         private readonly Anchor _anchor;
