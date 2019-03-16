@@ -6,6 +6,7 @@ namespace Model
     public class ParametricPosition
     {
         public event Action PositionChangedEvent;
+        public event Action PositionRemovedEvent;
 
         public Vector3 Value => new Vector3(_x.Value, _y.Value, _z.Value);
 
@@ -14,9 +15,9 @@ namespace Model
             get => _x;
             set
             {
-                _x.ValueChangedEvent -= PositionChangedEvent;
+                _x.Unregister(PositionChangedEvent);
                 _x = value;
-                _x.ValueChangedEvent += PositionChangedEvent;
+                _x.Register(PositionChangedEvent);
             }
         }
 
@@ -25,9 +26,9 @@ namespace Model
             get => _y;
             set
             {
-                _y.ValueChangedEvent -= PositionChangedEvent;
+                _y.Unregister(PositionChangedEvent);
                 _y = value;
-                _y.ValueChangedEvent += PositionChangedEvent;
+                _y.Register(PositionChangedEvent);
             }
         }
 
@@ -36,9 +37,9 @@ namespace Model
             get => _z;
             set
             {
-                _z.ValueChangedEvent -= PositionChangedEvent;
+                _z.Unregister(PositionChangedEvent);
                 _z = value;
-                _z.ValueChangedEvent += PositionChangedEvent;
+                _z.Register(PositionChangedEvent);
             }
         }
 
@@ -47,11 +48,17 @@ namespace Model
             _x = x;
             _y = y;
             _z = z;
-            x.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
-            y.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
-            z.ValueChangedEvent += () => PositionChangedEvent?.Invoke();
+            x.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
+            y.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
+            z.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
         }
 
+        public void Remove()
+        {
+            _x.Unregister(PositionChangedEvent);
+            _y.Unregister(PositionChangedEvent);
+            _z.Unregister(PositionChangedEvent);
+        }
 
         private Coordinate _x;
         private Coordinate _y;

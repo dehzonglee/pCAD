@@ -1,32 +1,42 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Coordinate
 {
-    public float ParentValue { get { return _parent.Value; } }
+    public float ParentValue => _parent.Value;
+    protected event Action<Coordinate> CoordinateDeprecatedEvent;
     public event Action ValueChangedEvent;
     public abstract string Name { get; }
     public abstract float Value { get; }
-    public bool IsUsed { get { return ValueChangedEvent != null; } }
+    public bool IsUsed => ValueChangedEvent != null;
+
     public float Parameter
     {
-        get { return _parameter; }
+        get => _parameter;
         set
         {
             _parameter = value;
 
-            InvokeValueChanged();
+            InvokeValueChangedFromChildClass();
         }
     }
 
-    protected void InvokeValueChanged()
+    public void Register(Action OnValueChanged)
     {
-        if (ValueChangedEvent != null)
-        {
-            ValueChangedEvent();
-        }
+        ValueChangedEvent += OnValueChanged;
+    }
+
+    public void Unregister(Action OnValueChanged)
+    {
+        Debug.Log($"unregister {this}");
+        ValueChangedEvent -= OnValueChanged;
+        if (OnValueChanged == null)
+            CoordinateDeprecatedEvent?.Invoke(this);
+    }
+
+    protected void InvokeValueChangedFromChildClass()
+    {
+        ValueChangedEvent?.Invoke();
     }
 
     protected Coordinate _parent;

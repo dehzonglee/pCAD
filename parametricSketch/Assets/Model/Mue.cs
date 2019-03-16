@@ -1,17 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 public class Mue : Coordinate
 {
-    public override float Value { get { return _parent.Value + Parameter; } }
+    public override float Value => _parent.Value + Parameter;
 
-    public override string Name { get { return "Mue"; } }
+    public override string Name => "Mue";
 
-    public Mue(Coordinate parent, float mue)
+    public Mue(Coordinate parent, float mue, Action<Coordinate> OnCoordinateDeprecated)
     {
         _parent = parent;
-        _parent.ValueChangedEvent += () => InvokeValueChanged();
+        _parent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         Parameter = mue;
+        CoordinateDeprecatedEvent += OnCoordinateDeprecated;
     }
 }

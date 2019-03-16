@@ -1,29 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 public class Lambda : Coordinate
 {
-    public override string Name { get { return "Lambda"; } }
-    public override float Value
-    {
-        get
-        {
-            return (1f - Parameter) * _parent.Value + Parameter * _secondParent.Value;
-        }
-    }
+    public override string Name => "Lambda";
 
-    public float SecondaryParentValue { get { return _secondParent.Value; } }
+    public override float Value => (1f - Parameter) * _parent.Value + Parameter * _secondParent.Value;
 
-    public Lambda(Coordinate parent0, Coordinate parent1, float lambda)
+    public float SecondaryParentValue => _secondParent.Value;
+
+    public Lambda(Coordinate parent0, Coordinate parent1, float lambda, Action<Coordinate> OnCoordinateDeprecated)
     {
         _parent = parent0;
-        _parent.ValueChangedEvent += () => InvokeValueChanged();
+        _parent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         _secondParent = parent1;
-        _secondParent.ValueChangedEvent += () => InvokeValueChanged();
+        _secondParent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         Parameter = lambda;
+        CoordinateDeprecatedEvent += OnCoordinateDeprecated;
     }
 
-
-    private Coordinate _secondParent;
+    private readonly Coordinate _secondParent;
 }
