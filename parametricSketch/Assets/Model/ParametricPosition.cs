@@ -15,9 +15,9 @@ namespace Model
             get => _x;
             set
             {
-                _x.Unregister(PositionChangedEvent);
+                _x.UnregisterView(PositionChangedEvent);
                 _x = value;
-                _x.Register(PositionChangedEvent);
+                _x.RegisterView(PositionChangedEvent);
             }
         }
 
@@ -26,9 +26,9 @@ namespace Model
             get => _y;
             set
             {
-                _y.Unregister(PositionChangedEvent);
+                _y.UnregisterView(PositionChangedEvent);
                 _y = value;
-                _y.Register(PositionChangedEvent);
+                _y.RegisterView(PositionChangedEvent);
             }
         }
 
@@ -37,9 +37,9 @@ namespace Model
             get => _z;
             set
             {
-                _z.Unregister(PositionChangedEvent);
+                _z.UnregisterView(PositionChangedEvent);
                 _z = value;
-                _z.Register(PositionChangedEvent);
+                _z.RegisterView(PositionChangedEvent);
             }
         }
 
@@ -48,9 +48,9 @@ namespace Model
             _x = x;
             _y = y;
             _z = z;
-            x.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
-            y.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
-            z.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
+            x.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
+            y.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
+            z.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
         }
 
         public void BakePreview()
@@ -62,9 +62,16 @@ namespace Model
 
         public void RemovePreview()
         {
-            if (_x.IsPreview) _x.Unregister(PositionChangedEvent);
-            if (_y.IsPreview) _y.Unregister(PositionChangedEvent);
-            if (_z.IsPreview) _z.Unregister(PositionChangedEvent);
+            if (_x.IsPreview) _x.Remove();
+            if (_y.IsPreview) _y.Remove();
+            if (_z.IsPreview) _z.Remove();
+        }
+
+        public void Remove()
+        {
+            _x.Remove();
+            _y.Remove();
+            _z.Remove();
         }
 
         private Coordinate _x;

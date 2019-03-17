@@ -1,23 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Coordinate
 {
-    public bool IsPreview { get; private set; }
-    public float ParentValue => _parent.Value;
-    protected event Action<Coordinate> CoordinateDeletedEvent;
-    protected event Action CoordinateChangedEvent;
-    public event Action ValueChangedEvent;
     public abstract string Name { get; }
     public abstract float Value { get; }
-    public bool IsUsed => ValueChangedEvent != null;
-    protected Action FireValueChangedEvent => () => ValueChangedEvent?.Invoke();
 
+    public bool IsPreview { get; private set; }
+    public float ParentValue => Parents[0].Value;
 
-    public Coordinate(bool isPreview, Action<Coordinate> onCoordinateDeleted, Action onCoordinateChanged)
+    protected event Action ChangedEvent;
+    protected event Action<Coordinate> DeletedEvent;
+
+    protected Action FireValueChangedEvent => () => ChangedEvent?.Invoke();
+
+    protected Coordinate(bool isPreview, Action<Coordinate> onDeleted, Action onChanged, List<Coordinate> parents)
     {
+        Parents = parents;
         IsPreview = isPreview;
-        CoordinateDeletedEvent += onCoordinateDeleted;
-        CoordinateChangedEvent += onCoordinateChanged;
+        DeletedEvent += onDeleted;
+        ChangedEvent += onChanged;
+        foreach (var p in parents)
+        {
+            p.RegisterCoordinate(this, FireValueChangedEvent);
+        }
     }
 
     public float Parameter
@@ -26,31 +33,50 @@ public abstract class Coordinate
         set
         {
             _parameter = value;
-            ValueChangedEvent?.Invoke();
+            ChangedEvent?.Invoke();
         }
     }
 
-    public void Register(Action onValueChanged)
+    public void RegisterCoordinate(Coordinate child, Action onValueChanged)
     {
-        ValueChangedEvent += onValueChanged;
+        _dependentCoordinates.Add(child);
+        ChangedEvent += onValueChanged;
     }
 
-    public void Unregister(Action onValueChanged)
+    public void UnregisterCoordinate(Coordinate child, Action onValueChanged)
     {
-//        Debug.Log($"unregister {this}");
-        ValueChangedEvent -= onValueChanged;
-        if (onValueChanged == null)
+        _dependentCoordinates.Remove(child);
+        ChangedEvent -= onValueChanged;
+    }
+
+    public void RegisterView(Action onValueChanged)
+    {
+        ChangedEvent += onValueChanged;
+    }
+
+    public void UnregisterView(Action onValueChanged)
+    {
+        ChangedEvent -= onValueChanged;
+        Debug.Log(_dependentCoordinates.Count);
+    }
+
+    public void Remove()
+    {
+        if (_dependentCoordinates.Count != 0) return;
+        DeletedEvent?.Invoke(this);
+        ChangedEvent?.Invoke();
+        foreach (var p in Parents)
         {
-            CoordinateDeletedEvent?.Invoke(this);
-            CoordinateChangedEvent?.Invoke();
+            p.UnregisterCoordinate(this, ChangedEvent);
         }
     }
-
-    protected Coordinate _parent;
-    private float _parameter;
 
     public void Bake()
     {
         IsPreview = false;
     }
+
+    private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
+    protected List<Coordinate> Parents;
+    private float _parameter;
 }

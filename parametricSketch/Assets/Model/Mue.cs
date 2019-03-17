@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class Mue : Coordinate
 {
-    public override float Value => _parent.Value + Parameter;
+    public override float Value => ParentValue + Parameter;
 
     public override string Name => "Mue";
 
     public Mue(
         Coordinate parent,
         float mue,
-        Action<Coordinate> onCoordinateDeleted,
-        Action onCoordinateChanged,
+        Action<Coordinate> onDeleted,
+        Action onChanged,
         bool isPreview)
-        : base(isPreview, onCoordinateDeleted, onCoordinateChanged)
+        : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
+
+
     {
-        _parent = parent;
         Parameter = mue;
-        _parent.ValueChangedEvent += FireValueChangedEvent;
     }
 }

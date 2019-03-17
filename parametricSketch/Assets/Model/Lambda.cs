@@ -1,29 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class Lambda : Coordinate
 {
     public override string Name => "Lambda";
 
-    public override float Value => (1f - Parameter) * _parent.Value + Parameter * _secondParent.Value;
+    public override float Value => (1f - Parameter) * ParentValue + Parameter * SecondaryParentValue;
 
-    public float SecondaryParentValue => _secondParent.Value;
+    public float SecondaryParentValue => Parents[1].Value;
 
     public Lambda(
         Coordinate parent0,
         Coordinate parent1,
         float lambda,
-        Action<Coordinate> onCoordinateDeleted,
-        Action onCoordinateChanged,
+        Action<Coordinate> onDeleted,
+        Action onChanged,
         bool isPreview
     )
-        : base(isPreview, onCoordinateDeleted, onCoordinateChanged)
+        : base(isPreview, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
     {
-        _parent = parent0;
-        _secondParent = parent1;
-        _parent.ValueChangedEvent += FireValueChangedEvent;
-        _secondParent.ValueChangedEvent += FireValueChangedEvent;
         Parameter = lambda;
     }
-
-    private readonly Coordinate _secondParent;
 }

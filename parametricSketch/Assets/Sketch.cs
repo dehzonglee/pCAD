@@ -23,7 +23,7 @@ public class Sketch : MonoBehaviour
     private void Update()
     {
         _nextPosition?.RemovePreview();
-        _nextPosition = GeneratePositionAtMousePosition(true);
+        _nextPosition = GetOrCreatePositionAtMousePosition(true);
         _coordinateSystemUi.UpdateUI();
 
         if (Input.GetMouseButtonDown(0))
@@ -43,8 +43,8 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            var p = GeneratePositionAtMousePosition();
-            p.RemovePreview();
+            var p = GetOrCreatePositionAtMousePosition();
+            p.Remove();
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -77,7 +77,7 @@ public class Sketch : MonoBehaviour
         }
     }
 
-    private ParametricPosition GeneratePositionAtMousePosition(bool asPreview = false)
+    private ParametricPosition GetOrCreatePositionAtMousePosition(bool asPreview = false)
     {
         var mousePosition = MouseInput.RaycastPosition;
         var position = _coordinateSystem.GetParametricPosition(mousePosition, asPreview);

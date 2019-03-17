@@ -7,7 +7,6 @@ namespace Model
 {
     public class Axis
     {
-        public event Action AnchorChangedEvent;
         private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
 
@@ -27,24 +26,23 @@ namespace Model
 
         public AnchorCoordinates Anchor { get; }
 
-        public void RemoveUnusedCoordinate()
-        {
-            var cleanList = new List<Coordinate>();
-            foreach (var c in Coordinates)
-            {
-                if (c.IsUsed)
-                    cleanList.Add(c);
-            }
-
-            Coordinates = cleanList;
-        }
+//        public void RemoveUnusedCoordinate()
+//        {
+//            var cleanList = new List<Coordinate>();
+//            foreach (var c in Coordinates)
+//            {
+//                if (c.IsUsed)
+//                    cleanList.Add(c);
+//            }
+//
+//            Coordinates = cleanList;
+//        }
 
         public float SmallestValue => Coordinates.Select(c => c.Value).Min();
 
         public AnchorCoordinates SnapAnchorToClosestCoordinate(float position)
         {
             Anchor.SetPrimaryCoordinate(FindClosestCoordinate(position));
-            AnchorChangedEvent?.Invoke();
             return Anchor;
         }
 
