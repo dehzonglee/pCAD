@@ -4,7 +4,7 @@ public abstract class Coordinate
 {
     public bool IsPreview { get; private set; }
     public float ParentValue => _parent.Value;
-    protected event Action<Coordinate> CoordinateDeprecatedEvent;
+    protected event Action<Coordinate> CoordinateDeletedEvent;
     protected event Action CoordinateChangedEvent;
     public event Action ValueChangedEvent;
     public abstract string Name { get; }
@@ -13,10 +13,10 @@ public abstract class Coordinate
     protected Action FireValueChangedEvent => () => ValueChangedEvent?.Invoke();
 
 
-    public Coordinate(bool isPreview, Action<Coordinate> onCoordinateDeprecated, Action onCoordinateChanged)
+    public Coordinate(bool isPreview, Action<Coordinate> onCoordinateDeleted, Action onCoordinateChanged)
     {
         IsPreview = isPreview;
-        CoordinateDeprecatedEvent += onCoordinateDeprecated;
+        CoordinateDeletedEvent += onCoordinateDeleted;
         CoordinateChangedEvent += onCoordinateChanged;
     }
 
@@ -41,7 +41,7 @@ public abstract class Coordinate
         ValueChangedEvent -= onValueChanged;
         if (onValueChanged == null)
         {
-            CoordinateDeprecatedEvent?.Invoke(this);
+            CoordinateDeletedEvent?.Invoke(this);
             CoordinateChangedEvent?.Invoke();
         }
     }

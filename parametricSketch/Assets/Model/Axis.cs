@@ -9,24 +9,20 @@ namespace Model
     {
         public event Action AnchorChangedEvent;
         private event Action _axisChangedEvent;
-        public List<Coordinate> Coordinates => _coordinates;
+        public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
 
         public Axis(Action axisChangedCallback)
         {
             _origin = new Origin();
-            _coordinates.Add(_origin);
-            Anchor = new AnchorCoordinates(_origin, _origin);
+            Coordinates.Add(_origin);
+            Anchor = new AnchorCoordinates(_origin);
             _axisChangedEvent += axisChangedCallback;
         }
 
         public Coordinate GetCoordinate(float position, bool isPreview)
         {
             var closestCoordinate = GetClosestCoordinateInSnapRadius(position, isPreview);
-            if (closestCoordinate != null)
-                return closestCoordinate;
-
-            var newCoordinate = AddNewMueCoordinate(position, isPreview);
-            return newCoordinate;
+            return closestCoordinate ?? AddNewMueCoordinate(position, isPreview);
         }
 
         public AnchorCoordinates Anchor { get; }
@@ -34,16 +30,16 @@ namespace Model
         public void RemoveUnusedCoordinate()
         {
             var cleanList = new List<Coordinate>();
-            foreach (var c in _coordinates)
+            foreach (var c in Coordinates)
             {
                 if (c.IsUsed)
                     cleanList.Add(c);
             }
 
-            _coordinates = cleanList;
+            Coordinates = cleanList;
         }
 
-        public float SmallestValue => _coordinates.Select(c => c.Value).Min();
+        public float SmallestValue => Coordinates.Select(c => c.Value).Min();
 
         public AnchorCoordinates SnapAnchorToClosestCoordinate(float position)
         {
@@ -56,8 +52,8 @@ namespace Model
         {
             var delta = position - Anchor.PrimaryCoordinate.Value;
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeprecated, OnCoordinateChanged, asPreview);
-            _coordinates.Add(newCoordinate);
+                new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+            Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
 
@@ -66,12 +62,11 @@ namespace Model
             _axisChangedEvent?.Invoke();
         }
 
-        private void OnCoordinateDeprecated(Coordinate deprecatedCoordinate)
+        private void OnCoordinateDeleted(Coordinate deletedCoordinate)
         {
-            Debug.Log(_coordinates.Count);
-            _coordinates.Remove(deprecatedCoordinate);
-            Anchor.ResetAnchors(_origin);
-            Debug.Log(_coordinates.Count);
+            Coordinates.Remove(deletedCoordinate);
+            if (Anchor.PrimaryCoordinate == deletedCoordinate) Anchor.ResetPrimaryCoordinate();
+            if (Anchor.SecondaryCoordinate == deletedCoordinate) Anchor.ResetSecondaryCoordinate();
         }
 
         private Coordinate GetClosestCoordinateInSnapRadius(float position, bool isPreview)
@@ -95,11 +90,11 @@ namespace Model
                 Anchor.PrimaryCoordinate,
                 Anchor.SecondaryCoordinate,
                 0.5f,
-                OnCoordinateDeprecated,
+                OnCoordinateDeleted,
                 OnCoordinateChanged,
                 isPreview
             );
-            _coordinates.Add(newLambda);
+            Coordinates.Add(newLambda);
             return newLambda;
         }
 
@@ -116,7 +111,7 @@ namespace Model
         {
             Coordinate closestCoordinate = _origin;
             var closestDistance = Mathf.Abs(_origin.Value - position);
-            foreach (var c in _coordinates)
+            foreach (var c in Coordinates)
             {
                 var distance = Mathf.Abs(c.Value - position);
                 if (distance < closestDistance)
@@ -130,7 +125,6 @@ namespace Model
         }
 
         private const float SNAP_RADIUS = 0.01f;
-        private List<Coordinate> _coordinates = new List<Coordinate>();
         private readonly Origin _origin;
     }
 }

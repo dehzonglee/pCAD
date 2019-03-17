@@ -12,11 +12,11 @@ public class Lambda : Coordinate
         Coordinate parent0,
         Coordinate parent1,
         float lambda,
-        Action<Coordinate> onCoordinateDeprecated,
+        Action<Coordinate> onCoordinateDeleted,
         Action onCoordinateChanged,
         bool isPreview
     )
-        : base(isPreview, onCoordinateDeprecated, onCoordinateChanged)
+        : base(isPreview, onCoordinateDeleted, onCoordinateChanged)
     {
         _parent = parent0;
         _secondParent = parent1;

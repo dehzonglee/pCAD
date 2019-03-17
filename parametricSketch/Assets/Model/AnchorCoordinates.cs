@@ -1,26 +1,36 @@
-public class AnchorCoordinates
+namespace Model
 {
-    public Coordinate PrimaryCoordinate { get; private set; }
-
-    public Coordinate SecondaryCoordinate { get; private set; }
-
-    public bool AnchorsMatch => PrimaryCoordinate == SecondaryCoordinate;
-
-    public AnchorCoordinates(Coordinate primary, Coordinate secondary)
+    public class AnchorCoordinates
     {
-        PrimaryCoordinate = primary;
-        SecondaryCoordinate = secondary;
-    }
+        public Coordinate PrimaryCoordinate { get; private set; }
 
-    public void SetPrimaryCoordinate(Coordinate c)
-    {
-        SecondaryCoordinate = PrimaryCoordinate;
-        PrimaryCoordinate = c;
-    }
+        public Coordinate SecondaryCoordinate { get; private set; }
 
-    public void ResetAnchors(Origin origin)
-    {
-        PrimaryCoordinate = origin;
-        SecondaryCoordinate = origin;
+        public bool AnchorsMatch => PrimaryCoordinate == SecondaryCoordinate;
+
+        public AnchorCoordinates(Origin origin)
+        {
+            _origin = origin;
+            PrimaryCoordinate = origin;
+            SecondaryCoordinate = origin;
+        }
+
+        public void SetPrimaryCoordinate(Coordinate c)
+        {
+            SecondaryCoordinate = PrimaryCoordinate;
+            PrimaryCoordinate = c;
+        }
+
+        public void ResetPrimaryCoordinate()
+        {
+            PrimaryCoordinate = _origin;
+        }
+
+        public void ResetSecondaryCoordinate()
+        {
+            SecondaryCoordinate = _origin;
+        }
+
+        private readonly Origin _origin;
     }
 }

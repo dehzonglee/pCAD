@@ -9,10 +9,10 @@ public class Mue : Coordinate
     public Mue(
         Coordinate parent,
         float mue,
-        Action<Coordinate> onCoordinateDeprecated,
+        Action<Coordinate> onCoordinateDeleted,
         Action onCoordinateChanged,
         bool isPreview)
-        : base(isPreview, onCoordinateDeprecated, onCoordinateChanged)
+        : base(isPreview, onCoordinateDeleted, onCoordinateChanged)
     {
         _parent = parent;
         Parameter = mue;
