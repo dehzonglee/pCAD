@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Sketch : MonoBehaviour
 {
+    [SerializeField] private CoordinateSystemUI _coordinateSystemUi;
     [SerializeField] private Line _linePrefab;
 
     [SerializeField] private Rectangle _rectanglePrefab;
@@ -10,7 +11,6 @@ public class Sketch : MonoBehaviour
     private void Start()
     {
         _coordinateSystem = new CoordinateSystem();
-        _coordinateSystemUi = GetComponent<CoordinateSystemUI>();
         _coordinateSystemUi.Initialize(_coordinateSystem, ModelChangeRequestHandler);
     }
 
@@ -109,7 +109,6 @@ public class Sketch : MonoBehaviour
         _coordinateSystemUi.UpdateUI();
     }
 
-    private CoordinateSystemUI _coordinateSystemUi;
     private CoordinateSystem _coordinateSystem;
     private Rectangle _nextRectangle;
 }

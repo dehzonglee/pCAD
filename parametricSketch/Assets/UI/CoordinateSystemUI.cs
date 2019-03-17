@@ -15,16 +15,16 @@ public class CoordinateSystemUI : MonoBehaviour
         _coordinateSystem = cs;
         cs.CoordinateSystemChangedEvent += UpdateUI;
 
-        _xAxisUI = Instantiate(_axisUIPrefab);
+        _xAxisUI = Instantiate(_axisUIPrefab, transform);
         _xAxisUI.Initialize(cs.XAxis, modelChangeRequest, Vector3.right);
 
-        _yAxisUI = Instantiate(_axisUIPrefab);
+        _yAxisUI = Instantiate(_axisUIPrefab, transform);
         _yAxisUI.Initialize(cs.YAxis, modelChangeRequest, Vector3.up);
 
-        _zAxisUI = Instantiate(_axisUIPrefab);
+        _zAxisUI = Instantiate(_axisUIPrefab, transform);
         _zAxisUI.Initialize(cs.ZAxis, modelChangeRequest, Vector3.forward);
 
-        _anchorUI = Instantiate(_anchorUIPrefab);
+        _anchorUI = Instantiate(_anchorUIPrefab, transform);
         _anchorUI.Initalize(cs.GetAnchor());
     }
 
