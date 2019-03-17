@@ -13,15 +13,16 @@ public class Lambda : Coordinate
         Coordinate parent1,
         float lambda,
         Action<Coordinate> onCoordinateDeprecated,
-        Action onCoordinateChanged)
+        Action onCoordinateChanged,
+        bool isPreview
+    )
+        : base(isPreview, onCoordinateDeprecated, onCoordinateChanged)
     {
         _parent = parent0;
-        _parent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         _secondParent = parent1;
-        _secondParent.ValueChangedEvent += InvokeValueChangedFromChildClass;
+        _parent.ValueChangedEvent += FireValueChangedEvent;
+        _secondParent.ValueChangedEvent += FireValueChangedEvent;
         Parameter = lambda;
-        CoordinateDeprecatedEvent += onCoordinateDeprecated;
-        CoordinateChangedEvent += onCoordinateChanged;
     }
 
     private readonly Coordinate _secondParent;

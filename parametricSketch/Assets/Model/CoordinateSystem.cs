@@ -25,11 +25,11 @@ namespace Model
             _anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public ParametricPosition GetParametricPosition(Vector3 position)
+        public ParametricPosition GetParametricPosition(Vector3 position, bool asPreview)
         {
-            var x = XAxis.GetCoordinate(position.x);
-            var y = YAxis.GetCoordinate(position.y);
-            var z = ZAxis.GetCoordinate(position.z);
+            var x = XAxis.GetCoordinate(position.x, asPreview);
+            var y = YAxis.GetCoordinate(position.y, asPreview);
+            var z = ZAxis.GetCoordinate(position.z, asPreview);
             return new ParametricPosition(x, y, z);
         }
 

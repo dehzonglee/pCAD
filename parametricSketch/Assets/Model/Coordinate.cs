@@ -1,8 +1,8 @@
 ﻿using System;
-using UnityEngine;
 
 public abstract class Coordinate
 {
+    public bool IsPreview { get; private set; }
     public float ParentValue => _parent.Value;
     protected event Action<Coordinate> CoordinateDeprecatedEvent;
     protected event Action CoordinateChangedEvent;
@@ -10,6 +10,15 @@ public abstract class Coordinate
     public abstract string Name { get; }
     public abstract float Value { get; }
     public bool IsUsed => ValueChangedEvent != null;
+    protected Action FireValueChangedEvent => () => ValueChangedEvent?.Invoke();
+
+
+    public Coordinate(bool isPreview, Action<Coordinate> onCoordinateDeprecated, Action onCoordinateChanged)
+    {
+        IsPreview = isPreview;
+        CoordinateDeprecatedEvent += onCoordinateDeprecated;
+        CoordinateChangedEvent += onCoordinateChanged;
+    }
 
     public float Parameter
     {
@@ -17,32 +26,31 @@ public abstract class Coordinate
         set
         {
             _parameter = value;
-
-            InvokeValueChangedFromChildClass();
+            ValueChangedEvent?.Invoke();
         }
     }
 
-    public void Register(Action OnValueChanged)
+    public void Register(Action onValueChanged)
     {
-        ValueChangedEvent += OnValueChanged;
+        ValueChangedEvent += onValueChanged;
     }
 
-    public void Unregister(Action OnValueChanged)
+    public void Unregister(Action onValueChanged)
     {
-        Debug.Log($"unregister {this}");
-        ValueChangedEvent -= OnValueChanged;
-        if (OnValueChanged == null)
+//        Debug.Log($"unregister {this}");
+        ValueChangedEvent -= onValueChanged;
+        if (onValueChanged == null)
         {
             CoordinateDeprecatedEvent?.Invoke(this);
             CoordinateChangedEvent?.Invoke();
         }
     }
 
-    protected void InvokeValueChangedFromChildClass()
-    {
-        ValueChangedEvent?.Invoke();
-    }
-
     protected Coordinate _parent;
     private float _parameter;
+
+    public void Bake()
+    {
+        IsPreview = false;
+    }
 }

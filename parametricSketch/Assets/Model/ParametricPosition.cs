@@ -53,11 +53,18 @@ namespace Model
             z.ValueChangedEvent += delegate { PositionChangedEvent?.Invoke(); };
         }
 
-        public void Remove()
+        public void BakePreview()
         {
-            _x.Unregister(PositionChangedEvent);
-            _y.Unregister(PositionChangedEvent);
-            _z.Unregister(PositionChangedEvent);
+            _x.Bake();
+            _y.Bake();
+            _z.Bake();
+        }
+
+        public void RemovePreview()
+        {
+            if (_x.IsPreview) _x.Unregister(PositionChangedEvent);
+            if (_y.IsPreview) _y.Unregister(PositionChangedEvent);
+            if (_z.IsPreview) _z.Unregister(PositionChangedEvent);
         }
 
         private Coordinate _x;

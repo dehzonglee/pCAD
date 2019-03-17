@@ -38,10 +38,7 @@ namespace UI
             foreach (var c in uisToDelete)
             {
                 var ui = _ui[c];
-                Debug.Log($"destroy {c.Value}");
-
                 Destroy(_ui[c].gameObject);
-
                 _ui.Remove(c);
             }
 

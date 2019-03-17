@@ -22,11 +22,9 @@ public class Sketch : MonoBehaviour
 
     private void Update()
     {
-//        if (_nextPosition != null)
-//            _nextPosition.Remove();
-//            
-//            _nextPosition = GeneratePositionAtMousePosition();
-//
+        _nextPosition?.RemovePreview();
+        _nextPosition = GeneratePositionAtMousePosition(true);
+        _coordinateSystemUi.UpdateUI();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -46,7 +44,7 @@ public class Sketch : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             var p = GeneratePositionAtMousePosition();
-            p.Remove();
+            p.RemovePreview();
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -58,7 +56,11 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            var position = GeneratePositionAtMousePosition();
+            _nextPosition.BakePreview();
+            _coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
+            _coordinateSystemUi.UpdateUI();
+//            var position = GeneratePositionAtMousePosition();
+
 
 //
 //            if (_nextRectangle == null)
@@ -72,16 +74,16 @@ public class Sketch : MonoBehaviour
 //                _nextRectangle.SetSecondPosition(position);
 //                _nextRectangle = null;
 //            }
-
-            _coordinateSystemUi.UpdateUI();
         }
     }
 
-    private ParametricPosition GeneratePositionAtMousePosition()
+    private ParametricPosition GeneratePositionAtMousePosition(bool asPreview = false)
     {
         var mousePosition = MouseInput.RaycastPosition;
-        var position = _coordinateSystem.GetParametricPosition(mousePosition);
+        var position = _coordinateSystem.GetParametricPosition(mousePosition, asPreview);
+/*
         _coordinateSystem.SetAnchorPosition(position.Value);
+*/
         return position;
     }
 

@@ -1,26 +1,26 @@
-using System;
-
 public class AnchorCoordinates
 {
-    public Coordinate PrimaryCoordinate { get { return _primaryCoordinate; } }
+    public Coordinate PrimaryCoordinate { get; private set; }
 
-    public Coordinate SecondaryCoordinate { get { return _secondaryCoordinate; } }
+    public Coordinate SecondaryCoordinate { get; private set; }
 
-    public bool AnchorsMatch { get { return _primaryCoordinate == _secondaryCoordinate; } }
+    public bool AnchorsMatch => PrimaryCoordinate == SecondaryCoordinate;
 
     public AnchorCoordinates(Coordinate primary, Coordinate secondary)
     {
-        _primaryCoordinate = primary;
-        _secondaryCoordinate = secondary;
+        PrimaryCoordinate = primary;
+        SecondaryCoordinate = secondary;
     }
 
     public void SetPrimaryCoordinate(Coordinate c)
     {
-        _secondaryCoordinate = _primaryCoordinate;
-        _primaryCoordinate = c;
+        SecondaryCoordinate = PrimaryCoordinate;
+        PrimaryCoordinate = c;
     }
 
-    private Coordinate _primaryCoordinate;
-
-    private Coordinate _secondaryCoordinate;
+    public void ResetAnchors(Origin origin)
+    {
+        PrimaryCoordinate = origin;
+        SecondaryCoordinate = origin;
+    }
 }

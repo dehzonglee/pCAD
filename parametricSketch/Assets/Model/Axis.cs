@@ -13,19 +13,19 @@ namespace Model
 
         public Axis(Action axisChangedCallback)
         {
-            _origin = new Origin(OnCoordinateChanged);
+            _origin = new Origin();
             _coordinates.Add(_origin);
             Anchor = new AnchorCoordinates(_origin, _origin);
             _axisChangedEvent += axisChangedCallback;
         }
 
-        public Coordinate GetCoordinate(float position)
+        public Coordinate GetCoordinate(float position, bool isPreview)
         {
-            var closestCoordinate = GetClosestCoordinateInSnapRadius(position);
+            var closestCoordinate = GetClosestCoordinateInSnapRadius(position, isPreview);
             if (closestCoordinate != null)
                 return closestCoordinate;
 
-            var newCoordinate = AddNewMueCoordinate(position);
+            var newCoordinate = AddNewMueCoordinate(position, isPreview);
             return newCoordinate;
         }
 
@@ -52,10 +52,11 @@ namespace Model
             return Anchor;
         }
 
-        private Coordinate AddNewMueCoordinate(float position)
+        private Coordinate AddNewMueCoordinate(float position, bool asPreview)
         {
             var delta = position - Anchor.PrimaryCoordinate.Value;
-            var newCoordinate = new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeprecated, OnCoordinateChanged);
+            var newCoordinate =
+                new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeprecated, OnCoordinateChanged, asPreview);
             _coordinates.Add(newCoordinate);
             return newCoordinate;
         }
@@ -67,10 +68,13 @@ namespace Model
 
         private void OnCoordinateDeprecated(Coordinate deprecatedCoordinate)
         {
+            Debug.Log(_coordinates.Count);
             _coordinates.Remove(deprecatedCoordinate);
+            Anchor.ResetAnchors(_origin);
+            Debug.Log(_coordinates.Count);
         }
 
-        private Coordinate GetClosestCoordinateInSnapRadius(float position)
+        private Coordinate GetClosestCoordinateInSnapRadius(float position, bool isPreview)
         {
             var closestCoordinate = FindClosestCoordinate(position);
             var distanceToClosestCoordinate = Mathf.Abs(position - closestCoordinate.Value);
@@ -82,17 +86,18 @@ namespace Model
             if (distanceToClosestCoordinate < distanceToLambdaCoordinate)
                 return closestCoordinate;
 
-            return AddLambdaCoordinateBetweenAnchors();
+            return AddLambdaCoordinateBetweenAnchors(isPreview);
         }
 
-        private Lambda AddLambdaCoordinateBetweenAnchors()
+        private Lambda AddLambdaCoordinateBetweenAnchors(bool isPreview)
         {
             var newLambda = new Lambda(
                 Anchor.PrimaryCoordinate,
                 Anchor.SecondaryCoordinate,
                 0.5f,
                 OnCoordinateDeprecated,
-                OnCoordinateChanged
+                OnCoordinateChanged,
+                isPreview
             );
             _coordinates.Add(newLambda);
             return newLambda;
@@ -126,6 +131,6 @@ namespace Model
 
         private const float SNAP_RADIUS = 0.01f;
         private List<Coordinate> _coordinates = new List<Coordinate>();
-        private readonly Coordinate _origin;
+        private readonly Origin _origin;
     }
 }

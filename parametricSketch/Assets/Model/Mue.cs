@@ -10,12 +10,12 @@ public class Mue : Coordinate
         Coordinate parent,
         float mue,
         Action<Coordinate> onCoordinateDeprecated,
-        Action onCoordinateChangedCallback)
+        Action onCoordinateChanged,
+        bool isPreview)
+        : base(isPreview, onCoordinateDeprecated, onCoordinateChanged)
     {
         _parent = parent;
-        _parent.ValueChangedEvent += InvokeValueChangedFromChildClass;
         Parameter = mue;
-        CoordinateDeprecatedEvent += onCoordinateDeprecated;
-        CoordinateChangedEvent += onCoordinateChangedCallback;
+        _parent.ValueChangedEvent += FireValueChangedEvent;
     }
 }

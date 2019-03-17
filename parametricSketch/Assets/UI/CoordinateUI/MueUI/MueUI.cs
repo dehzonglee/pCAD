@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MueUI : CoordinateUI
 {
     public override void UpdateUI(LayoutInfo layoutInfo)
@@ -20,7 +18,7 @@ public class MueUI : CoordinateUI
         }
 
         var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * _padding;
-        Debug.LogFormat("labelOffset {0}, padding {1}, layoutInfo.OrthogonalDirection  {2}", labelOffset, _padding, layoutInfo.OrthogonalDirection);
+//        Debug.LogFormat("labelOffset {0}, padding {1}, layoutInfo.OrthogonalDirection  {2}", labelOffset, _padding, layoutInfo.OrthogonalDirection);
 
         var parentCoordinateUIPosition = _direction * mue.ParentValue + offset;
         _label.transform.position = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f + labelOffset;
