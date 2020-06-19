@@ -4,7 +4,7 @@ public class OriginUI : CoordinateUI
     {
         _label.gameObject.SetActive(false);
 
-        var coordinateUIPosition = _direction * _coordinate.Value;
+        var coordinateUIPosition = _direction * Coordinate.Value;
         transform.position = coordinateUIPosition;
 
         _gridLine.positionCount = 2;

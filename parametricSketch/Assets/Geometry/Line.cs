@@ -30,7 +30,7 @@ public class Line : MonoBehaviour
         Gizmos.DrawLine(_p0.Value, _p1.Value);
     }
 
-    private void UpdateLine()
+    private void UpdateLine(ParametricPosition pos, Coordinate coord)
     {
 
     }

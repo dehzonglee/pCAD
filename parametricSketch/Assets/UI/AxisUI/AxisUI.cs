@@ -74,7 +74,7 @@ namespace UI
                     }
 
 
-                    ui.Initalize(c, _direction,
+                    ui.Initialize(_axis,c, _direction,
                         (coordinate, parameter) => _modelChangeRequest(_axis, coordinate, parameter));
                     _ui.Add(c, ui);
                 }

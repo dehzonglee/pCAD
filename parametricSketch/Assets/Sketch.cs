@@ -4,22 +4,26 @@ using UnityEngine;
 
 public class Sketch : MonoBehaviour
 {
-    [SerializeField] private CoordinateSystemUI _coordinateSystemUi;
-    [SerializeField] private Line _linePrefab;
+    [SerializeField] private UI _ui;
 
-    [SerializeField] private Rectangle _rectanglePrefab;
+    [Serializable]
+    public struct UI
+    {
+        public CoordinateSystemUI CoordinateSystemUi;
+        public Rectangle RectanglePrefab;
+    }
+
+    private (Axis DraggedAxis, Coordinate DraggedCoordinate)? _draggedCoordinate;
 
     private void Start()
     {
         _coordinateSystem = new CoordinateSystem();
-        _coordinateSystemUi.Initialize(_coordinateSystem, ModelChangeRequestHandler);
+        _ui.CoordinateSystemUi.Initialize(_coordinateSystem, ModelChangeRequestHandler);
     }
 
     private ParametricPosition _nextPosition;
 
-    private bool _isDragging => _draggedCoordinateUi != null;
-
-    private CoordinateUI _draggedCoordinateUi;
+    private bool _isDragging => _draggedCoordinate != null;
 
     private void Update()
     {
@@ -40,7 +44,7 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
             _state = State.DrawRectangle;
-        
+
         switch (_state)
         {
             case State.ManipulateCoordinates:
@@ -73,7 +77,6 @@ public class Sketch : MonoBehaviour
                 {
                     var mousePosition = MouseInput.RaycastPosition;
                     _coordinateSystem.SetAnchorPosition(mousePosition);
-                    _coordinateSystemUi.UpdateUI();
                 }
 
                 // draw
@@ -84,13 +87,13 @@ public class Sketch : MonoBehaviour
 
                     if (_nextRectangle == null)
                     {
-                        _nextRectangle = Instantiate(_rectanglePrefab);
+                        _nextRectangle = Instantiate(_ui.RectanglePrefab);
                         _nextRectangle.Initialize();
                         _nextRectangle.SetFirstPosition(_nextPosition);
                     }
                     else
                     {
-//                        _nextRectangle.SetSecondPosition(_nextPosition);
+                        _nextRectangle.SetSecondPosition(_nextPosition);
                         _nextRectangle = null;
                     }
                 }
@@ -99,14 +102,14 @@ public class Sketch : MonoBehaviour
                 {
                     _nextRectangle.SetSecondPosition(_nextPosition);
                 }
-                
+
                 break;
 
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        _coordinateSystemUi.UpdateUI();
+        _ui.CoordinateSystemUi.UpdateUI();
     }
 
     private ParametricPosition GetOrCreatePositionAtMousePosition(bool asPreview = false)
@@ -120,24 +123,31 @@ public class Sketch : MonoBehaviour
 
     private void TryStartDrag()
     {
-        _draggedCoordinateUi = MouseInput.RaycastCoordinateUI;
+        _draggedCoordinate = MouseInput.RaycastCoordinateUI;
     }
 
     private void UpdateDrag()
     {
-        _draggedCoordinateUi.ManipulateCoordinate(MouseInput.RaycastPosition);
-        _coordinateSystemUi.UpdateUI();
+        var coordinate = _draggedCoordinate.Value.DraggedCoordinate;
+        var axis = _draggedCoordinate.Value.DraggedAxis;
+        ModelChangeRequestHandler(_draggedCoordinate.Value.DraggedAxis, _draggedCoordinate.Value.DraggedCoordinate,
+            MousePositionToParameter(MouseInput.RaycastPosition, coordinate, axis));
     }
+
+    private float MousePositionToParameter(Vector3 mouseWorldPosition, Coordinate coordinate, Axis axis)
+    {
+        return Vector3.Dot(mouseWorldPosition, axis.Direction) - coordinate.ParentValue;
+    }
+
 
     private void CompleteDrag()
     {
-        _draggedCoordinateUi = null;
+      _draggedCoordinate= null;
     }
 
     private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
-        _coordinateSystemUi.UpdateUI();
     }
 
     private CoordinateSystem _coordinateSystem;

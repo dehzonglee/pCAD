@@ -9,10 +9,12 @@ namespace Model
     {
         private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
+        public Vector3 Direction;
 
-        public Axis(Action axisChangedCallback)
+        public Axis(Action axisChangedCallback, Vector3 direction)
         {
             _origin = new Origin();
+            Direction = direction;
             Coordinates.Add(_origin);
             Anchor = new AnchorCoordinates(_origin);
             _axisChangedEvent += axisChangedCallback;
@@ -25,18 +27,6 @@ namespace Model
         }
 
         public AnchorCoordinates Anchor { get; }
-
-//        public void RemoveUnusedCoordinate()
-//        {
-//            var cleanList = new List<Coordinate>();
-//            foreach (var c in Coordinates)
-//            {
-//                if (c.IsUsed)
-//                    cleanList.Add(c);
-//            }
-//
-//            Coordinates = cleanList;
-//        }
 
         public float SmallestValue => Coordinates.Select(c => c.Value).Min();
 

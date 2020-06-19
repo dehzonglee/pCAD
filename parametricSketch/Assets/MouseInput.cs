@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 public static class MouseInput
@@ -15,24 +16,26 @@ public static class MouseInput
             {
                 return hit.point;
             }
+
             return Vector3.zero;
         }
     }
 
-    public static CoordinateUI RaycastCoordinateUI
+    public static (Axis, Coordinate)? RaycastCoordinateUI
     {
         get
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                Debug.Log(hit.transform.gameObject.name);
-                return hit.transform.GetComponentInParent<CoordinateUI>();
-            }
-            return null;
+            if (!Physics.Raycast(ray, out var hit)) 
+                return null;
+            
+            var ui = hit.transform.GetComponentInParent<CoordinateUI>();
+            if (ui == null)
+                return null;
+            
+            return (ui.Axis, ui.Coordinate);
+
         }
     }
-
 }

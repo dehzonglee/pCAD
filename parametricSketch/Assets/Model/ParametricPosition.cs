@@ -1,46 +1,48 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Model
 {
+    
+    [Serializable]
     public class ParametricPosition
     {
-        public event Action PositionChangedEvent;
-        public event Action PositionRemovedEvent;
+        public event Action<ParametricPosition,Coordinate> PositionChangedEvent;
 
         public Vector3 Value => new Vector3(_x.Value, _y.Value, _z.Value);
 
         public Coordinate X
         {
             get => _x;
-            set
-            {
-                _x.UnregisterView(PositionChangedEvent);
-                _x = value;
-                _x.RegisterView(PositionChangedEvent);
-            }
+//            set
+//            {
+//                _x.UnregisterView(PositionChangedEvent);
+//                _x = value;
+//                _x.RegisterView(PositionChangedEvent);
+//            }
         }
 
         public Coordinate Y
         {
             get => _y;
-            set
-            {
-                _y.UnregisterView(PositionChangedEvent);
-                _y = value;
-                _y.RegisterView(PositionChangedEvent);
-            }
+//            set
+//            {
+//                _y.UnregisterView(PositionChangedEvent);
+//                _y = value;
+//                _y.RegisterView(PositionChangedEvent);
+//            }
         }
 
         public Coordinate Z
         {
             get => _z;
-            set
-            {
-                _z.UnregisterView(PositionChangedEvent);
-                _z = value;
-                _z.RegisterView(PositionChangedEvent);
-            }
+//            set
+//            {
+//                _z.UnregisterView(PositionChangedEvent);
+//                _z = value;
+//                _z.RegisterView(PositionChangedEvent);
+//            }
         }
 
         public ParametricPosition(Coordinate x, Coordinate y, Coordinate z)
@@ -48,9 +50,9 @@ namespace Model
             _x = x;
             _y = y;
             _z = z;
-            x.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
-            y.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
-            z.RegisterView(delegate { PositionChangedEvent?.Invoke(); });
+            x.RegisterView(()=> PositionChangedEvent?.Invoke(this,x) );
+            y.RegisterView(()=> PositionChangedEvent?.Invoke(this,y) );
+            z.RegisterView(()=> PositionChangedEvent?.Invoke(this,z) );
         }
 
         public void BakePreview()

@@ -2,14 +2,14 @@ public class LambdaUI : CoordinateUI
 {
     public override void UpdateUI(LayoutInfo layoutInfo)
     {
-        var lambda = _coordinate as Lambda;
+        var lambda = Coordinate as Lambda;
         _label.text = "1/2";
         _label.gameObject.SetActive(false);
-        _uiExposedParameter = _coordinate.Parameter;
+        _uiExposedParameter = Coordinate.Parameter;
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
 
-        var coordinateUIPosition = _direction * _coordinate.Value + offset;
+        var coordinateUIPosition = _direction * Coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
         var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * _padding;

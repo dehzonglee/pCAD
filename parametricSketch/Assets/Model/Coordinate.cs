@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public abstract class Coordinate
 {
     public abstract string Name { get; }
@@ -33,6 +34,7 @@ public abstract class Coordinate
         set
         {
             _parameter = value;
+            Debug.Log($"changed to {value}");
             ChangedEvent?.Invoke();
         }
     }

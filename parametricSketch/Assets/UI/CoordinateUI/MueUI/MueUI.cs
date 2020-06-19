@@ -2,15 +2,15 @@ public class MueUI : CoordinateUI
 {
     public override void UpdateUI(LayoutInfo layoutInfo)
     {
-        _label.text = _coordinate.Parameter.ToString("F");
-        _uiExposedParameter = _coordinate.Parameter;
+        _label.text = Coordinate.Parameter.ToString("F");
+        _uiExposedParameter = Coordinate.Parameter;
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
 
-        var coordinateUIPosition = _direction * _coordinate.Value + offset;
+        var coordinateUIPosition = _direction * Coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
-        var mue = _coordinate as Mue;
+        var mue = Coordinate as Mue;
         if (mue == null)
         {
             _line.enabled = false;

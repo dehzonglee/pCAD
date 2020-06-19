@@ -15,9 +15,9 @@ namespace Model
 
         public CoordinateSystem()
         {
-            XAxis = new Axis(OnAxisChanged);
-            YAxis = new Axis(OnAxisChanged);
-            ZAxis = new Axis(OnAxisChanged);
+            XAxis = new Axis(OnAxisChanged, Vector3.right);
+            YAxis = new Axis(OnAxisChanged, Vector3.up);
+            ZAxis = new Axis(OnAxisChanged, Vector3.forward);
 
             var xAnchorCoordinate = XAxis.Anchor;
             var yAnchorCoordinate = YAxis.Anchor;

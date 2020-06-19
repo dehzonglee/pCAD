@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class CoordinateUI : MonoBehaviour
 {
@@ -17,12 +19,13 @@ public abstract class CoordinateUI : MonoBehaviour
         CheckForParameterManipultation();
     }
 
-    public void Initalize(Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
+    public void Initialize(Axis axis, Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
     {
         gameObject.name = c.Name;
         _modelChangeRequest = modelChangeRequest;
         _direction = direction;
-        _coordinate = c;
+        Axis = axis;
+        Coordinate = c;
     }
 
     public struct LayoutInfo
@@ -43,24 +46,24 @@ public abstract class CoordinateUI : MonoBehaviour
 
     private void CheckForParameterManipultation()
     {
-        if (Mathf.Abs(_uiExposedParameter - _coordinate.Parameter) > EPSILON)
+        if (Mathf.Abs(_uiExposedParameter - Coordinate.Parameter) > EPSILON)
         {
-            _modelChangeRequest.Invoke(_coordinate, _uiExposedParameter);
+            _modelChangeRequest.Invoke(Coordinate, _uiExposedParameter);
         }
     }
 
     public void ManipulateCoordinate(Vector3 raycastPosition)
     {
-        _modelChangeRequest(_coordinate, MousePositionToParameter(raycastPosition));
+        _modelChangeRequest(Coordinate, MousePositionToParameter(raycastPosition));
     }
 
     private float MousePositionToParameter(Vector3 mouseWorldPosition)
     {
-        return Vector3.Dot(mouseWorldPosition, _direction) - _coordinate.ParentValue;
+        return Vector3.Dot(mouseWorldPosition, _direction) - Coordinate.ParentValue;
     }
 
-    protected Coordinate _coordinate;
-
+    [FormerlySerializedAs("_coordinate")] public Coordinate Coordinate;
+    public Axis Axis;
     protected Vector3 _direction;
 
     protected Action<Coordinate, float> _modelChangeRequest;
