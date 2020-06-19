@@ -1,42 +1,67 @@
 using System;
+using System.Collections.Generic;
 using Model;
+using UI;
 using UnityEngine;
 
 public class Sketch : MonoBehaviour
 {
     [SerializeField] private UI _ui;
+    private Model _model;
 
     [Serializable]
     public struct UI
     {
-        public CoordinateSystemUI CoordinateSystemUi;
-        public Rectangle RectanglePrefab;
+        public CoordinateSystemUI CoordinateSystem;
+        public RectanglesUI Rectangles;
     }
 
-    private (Axis DraggedAxis, Coordinate DraggedCoordinate)? _draggedCoordinate;
+    [Serializable]
+    private struct Model
+    {
+        public bool IsDragging => CapturedDrag != null;
+        public CoordinateSystem CoordinateSystem;
+        public (Coordinate x, Coordinate y, Coordinate z)? NextPosition;
+        public (Axis DraggedAxis, Coordinate DraggedCoordinate)? CapturedDrag;
+        public RectangleModel NextRectangle;
+        public List<RectangleModel> Rectangles;
+    }
+
+    public class RectangleModel
+    {
+        public (Coordinate x, Coordinate y, Coordinate z)? P0;
+        public (Coordinate x, Coordinate y, Coordinate z)? P1;
+    }
 
     private void Start()
     {
-        _coordinateSystem = new CoordinateSystem();
-        _ui.CoordinateSystemUi.Initialize(_coordinateSystem, ModelChangeRequestHandler);
+        _model.CoordinateSystem = new CoordinateSystem();
+        _model.Rectangles = new List<RectangleModel>();
+        _ui.CoordinateSystem.Initialize(_model.CoordinateSystem, ModelChangeRequestHandler);
     }
-
-    private ParametricPosition _nextPosition;
-
-    private bool _isDragging => _draggedCoordinate != null;
 
     private void Update()
     {
         // switch input state
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            _nextPosition?.RemovePreview();
-            _nextPosition = null;
-
-            if (_nextRectangle != null)
+            // delete if only preview
+            if (_model.NextPosition.HasValue)
             {
-                _nextRectangle.Abort();
-                _nextRectangle = null;
+                var p = _model.NextPosition.Value;
+                if (p.x.IsPreview) p.x.Delete();
+                if (p.y.IsPreview) p.y.Delete();
+                if (p.z.IsPreview) p.z.Delete();
+            }
+
+            _model.NextPosition = null;
+
+            if (_model.NextRectangle != null)
+            {
+                _model.NextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.NextRectangle);
+                _model.NextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.NextRectangle);
+                _model.NextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.NextRectangle);
+                _model.NextRectangle = null;
             }
 
             _state = State.ManipulateCoordinates;
@@ -51,10 +76,10 @@ public class Sketch : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                     TryStartDrag();
 
-                if (Input.GetMouseButton(0) && _isDragging)
+                if (Input.GetMouseButton(0) && _model.IsDragging)
                     UpdateDrag();
 
-                if (Input.GetMouseButtonUp(0) && _isDragging)
+                if (Input.GetMouseButtonUp(0) && _model.IsDragging)
                     CompleteDrag();
 
                 break;
@@ -62,45 +87,68 @@ public class Sketch : MonoBehaviour
             case State.DrawRectangle:
 
                 //update preview
-                _nextPosition?.RemovePreview();
-                _nextPosition = GetOrCreatePositionAtMousePosition(true);
+                // delete if only preview
+                if (_model.NextPosition.HasValue)
+                {
+                    var p = _model.NextPosition.Value;
+                    if (p.x.IsPreview) p.x.Delete();
+                    if (p.y.IsPreview) p.y.Delete();
+                    if (p.z.IsPreview) p.z.Delete();
+                }
+
+                _model.NextPosition = GetOrCreatePositionAtMousePosition(true);
 
                 // delete
                 if (Input.GetMouseButtonDown(2))
                 {
                     var p = GetOrCreatePositionAtMousePosition();
-                    p.Remove();
+                    p.x.Delete();
+                    p.y.Delete();
+                    p.z.Delete();
                 }
 
                 // set anchor
                 if (Input.GetMouseButtonDown(1))
                 {
                     var mousePosition = MouseInput.RaycastPosition;
-                    _coordinateSystem.SetAnchorPosition(mousePosition);
+                    _model.CoordinateSystem.SetAnchorPosition(mousePosition);
                 }
 
                 // draw
                 if (Input.GetMouseButtonDown(0))
                 {
-                    _nextPosition.BakePreview();
-                    _coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
+                    _model.NextPosition.Value.x.Bake();
+                    _model.NextPosition.Value.y.Bake();
+                    _model.NextPosition.Value.z.Bake();
 
-                    if (_nextRectangle == null)
+                    _model.CoordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
+
+                    if (_model.NextRectangle == null)
                     {
-                        _nextRectangle = Instantiate(_ui.RectanglePrefab);
-                        _nextRectangle.Initialize();
-                        _nextRectangle.SetFirstPosition(_nextPosition);
+                        //start new rectangle
+                        _model.NextRectangle = new RectangleModel();
+                        _model.Rectangles.Add(_model.NextRectangle);
+
+                        var p = _model.NextPosition.Value;
+                        _model.NextRectangle.P0 = (p.x, p.y, p.z);
+
+                        p.x.AddAttachedGeometry(_model.NextRectangle);
+                        p.y.AddAttachedGeometry(_model.NextRectangle);
+                        p.z.AddAttachedGeometry(_model.NextRectangle);
                     }
                     else
                     {
-                        _nextRectangle.SetSecondPosition(_nextPosition);
-                        _nextRectangle = null;
+                        //complete rectangle
+                        var p = _model.NextPosition.Value;
+                        _model.NextRectangle.P1 = _model.NextPosition.Value;
+                        _model.NextRectangle = null;
                     }
                 }
 
-                if (_nextRectangle != null)
+                //update rectangle
+                if (_model.NextRectangle != null)
                 {
-                    _nextRectangle.SetSecondPosition(_nextPosition);
+                    _model.NextRectangle.P1 = _model.NextPosition.Value;
                 }
 
                 break;
@@ -109,28 +157,29 @@ public class Sketch : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        _ui.CoordinateSystemUi.UpdateUI();
+        _ui.CoordinateSystem.UpdateUI();
+        _ui.Rectangles.UpdateUI(_model.Rectangles);
     }
 
-    private ParametricPosition GetOrCreatePositionAtMousePosition(bool asPreview = false)
+    private (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(bool asPreview = false)
     {
         var mousePosition = MouseInput.RaycastPosition;
-        var position = _coordinateSystem.GetParametricPosition(mousePosition, asPreview);
-        _coordinateSystem.SetAnchorPosition(position.Value);
+        var position = _model.CoordinateSystem.GetParametricPosition(mousePosition, asPreview);
+        _model.CoordinateSystem.SetAnchorPosition(new Vector3(position.x.Value, position.y.Value, position.z.Value));
 
         return position;
     }
 
     private void TryStartDrag()
     {
-        _draggedCoordinate = MouseInput.RaycastCoordinateUI;
+        _model.CapturedDrag = MouseInput.RaycastCoordinateUI;
     }
 
     private void UpdateDrag()
     {
-        var coordinate = _draggedCoordinate.Value.DraggedCoordinate;
-        var axis = _draggedCoordinate.Value.DraggedAxis;
-        ModelChangeRequestHandler(_draggedCoordinate.Value.DraggedAxis, _draggedCoordinate.Value.DraggedCoordinate,
+        var coordinate = _model.CapturedDrag.Value.DraggedCoordinate;
+        var axis = _model.CapturedDrag.Value.DraggedAxis;
+        ModelChangeRequestHandler(_model.CapturedDrag.Value.DraggedAxis, _model.CapturedDrag.Value.DraggedCoordinate,
             MousePositionToParameter(MouseInput.RaycastPosition, coordinate, axis));
     }
 
@@ -139,19 +188,15 @@ public class Sketch : MonoBehaviour
         return Vector3.Dot(mouseWorldPosition, axis.Direction) - coordinate.ParentValue;
     }
 
-
     private void CompleteDrag()
     {
-      _draggedCoordinate= null;
+        _model.CapturedDrag = null;
     }
 
     private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
     }
-
-    private CoordinateSystem _coordinateSystem;
-    private Rectangle _nextRectangle;
 
     private enum State
     {

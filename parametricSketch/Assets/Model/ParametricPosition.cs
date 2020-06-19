@@ -62,7 +62,7 @@ namespace Model
             _z.Bake();
         }
 
-        public void RemovePreview()
+        public void DeleteIfPreview()
         {
             if (_x.IsPreview) _x.Delete();
             if (_y.IsPreview) _y.Delete();
@@ -75,21 +75,6 @@ namespace Model
             _y.Delete();
             _z.Delete();
         }
-
-        public void AddDependentGeometry(Rectangle rectangle)
-        {
-            _x.AddAttachedGeometry(rectangle);
-            _y.AddAttachedGeometry(rectangle);
-            _z.AddAttachedGeometry(rectangle);
-        }
-        
-        public void RemoveDependentGeometry(Rectangle rectangle)
-        {
-            _x.UnregisterGeometryAndTryToDelete(rectangle);
-            _y.UnregisterGeometryAndTryToDelete(rectangle);
-            _z.UnregisterGeometryAndTryToDelete(rectangle);
-        }
-        
         private Coordinate _x;
         private Coordinate _y;
         private Coordinate _z;
