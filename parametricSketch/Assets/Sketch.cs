@@ -78,21 +78,19 @@ public class Sketch : MonoBehaviour
                     _coordinateSystemUi.UpdateUI();
 //            var position = GeneratePositionAtMousePosition();
 
-
-//
-//            if (_nextRectangle == null)
-//            {
-//                _nextRectangle = Instantiate(_rectanglePrefab);
-//                _nextRectangle.SetFirstPosition(position);
-//            }
-//
-//            else
-//            {
-//                _nextRectangle.SetSecondPosition(position);
-//                _nextRectangle = null;
-//            }
+                    if (_nextRectangle == null)
+                    {
+                        _nextRectangle = Instantiate(_rectanglePrefab);
+//                        _nextRectangle.Initialize(_nextPosition);
+                        _nextRectangle.Initialize();
+                        _nextRectangle.SetFirstPosition(_nextPosition);
+                    }
+                    else
+                    {
+                        _nextRectangle.SetSecondPosition(_nextPosition);
+                        _nextRectangle = null;
+                    }
                 }
-
                 break;
 
             default:
@@ -141,7 +139,7 @@ public class Sketch : MonoBehaviour
     private enum State
     {
         ManipulateCoordinates,
-        DrawRectangle
+        DrawRectangle,
     }
 
     private State _state = State.ManipulateCoordinates;

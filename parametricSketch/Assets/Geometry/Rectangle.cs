@@ -6,9 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class Rectangle : MonoBehaviour
 {
-    void Start()
+   public void Initialize()
     {
         _lineRenderer = GetComponent<LineRenderer>();
+        _lineRenderer.enabled = false;
     }
 
     public void SetFirstPosition(ParametricPosition p0)
@@ -27,6 +28,7 @@ public class Rectangle : MonoBehaviour
         _positions[1].PositionChangedEvent += UpdateLine;
         _positions[2].PositionChangedEvent += UpdateLine;
         _positions[3].PositionChangedEvent += UpdateLine;
+        _lineRenderer.enabled = true;
         UpdateLine();
     }
 
