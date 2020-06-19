@@ -33,10 +33,6 @@ namespace Model
             return new ParametricPosition(x, y, z);
         }
 
-        public void RemoveParametricPosition(ParametricPosition position)
-        {
-        }
-
         public Anchor GetAnchor()
         {
             return _anchor;
@@ -44,6 +40,7 @@ namespace Model
 
         public void SetAnchorPosition(Vector3 position)
         {
+            Debug.Log(position);
             XAxis.SnapAnchorToClosestCoordinate(position.x);
             YAxis.SnapAnchorToClosestCoordinate(position.y);
             ZAxis.SnapAnchorToClosestCoordinate(position.z);

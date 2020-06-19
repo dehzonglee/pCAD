@@ -60,11 +60,18 @@ public abstract class Coordinate
         Debug.Log(_dependentCoordinates.Count);
     }
 
-    public void Remove()
+    public void UnregisterGeometryAndTryToDelete(Rectangle rectangleToUnregister)
+    {
+        _attachedGeometry.Remove(rectangleToUnregister);
+        if(_attachedGeometry.Count==0)
+            Delete();
+    }
+    
+    public void Delete()
     {
         if (_dependentCoordinates.Count != 0) return;
         DeletedEvent?.Invoke(this);
-        ChangedEvent?.Invoke();
+//        ChangedEvent?.Invoke();
         foreach (var p in Parents)
         {
             p.UnregisterCoordinate(this, ChangedEvent);
@@ -76,7 +83,14 @@ public abstract class Coordinate
         IsPreview = false;
     }
 
-    private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
+    public void AddAttachedGeometry(Rectangle rectangle)
+    {
+        _attachedGeometry.Add(rectangle);
+    }
+
     protected List<Coordinate> Parents;
+    
+    private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
+    private List<Rectangle> _attachedGeometry = new List<Rectangle>();
     private float _parameter;
 }

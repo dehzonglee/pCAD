@@ -62,18 +62,32 @@ namespace Model
 
         public void RemovePreview()
         {
-            if (_x.IsPreview) _x.Remove();
-            if (_y.IsPreview) _y.Remove();
-            if (_z.IsPreview) _z.Remove();
+            if (_x.IsPreview) _x.Delete();
+            if (_y.IsPreview) _y.Delete();
+            if (_z.IsPreview) _z.Delete();
         }
 
         public void Remove()
         {
-            _x.Remove();
-            _y.Remove();
-            _z.Remove();
+            _x.Delete();
+            _y.Delete();
+            _z.Delete();
         }
 
+        public void AddDependentGeometry(Rectangle rectangle)
+        {
+            _x.AddAttachedGeometry(rectangle);
+            _y.AddAttachedGeometry(rectangle);
+            _z.AddAttachedGeometry(rectangle);
+        }
+        
+        public void RemoveDependentGeometry(Rectangle rectangle)
+        {
+            _x.UnregisterGeometryAndTryToDelete(rectangle);
+            _y.UnregisterGeometryAndTryToDelete(rectangle);
+            _z.UnregisterGeometryAndTryToDelete(rectangle);
+        }
+        
         private Coordinate _x;
         private Coordinate _y;
         private Coordinate _z;

@@ -28,13 +28,19 @@ public class Sketch : MonoBehaviour
         {
             _nextPosition?.RemovePreview();
             _nextPosition = null;
+
+            if (_nextRectangle != null)
+            {
+                _nextRectangle.Abort();
+                _nextRectangle = null;
+            }
+
             _state = State.ManipulateCoordinates;
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
             _state = State.DrawRectangle;
-
-
+        
         switch (_state)
         {
             case State.ManipulateCoordinates:
@@ -75,22 +81,25 @@ public class Sketch : MonoBehaviour
                 {
                     _nextPosition.BakePreview();
                     _coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
-                    _coordinateSystemUi.UpdateUI();
-//            var position = GeneratePositionAtMousePosition();
 
                     if (_nextRectangle == null)
                     {
                         _nextRectangle = Instantiate(_rectanglePrefab);
-//                        _nextRectangle.Initialize(_nextPosition);
                         _nextRectangle.Initialize();
                         _nextRectangle.SetFirstPosition(_nextPosition);
                     }
                     else
                     {
-                        _nextRectangle.SetSecondPosition(_nextPosition);
+//                        _nextRectangle.SetSecondPosition(_nextPosition);
                         _nextRectangle = null;
                     }
                 }
+
+                if (_nextRectangle != null)
+                {
+                    _nextRectangle.SetSecondPosition(_nextPosition);
+                }
+                
                 break;
 
             default:
@@ -104,16 +113,14 @@ public class Sketch : MonoBehaviour
     {
         var mousePosition = MouseInput.RaycastPosition;
         var position = _coordinateSystem.GetParametricPosition(mousePosition, asPreview);
-/*
         _coordinateSystem.SetAnchorPosition(position.Value);
-*/
+
         return position;
     }
 
     private void TryStartDrag()
     {
         _draggedCoordinateUi = MouseInput.RaycastCoordinateUI;
-        Debug.Log(_draggedCoordinateUi);
     }
 
     private void UpdateDrag()
