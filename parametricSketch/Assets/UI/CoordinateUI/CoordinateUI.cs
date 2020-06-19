@@ -6,13 +6,9 @@ using UnityEngine;
 public abstract class CoordinateUI : MonoBehaviour
 {
     [SerializeField] protected float _uiExposedParameter;
-
     [SerializeField] protected TMPro.TMP_Text _label;
-
     [SerializeField] protected LineRenderer _line;
-
     [SerializeField] protected LineRenderer _gridLine;
-
     [SerializeField] protected float _padding;
 
     void Update()

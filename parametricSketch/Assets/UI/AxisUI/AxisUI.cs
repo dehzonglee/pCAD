@@ -17,11 +17,13 @@ namespace UI
         private Vector3 _direction;
         private Action<Axis, Coordinate, float> _modelChangeRequest;
 
-        internal void Initialize(Axis axis, Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction)
+        internal void Initialize(Axis axis, Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction, string label)
         {
+            gameObject.name = label;
             _direction = direction;
             _modelChangeRequest = modelChangeRequest;
             _axis = axis;
+            
         }
 
         public void UpdateCoordinateUIs(Vector3 orthogonalDirection, float orthogonalAnchor)
@@ -79,6 +81,7 @@ namespace UI
 
                 _ui[c].UpdateUI(layoutInfo);
             }
+  
         }
 
         private readonly Dictionary<Coordinate, CoordinateUI> _ui = new Dictionary<Coordinate, CoordinateUI>();

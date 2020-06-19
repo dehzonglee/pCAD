@@ -1,3 +1,4 @@
+using System;
 using Model;
 using UnityEngine;
 
@@ -22,43 +23,59 @@ public class Sketch : MonoBehaviour
 
     private void Update()
     {
-        _nextPosition?.RemovePreview();
-        _nextPosition = GetOrCreatePositionAtMousePosition(true);
-        _coordinateSystemUi.UpdateUI();
-
-        if (Input.GetMouseButtonDown(0))
+        // switch input state
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            TryStartDrag();
+            _nextPosition?.RemovePreview();
+            _nextPosition = null;
+            _state = State.ManipulateCoordinates;
         }
 
-        if (Input.GetMouseButton(0) && _isDragging)
-        {
-            UpdateDrag();
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            _state = State.DrawRectangle;
 
-        if (Input.GetMouseButtonUp(0) && _isDragging)
-        {
-            CompleteDrag();
-        }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        switch (_state)
         {
-            var p = GetOrCreatePositionAtMousePosition();
-            p.Remove();
-        }
+            case State.ManipulateCoordinates:
+                if (Input.GetMouseButtonDown(0))
+                    TryStartDrag();
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            var mousePosition = MouseInput.RaycastPosition;
-            _coordinateSystem.SetAnchorPosition(mousePosition);
-            _coordinateSystemUi.UpdateUI();
-        }
+                if (Input.GetMouseButton(0) && _isDragging)
+                    UpdateDrag();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _nextPosition.BakePreview();
-            _coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
-            _coordinateSystemUi.UpdateUI();
+                if (Input.GetMouseButtonUp(0) && _isDragging)
+                    CompleteDrag();
+
+                break;
+
+            case State.DrawRectangle:
+
+                //update preview
+                _nextPosition?.RemovePreview();
+                _nextPosition = GetOrCreatePositionAtMousePosition(true);
+
+                // delete
+                if (Input.GetMouseButtonDown(2))
+                {
+                    var p = GetOrCreatePositionAtMousePosition();
+                    p.Remove();
+                }
+
+                // set anchor
+                if (Input.GetMouseButtonDown(1))
+                {
+                    var mousePosition = MouseInput.RaycastPosition;
+                    _coordinateSystem.SetAnchorPosition(mousePosition);
+                    _coordinateSystemUi.UpdateUI();
+                }
+
+                // draw
+                if (Input.GetMouseButtonDown(0))
+                {
+                    _nextPosition.BakePreview();
+                    _coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
+                    _coordinateSystemUi.UpdateUI();
 //            var position = GeneratePositionAtMousePosition();
 
 
@@ -74,7 +91,15 @@ public class Sketch : MonoBehaviour
 //                _nextRectangle.SetSecondPosition(position);
 //                _nextRectangle = null;
 //            }
+                }
+
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+
+        _coordinateSystemUi.UpdateUI();
     }
 
     private ParametricPosition GetOrCreatePositionAtMousePosition(bool asPreview = false)
@@ -90,6 +115,7 @@ public class Sketch : MonoBehaviour
     private void TryStartDrag()
     {
         _draggedCoordinateUi = MouseInput.RaycastCoordinateUI;
+        Debug.Log(_draggedCoordinateUi);
     }
 
     private void UpdateDrag()
@@ -111,4 +137,12 @@ public class Sketch : MonoBehaviour
 
     private CoordinateSystem _coordinateSystem;
     private Rectangle _nextRectangle;
+
+    private enum State
+    {
+        ManipulateCoordinates,
+        DrawRectangle
+    }
+
+    private State _state = State.ManipulateCoordinates;
 }

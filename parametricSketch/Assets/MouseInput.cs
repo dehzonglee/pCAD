@@ -28,6 +28,7 @@ public static class MouseInput
 
             if (Physics.Raycast(ray, out hit))
             {
+                Debug.Log(hit.transform.gameObject.name);
                 return hit.transform.GetComponentInParent<CoordinateUI>();
             }
             return null;

@@ -6,23 +6,21 @@ using UnityEngine;
 public class CoordinateSystemUI : MonoBehaviour
 {
     [SerializeField] AxisUI _axisUIPrefab;
-
     [SerializeField] AnchorUI _anchorUIPrefab;
-
-
+    
     public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
     {
         _coordinateSystem = cs;
         cs.CoordinateSystemChangedEvent += UpdateUI;
 
         _xAxisUI = Instantiate(_axisUIPrefab, transform);
-        _xAxisUI.Initialize(cs.XAxis, modelChangeRequest, Vector3.right);
+        _xAxisUI.Initialize(cs.XAxis, modelChangeRequest, Vector3.right, "xAxisUI");
 
         _yAxisUI = Instantiate(_axisUIPrefab, transform);
-        _yAxisUI.Initialize(cs.YAxis, modelChangeRequest, Vector3.up);
+        _yAxisUI.Initialize(cs.YAxis, modelChangeRequest, Vector3.up, "yAxisUI");
 
         _zAxisUI = Instantiate(_axisUIPrefab, transform);
-        _zAxisUI.Initialize(cs.ZAxis, modelChangeRequest, Vector3.forward);
+        _zAxisUI.Initialize(cs.ZAxis, modelChangeRequest, Vector3.forward, "zAxisUI");
 
         _anchorUI = Instantiate(_anchorUIPrefab, transform);
         _anchorUI.Initalize(cs.GetAnchor());
