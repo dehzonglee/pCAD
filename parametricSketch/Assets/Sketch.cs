@@ -13,10 +13,8 @@ public class Sketch : MonoBehaviour
     [Serializable]
     public struct UI
     {
-        [FormerlySerializedAs("coordinateSystem")]
         public CoordinateSystemUI coordinateSystemUI;
-
-        [FormerlySerializedAs("rectangles")] public RectanglesUI rectanglesUI;
+        public RectanglesUI rectanglesUI;
     }
 
     [Serializable]

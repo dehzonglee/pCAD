@@ -1,42 +1,44 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace UI
 {
     public class RectanglesUI : MonoBehaviour
     {
-        [SerializeField] private Rectangle _rectanglePrefab;
+        [SerializeField] private RectangleUI rectangleUIPrefab;
+        [SerializeField] private RectangleUI2D rectangleUI2DPrefab;
 
         public void UpdateUI(List<Sketch.RectangleModel> rectangleModels)
         {
-            foreach (var rectangle in _rectangles)
+            var validRectangles = rectangleModels.Where(rm => rm.P0.HasValue && rm.P1.HasValue).ToList();
+            while (_uiPool.Count > validRectangles.Count)
             {
-                if (Application.isEditor)
-                    Destroy(rectangle.gameObject);
-                else
-                    Destroy(rectangle.gameObject);
+                var rectangleToDestroy = _uiPool[0];
+                _uiPool.Remove(rectangleToDestroy);
+                Destroy(rectangleToDestroy.ui.gameObject);
+                Destroy(rectangleToDestroy.ui2D.gameObject);
             }
 
-            _rectangles.Clear();
-
-            foreach (var rectangleModel in rectangleModels)
+            while (_uiPool.Count < validRectangles.Count)
             {
-                if (rectangleModel.P0.HasValue && rectangleModel.P1.HasValue)
-                {
-                    var p0 = rectangleModel.P0.Value;
-                    var p1 = rectangleModel.P1.Value;
+                var newUI = Instantiate(rectangleUIPrefab, transform);
+                var newUI2D = Instantiate(rectangleUI2DPrefab, transform);
+                _uiPool.Add((newUI,newUI2D));
+                newUI.Initialize();
+            }
 
-                    var newUI = Instantiate(_rectanglePrefab, transform);
-                    _rectangles.Add(newUI);
-                    newUI.Initialize();
-                    newUI.UpdateUI(p0.x.Value, p1.x.Value, p0.y.Value, p1.y.Value, p0.z.Value,p1.z.Value);
-                }
+            for (var i = 0; i < rectangleModels.Count; i++)
+            {
+                var rectangleModel = validRectangles[i];
+                var p0 = rectangleModel.P0.Value;
+                var p1 = rectangleModel.P1.Value;
+
+                _uiPool[i].ui.UpdateUI(p0.x.Value, p1.x.Value, p0.y.Value, p1.y.Value, p0.z.Value, p1.z.Value);
+                _uiPool[i].ui2D.UpdateCoordinates((p0.x.Value, p1.x.Value), (p0.z.Value, p1.z.Value));
             }
         }
 
-        private List<Rectangle> _rectangles = new List<Rectangle>();
+        private readonly List<(RectangleUI ui,RectangleUI2D ui2D)> _uiPool = new List<(RectangleUI ui,RectangleUI2D ui2D)>();
     }
 }
