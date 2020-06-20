@@ -13,7 +13,6 @@ public class OriginUI : CoordinateUI
         _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
         _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
         
-        
         UpdateBase();
     }
 }

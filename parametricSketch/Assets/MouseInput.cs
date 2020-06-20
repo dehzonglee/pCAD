@@ -9,15 +9,8 @@ public static class MouseInput
     {
         get
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                return hit.point;
-            }
-
-            return Vector3.zero;
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            return Physics.Raycast(ray, out var hit) ? hit.point : Vector3.zero;
         }
     }
 

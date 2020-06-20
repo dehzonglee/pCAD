@@ -13,10 +13,11 @@ public abstract class CoordinateUI : MonoBehaviour
     [SerializeField] protected LineRenderer _gridLine;
     [SerializeField] protected float _padding;
 
-    protected void UpdateBase()
+    public struct LayoutInfo
     {
-        CheckForParameterManipulation();
-        MakeBillboard();
+        public int Index;
+        public float OrthogonalAnchor;
+        public Vector3 OrthogonalDirection;
     }
 
     public void Initialize(Axis axis, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
@@ -25,15 +26,14 @@ public abstract class CoordinateUI : MonoBehaviour
         _direction = direction;
         Axis = axis;
     }
-
-    public struct LayoutInfo
-    {
-        public int Index;
-        public float OrthogonalAnchor;
-        public Vector3 OrthogonalDirection;
-    }
-
+    
     public abstract void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo);
+
+    protected void UpdateBase()
+    {
+        CheckForParameterManipulation();
+        MakeBillboard();
+    }
 
     private void MakeBillboard()
     {
@@ -54,9 +54,8 @@ public abstract class CoordinateUI : MonoBehaviour
     public Axis Axis;
     protected Vector3 _direction;
 
-    protected Action<Coordinate, float> _modelChangeRequest;
-
-    protected const float EPSILON = 0.001f;
+    private Action<Coordinate, float> _modelChangeRequest;
+    private const float EPSILON = 0.001f;
 
     private Camera _cameraCache;
     private Camera _camera
