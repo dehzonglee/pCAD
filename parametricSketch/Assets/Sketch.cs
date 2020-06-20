@@ -165,7 +165,7 @@ public class Sketch : MonoBehaviour
     {
         var mousePosition = MouseInput.RaycastPosition;
         var position = _model.CoordinateSystem.GetParametricPosition(mousePosition, asPreview);
-        _model.CoordinateSystem.SetAnchorPosition(new Vector3(position.x.Value, position.y.Value, position.z.Value));
+//        _model.CoordinateSystem.SetAnchorPosition(new Vector3(position.x.Value, position.y.Value, position.z.Value));
 
         return position;
     }
