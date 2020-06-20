@@ -474,7 +474,6 @@ LineRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
   - {fileID: 2100000, guid: e27a510bd8b2c1f4790262f519c7e5b3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -570,5 +569,8 @@ MonoBehaviour:
   _label: {fileID: 114763946974457138}
   _line: {fileID: 120726057498905804}
   _gridLine: {fileID: 120275545991104528}
-  _gridLineCollider: {fileID: 0}
   _padding: 0.02
+  Axis:
+    Direction: {x: 0, y: 0, z: 0}
+  _activeColor: {r: 0, g: 0, b: 1, a: 1}
+  _defaultColor: {r: 0, g: 0, b: 0, a: 1}

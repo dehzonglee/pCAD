@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MueUI : CoordinateUI
 {
+    [SerializeField] private Color _activeColor;
+    [SerializeField] private Color _defaultColor;
     public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo)
     {
         Coordinate = coordinate;
@@ -26,6 +28,8 @@ public class MueUI : CoordinateUI
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
 
+        _line.material.SetColor("_Color", coordinate.IsPreview ? _activeColor : _defaultColor);  
+        
         _gridLine.positionCount = 2;
         _gridLine.useWorldSpace = true;
         _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
