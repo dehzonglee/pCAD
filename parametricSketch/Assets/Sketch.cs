@@ -13,8 +13,10 @@ public class Sketch : MonoBehaviour
     [Serializable]
     public struct UI
     {
-        public CoordinateSystemUI coordinateSystem;
-        public RectanglesUI rectangles;
+        [FormerlySerializedAs("coordinateSystem")]
+        public CoordinateSystemUI coordinateSystemUI;
+
+        [FormerlySerializedAs("rectangles")] public RectanglesUI rectanglesUI;
     }
 
     [Serializable]
@@ -38,7 +40,9 @@ public class Sketch : MonoBehaviour
     {
         _model.coordinateSystem = new CoordinateSystem();
         _model.rectangles = new List<RectangleModel>();
-        _ui.coordinateSystem.Initialize(_model.coordinateSystem, ModelChangeRequestHandler);
+
+//        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
+        _ui.coordinateSystemUI.Initialize(_model.coordinateSystem, ModelChangeRequestHandler);
     }
 
     private void SetState(State newState)
@@ -55,7 +59,7 @@ public class Sketch : MonoBehaviour
                     if (p.z.IsPreview) p.z.Delete();
                     _model.nextPosition = null;
                 }
-                
+
                 // delete next rectangle
                 if (_model.nextRectangle != null)
                 {
@@ -64,6 +68,7 @@ public class Sketch : MonoBehaviour
                     _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
                     _model.nextRectangle = null;
                 }
+
                 break;
             case State.DrawRectangle:
                 break;
@@ -101,7 +106,8 @@ public class Sketch : MonoBehaviour
                     if (p.y.IsPreview) p.y.Delete();
                     if (p.z.IsPreview) p.z.Delete();
                 }
-                _model.nextPosition = GetOrCreatePositionAtMousePosition(_model.coordinateSystem,true);
+
+                _model.nextPosition = GetOrCreatePositionAtMousePosition(_model.coordinateSystem, true);
 
                 // delete
                 if (Input.GetKeyDown(DeleteKey))
@@ -159,11 +165,17 @@ public class Sketch : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
-        _ui.coordinateSystem.UpdateUI();
-        _ui.rectangles.UpdateUI(_model.rectangles);
+        UpdateUI();
     }
 
-    private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(CoordinateSystem coordinateSystem,  bool asPreview = false)
+    private void UpdateUI()
+    {
+        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem);
+        _ui.rectanglesUI.UpdateUI(_model.rectangles);
+    }
+
+    private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
+        CoordinateSystem coordinateSystem, bool asPreview = false)
     {
         var position = coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview);
         return position;
