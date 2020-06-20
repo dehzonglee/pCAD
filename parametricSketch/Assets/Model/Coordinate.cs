@@ -34,7 +34,6 @@ public abstract class Coordinate
         set
         {
             _parameter = value;
-            Debug.Log($"changed to {value}");
             ChangedEvent?.Invoke();
         }
     }

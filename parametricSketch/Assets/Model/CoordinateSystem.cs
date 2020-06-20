@@ -40,7 +40,6 @@ namespace Model
 
         public void SetAnchorPosition(Vector3 position)
         {
-            Debug.Log(position);
             XAxis.SnapAnchorToClosestCoordinate(position.x);
             YAxis.SnapAnchorToClosestCoordinate(position.y);
             ZAxis.SnapAnchorToClosestCoordinate(position.z);
