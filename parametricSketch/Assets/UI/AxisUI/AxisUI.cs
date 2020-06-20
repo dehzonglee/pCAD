@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Model;
 using UnityEngine;
 
@@ -17,39 +19,64 @@ namespace UI
         private Vector3 _direction;
         private Action<Axis, Coordinate, float> _modelChangeRequest;
 
-        internal void Initialize(Axis axis, Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction, string label)
+        internal void Initialize(Axis axis, Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction,
+            string label)
         {
             gameObject.name = label;
             _direction = direction;
             _modelChangeRequest = modelChangeRequest;
             _axis = axis;
-            
         }
 
         public void UpdateCoordinateUIs(Vector3 orthogonalDirection, float orthogonalAnchor)
         {
-            //remove deprecated uis
-            var uisToDelete = new List<Coordinate>();
-            foreach (var kvp in _ui)
+            var lambdaCoordinates = _axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
+            var mueCoordinates = _axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
+            var nextLambdaUI = 0;
+            var nextMueUI = 0;
+
+            if (_originUI == null)
             {
-                if (_axis.Coordinates.Contains(kvp.Key))
-                    continue;
-                uisToDelete.Add(kvp.Key);
+                var newUI = Instantiate(_originUiPrefab, transform);
+                newUI.Initialize(_axis, _direction, (changedCoordinate, parameter) =>
+                    _modelChangeRequest(_axis, changedCoordinate, parameter));
+                _originUI = newUI;
             }
 
-            foreach (var c in uisToDelete)
+            while (_uiPoolLambda.Count > lambdaCoordinates.Count)
             {
-                var ui = _ui[c];
-                Destroy(_ui[c].gameObject);
-                _ui.Remove(c);
+                var uiToRemove = _uiPoolLambda[0];
+                _uiPoolLambda.Remove(uiToRemove);
+                Destroy(uiToRemove.gameObject);
             }
 
-            for (var i = 0;
-                i < _axis.Coordinates.Count;
-                i++)
+            while (_uiPoolMue.Count > mueCoordinates.Count)
             {
-                var c = _axis.Coordinates[i];
+                var uiToRemove = _uiPoolMue[0];
+                _uiPoolMue.Remove(uiToRemove);
+                Destroy(uiToRemove.gameObject);
+            }
 
+            while (_uiPoolLambda.Count < lambdaCoordinates.Count)
+            {
+                var newUI = Instantiate(_lambdaUiPrefab, transform);
+                newUI.Initialize(_axis, _direction, (changedCoordinate, parameter) =>
+                    _modelChangeRequest(_axis, changedCoordinate, parameter));
+                _uiPoolLambda.Add(newUI);
+            }
+
+            while (_uiPoolMue.Count < mueCoordinates.Count)
+            {
+                var newUI = Instantiate(_mueUiPrefab, transform);
+                newUI.Initialize(_axis, _direction, (changedCoordinate, parameter) =>
+                    _modelChangeRequest(_axis, changedCoordinate, parameter));
+                _uiPoolMue.Add(newUI);
+            }
+
+            //update uis
+            for (var i = 0; i < _axis.Coordinates.Count; i++)
+            {
+                var coordinate = _axis.Coordinates[i];
                 var layoutInfo = new CoordinateUI.LayoutInfo()
                 {
                     Index = -i,
@@ -57,33 +84,25 @@ namespace UI
                     OrthogonalDirection = orthogonalDirection,
                 };
 
-                if (!_ui.ContainsKey(c))
+                switch (coordinate)
                 {
-                    CoordinateUI ui;
-                    switch (c)
-                    {
-                        case Mue _:
-                            ui = Instantiate(_mueUiPrefab, transform);
-                            break;
-                        case Lambda _:
-                            ui = Instantiate(_lambdaUiPrefab, transform);
-                            break;
-                        default:
-                            ui = Instantiate(_originUiPrefab, transform);
-                            break;
-                    }
-
-
-                    ui.Initialize(_axis,c, _direction,
-                        (coordinate, parameter) => _modelChangeRequest(_axis, coordinate, parameter));
-                    _ui.Add(c, ui);
+                    case Lambda lambda:
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(coordinate, layoutInfo);
+                        nextLambdaUI++;
+                        break;
+                    case Mue mue:
+                        _uiPoolMue[nextMueUI].UpdateUI(coordinate, layoutInfo);
+                        nextMueUI++;
+                        break;
+                    case Origin origin:
+                        _originUI.UpdateUI(coordinate, layoutInfo);
+                        break;
                 }
-
-                _ui[c].UpdateUI(layoutInfo);
             }
-  
         }
 
-        private readonly Dictionary<Coordinate, CoordinateUI> _ui = new Dictionary<Coordinate, CoordinateUI>();
+        private readonly List<CoordinateUI> _uiPoolMue = new List<CoordinateUI>();
+        private readonly List<CoordinateUI> _uiPoolLambda = new List<CoordinateUI>();
+        private CoordinateUI _originUI;
     }
 }

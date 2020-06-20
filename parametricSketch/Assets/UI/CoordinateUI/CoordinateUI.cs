@@ -13,19 +13,17 @@ public abstract class CoordinateUI : MonoBehaviour
     [SerializeField] protected LineRenderer _gridLine;
     [SerializeField] protected float _padding;
 
-    void Update()
+    protected void UpdateBase()
     {
+        CheckForParameterManipulation();
         MakeBillboard();
-        CheckForParameterManipultation();
     }
 
-    public void Initialize(Axis axis, Coordinate c, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
+    public void Initialize(Axis axis, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
     {
-        gameObject.name = c.Name;
         _modelChangeRequest = modelChangeRequest;
         _direction = direction;
         Axis = axis;
-        Coordinate = c;
     }
 
     public struct LayoutInfo
@@ -35,7 +33,7 @@ public abstract class CoordinateUI : MonoBehaviour
         public Vector3 OrthogonalDirection;
     }
 
-    public abstract void UpdateUI(LayoutInfo layoutInfo);
+    public abstract void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo);
 
     private void MakeBillboard()
     {
@@ -44,7 +42,7 @@ public abstract class CoordinateUI : MonoBehaviour
         transform.LookAt(target, camUp);
     }
 
-    private void CheckForParameterManipultation()
+    private void CheckForParameterManipulation()
     {
         if (Mathf.Abs(_uiExposedParameter - Coordinate.Parameter) > EPSILON)
         {
@@ -52,17 +50,7 @@ public abstract class CoordinateUI : MonoBehaviour
         }
     }
 
-    public void ManipulateCoordinate(Vector3 raycastPosition)
-    {
-        _modelChangeRequest(Coordinate, MousePositionToParameter(raycastPosition));
-    }
-
-    private float MousePositionToParameter(Vector3 mouseWorldPosition)
-    {
-        return Vector3.Dot(mouseWorldPosition, _direction) - Coordinate.ParentValue;
-    }
-
-    [FormerlySerializedAs("_coordinate")] public Coordinate Coordinate;
+    public Coordinate Coordinate;
     public Axis Axis;
     protected Vector3 _direction;
 

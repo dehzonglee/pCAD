@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Model
 {
+    [Serializable]
     public class Axis
     {
         private event Action _axisChangedEvent;

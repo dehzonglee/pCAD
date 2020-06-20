@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Model
 {
+    [Serializable]
     public class CoordinateSystem
     {
         public event Action CoordinateSystemChangedEvent;

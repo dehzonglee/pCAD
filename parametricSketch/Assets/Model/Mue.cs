@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Mue : Coordinate
 {
     public override float Value => ParentValue + Parameter;
@@ -14,8 +15,6 @@ public class Mue : Coordinate
         Action onChanged,
         bool isPreview)
         : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
-
-
     {
         Parameter = mue;
     }

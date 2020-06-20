@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Lambda : Coordinate
 {
     public override string Name => "Lambda";

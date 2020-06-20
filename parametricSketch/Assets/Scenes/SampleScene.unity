@@ -489,6 +489,16 @@ PrefabInstance:
       propertyPath: _ui.CoordinateSystem
       value: 
       objectReference: {fileID: 1020661455}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _ui.coordinateSystem
+      value: 
+      objectReference: {fileID: 1020661455}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _ui.rectangles
+      value: 
+      objectReference: {fileID: 1020661460}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97211cfa6f797b548a710f1fdd9f7e96, type: 3}
 --- !u!1 &1813854478

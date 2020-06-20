@@ -1,8 +1,17 @@
+using System;
+using Model;
+using UnityEngine;
+
 public class MueUI : CoordinateUI
 {
-    public override void UpdateUI(LayoutInfo layoutInfo)
+    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo)
     {
-        _label.text = Coordinate.Parameter.ToString("F");
+        Coordinate = coordinate;
+        var label = Coordinate.Parameter.ToString("F");
+//        if(Coordinate.IsPreview)
+//            Debug.Log();
+        _label.text = label;
+        gameObject.name = label;
         _uiExposedParameter = Coordinate.Parameter;
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
@@ -10,8 +19,7 @@ public class MueUI : CoordinateUI
         var coordinateUIPosition = _direction * Coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
-        var mue = Coordinate as Mue;
-        if (mue == null)
+        if (!(Coordinate is Mue mue))
         {
             _line.enabled = false;
             return;
@@ -29,5 +37,7 @@ public class MueUI : CoordinateUI
         _gridLine.useWorldSpace = true;
         _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
         _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
+        
+        UpdateBase();
     }
 }

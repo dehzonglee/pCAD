@@ -1,7 +1,13 @@
+using System;
+using Model;
+using UnityEngine;
+
 public class LambdaUI : CoordinateUI
 {
-    public override void UpdateUI(LayoutInfo layoutInfo)
+    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo)
     {
+        Coordinate = coordinate;
+        
         var lambda = Coordinate as Lambda;
         _label.text = "1/2";
         _label.gameObject.SetActive(false);
@@ -24,5 +30,8 @@ public class LambdaUI : CoordinateUI
         _gridLine.useWorldSpace = true;
         _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
         _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
+        
+        
+        UpdateBase();
     }
 }
