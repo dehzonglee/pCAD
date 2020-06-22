@@ -81,11 +81,61 @@ public static class UIMeshGenerationHelper
         }
     }
 
+    public static void AddScreenSpanningLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld,
+        float width, Color color)
+    {
+        AddScreenSpanningLine(vh, WorldToScreenPoint(originWorld), WorldToScreenPoint(directionWorld), width, color);
+    }
+
+    public static void AddScreenSpanningLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen,
+        float width, Color color)
+    {
+        Vector2 start;
+        Vector2 end;
+
+        if (directionScreen.magnitude == EPSILON)
+            return;
+
+        // is vertical
+        if (Math.Abs(directionScreen.x) < EPSILON)
+        {
+            start = new Vector2(originScreen.x, -Screen.height / 2f);
+            end = new Vector2(originScreen.x, Screen.height / 2f);
+        }
+        // is horizontal
+        else if (Math.Abs(directionScreen.y) < EPSILON)
+        {
+            start = new Vector2(-Screen.width / 2f, originScreen.y);
+            end = new Vector2(Screen.width / 2f, originScreen.y);
+        }
+        else
+        {
+            //todo decide if line should be drawn until horizontal or until vertical border
+            var m = directionScreen.y / directionScreen.x;
+
+            var deltaXToLeftBorder = -Screen.width / 2f - originScreen.x;
+            var deltaXToRightBorder = Screen.width / 2f - originScreen.x;
+
+            var yOnLeftBorder = originScreen.y + deltaXToLeftBorder * m;
+            var yOnRightBorder = originScreen.y + deltaXToRightBorder * m;
+
+            start = new Vector2(-Screen.width / 2f, yOnLeftBorder);
+            end = new Vector2(Screen.width / 2f, yOnRightBorder);
+        }
+
+        var widthVector = Vector2.Perpendicular(directionScreen).normalized * width;
+        var p0 = start + widthVector;
+        var p1 = end + 10 * directionScreen + widthVector;
+        var p2 = end + 10 * directionScreen - widthVector;
+        var p3 = start - widthVector;
+        AddQuadrilateral(vh, (p0, p1, p2, p3), color);
+    }
+
     private static void AddCircleSegment(VertexHelper vh, Vector2 circleCenterScreen, Vector2 startVector,
         float angleInDegrees, Color color)
     {
         var segmentResolution = angleInDegrees / 360f * CircleResolution;
-        for (var i = 0; i < segmentResolution - 1; i++)
+        for (var i = 0; i < segmentResolution; i++)
         {
             var angleP0 = i * angleInDegrees / segmentResolution;
             var angleP1 = (i + 1) * angleInDegrees / segmentResolution;
@@ -174,4 +224,12 @@ public static class UIMeshGenerationHelper
     }
 
     private const int CircleResolution = 20;
+
+    public static void AddCircle(VertexHelper vh, Vector3 positionWorld, float width, Color color)
+    {
+        var positionScreen = WorldToScreenPoint(positionWorld);
+        AddCircleSegment(vh, positionScreen, Vector2.right * width, 360f, color);
+    }
+
+    private const float EPSILON = 0.01f;
 }

@@ -10,8 +10,6 @@ public abstract class CoordinateUI : MonoBehaviour
     [SerializeField] protected float _uiExposedParameter;
     [SerializeField] protected TMPro.TMP_Text _label;
     [SerializeField] protected LineRenderer _line;
-    [SerializeField] protected LineRenderer _gridLine;
-    [SerializeField] protected float _padding;
 
     public struct LayoutInfo
     {
@@ -20,14 +18,13 @@ public abstract class CoordinateUI : MonoBehaviour
         public Vector3 OrthogonalDirection;
     }
 
-    public void Initialize(Axis axis, Vector3 direction, Action<Coordinate, float> modelChangeRequest)
+    public void Initialize(Axis axis, Action<Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
-        _direction = direction;
         Axis = axis;
     }
-    
-    public abstract void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo);
+
+    public abstract void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo, Vector3 direction, float padding);
 
     protected void UpdateBase()
     {
@@ -52,12 +49,12 @@ public abstract class CoordinateUI : MonoBehaviour
 
     public Coordinate Coordinate;
     public Axis Axis;
-    protected Vector3 _direction;
 
     private Action<Coordinate, float> _modelChangeRequest;
     private const float EPSILON = 0.001f;
 
     private Camera _cameraCache;
+
     private Camera _camera
     {
         get

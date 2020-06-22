@@ -6,7 +6,7 @@ public class MueUI : CoordinateUI
 {
     [SerializeField] private Color _activeColor;
     [SerializeField] private Color _defaultColor;
-    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo)
+    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo, Vector3 direction, float padding)
     {
         Coordinate = coordinate;
         var label = Coordinate.Parameter.ToString("F");
@@ -14,27 +14,21 @@ public class MueUI : CoordinateUI
         gameObject.name = $"Mue:{label}";
         _uiExposedParameter = Coordinate.Parameter;
 
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
-        var coordinateUIPosition = _direction * Coordinate.Value + offset;
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
+        var coordinateUIPosition = direction * Coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
-        var labelOffset = _padding * 0.5f * layoutInfo.OrthogonalDirection;
+        var labelOffset = padding * 0.5f * layoutInfo.OrthogonalDirection;
 
         var mue = Coordinate as Mue;
-        var parentCoordinateUIPosition = _direction * mue.ParentValue + offset;
+        var parentCoordinateUIPosition = direction * mue.ParentValue + offset;
         var labelPosition = (coordinateUIPosition + parentCoordinateUIPosition) * 0.5f + labelOffset;
-        Debug.Log($"{mue.Value}, {labelPosition}, {Time.frameCount}");
         _label.transform.position = labelPosition;
         _line.SetPosition(0, coordinateUIPosition);
         _line.SetPosition(1, parentCoordinateUIPosition);
 
         _line.material.SetColor("_Color", coordinate.IsPreview ? _activeColor : _defaultColor);  
         
-        _gridLine.positionCount = 2;
-        _gridLine.useWorldSpace = true;
-        _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
-        _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
-
         UpdateBase();
     }
 }

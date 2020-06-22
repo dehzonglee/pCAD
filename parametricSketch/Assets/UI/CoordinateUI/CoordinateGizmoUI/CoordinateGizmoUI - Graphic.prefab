@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1257163392938386
+--- !u!1 &5010503365224337226
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8535398472568451376}
-  - component: {fileID: 114933441742685344}
-  m_Layer: 0
-  m_Name: AxisUI
+  - component: {fileID: 8021704536294600439}
+  - component: {fileID: 5455655045989096671}
+  - component: {fileID: 2743558585930574845}
+  m_Layer: 5
+  m_Name: CoordinateGizmoUI - Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &8535398472568451376
+--- !u!224 &8021704536294600439
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257163392938386}
+  m_GameObject: {fileID: 5010503365224337226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -36,24 +37,30 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &114933441742685344
+--- !u!114 &5455655045989096671
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257163392938386}
+  m_GameObject: {fileID: 5010503365224337226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 537f52a6ea44e4b70929d1ba8b2b2fb2, type: 3}
+  m_Script: {fileID: 11500000, guid: 844fc6d371e976444bc4e4149350cfee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mueUiPrefab: {fileID: 114199161206364966, guid: bb80e564e042af849ae2bb17e5569012,
-    type: 3}
-  _mueUi2DPrefab: {fileID: 5026579306566173176, guid: 68b680aba12ab3b4ba436a37f4f17565,
-    type: 3}
-  _lambdaUiPrefab: {fileID: 114530041388460286, guid: b4cd0d4f4c4da4ca0b52b5b8b6f5abcd,
-    type: 3}
-  _originUiPrefab: {fileID: 114279801275401390, guid: 282723716d8a349879f9271d1cb565c2,
-    type: 3}
-  _padding: 0.01
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.33883503, g: 0.25645247, b: 0.4811321, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  width: 1
+--- !u!222 &2743558585930574845
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5010503365224337226}
+  m_CullTransparentMesh: 0

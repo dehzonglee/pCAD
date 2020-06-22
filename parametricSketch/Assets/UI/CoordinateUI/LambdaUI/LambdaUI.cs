@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LambdaUI : CoordinateUI
 {
-    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo)
+    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo, Vector3 direction, float padding)
     {
         Coordinate = coordinate;
         
@@ -13,24 +13,18 @@ public class LambdaUI : CoordinateUI
         _label.gameObject.SetActive(false);
         _uiExposedParameter = Coordinate.Parameter;
 
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * _padding);
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
 
-        var coordinateUIPosition = _direction * Coordinate.Value + offset;
+        var coordinateUIPosition = direction * Coordinate.Value + offset;
         transform.position = coordinateUIPosition;
 
-        var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * _padding;
+        var labelOffset = layoutInfo.OrthogonalDirection * 0.5f * padding;
 
-        var primaryParentCoordinateUIPosition = _direction * lambda.ParentValue + offset;
-        var secondaryParentCoordinateUIPosition = _direction * lambda.SecondaryParentValue + offset;
+        var primaryParentCoordinateUIPosition = direction * lambda.ParentValue + offset;
+        var secondaryParentCoordinateUIPosition = direction * lambda.SecondaryParentValue + offset;
         _label.transform.position = coordinateUIPosition + labelOffset;
         _line.SetPosition(0, primaryParentCoordinateUIPosition);
         _line.SetPosition(1, secondaryParentCoordinateUIPosition);
-
-        _gridLine.positionCount = 2;
-        _gridLine.useWorldSpace = true;
-        _gridLine.SetPosition(0, coordinateUIPosition + layoutInfo.OrthogonalDirection * 100f);
-        _gridLine.SetPosition(1, coordinateUIPosition + layoutInfo.OrthogonalDirection * -100f);
-        
         
         UpdateBase();
     }

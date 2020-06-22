@@ -10,13 +10,14 @@ namespace UI
     public class AxisUI : MonoBehaviour
     {
         [SerializeField] MueUI _mueUiPrefab;
+        [SerializeField] MueUI2D _mueUi2DPrefab;
 
         [SerializeField] LambdaUI _lambdaUiPrefab;
 
         [SerializeField] OriginUI _originUiPrefab;
+        [SerializeField] protected float _padding;
 
-//        private Axis axis;
-        private Vector3 _direction;
+
         private Action<Axis, Coordinate, float> _modelChangeRequest;
 
         internal void Initialize(Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction, string label)
@@ -36,8 +37,8 @@ namespace UI
             if (_originUI == null)
             {
                 var newUI = Instantiate(_originUiPrefab, transform);
-                newUI.Initialize(axis, _direction, (changedCoordinate, parameter) =>
-                    _modelChangeRequest(axis, changedCoordinate, parameter));
+                newUI.Initialize(axis,
+                    (changedCoordinate, parameter) => _modelChangeRequest(axis, changedCoordinate, parameter));
                 _originUI = newUI;
             }
 
@@ -52,23 +53,27 @@ namespace UI
             {
                 var uiToRemove = _uiPoolMue[0];
                 _uiPoolMue.Remove(uiToRemove);
-                Destroy(uiToRemove.gameObject);
+                Destroy(uiToRemove.ui.gameObject);
+                Destroy(uiToRemove.ui2D.gameObject);
             }
 
             while (_uiPoolLambda.Count < lambdaCoordinates.Count)
             {
                 var newUI = Instantiate(_lambdaUiPrefab, transform);
-                newUI.Initialize(axis, _direction, (changedCoordinate, parameter) =>
-                    _modelChangeRequest(axis, changedCoordinate, parameter));
+                newUI.Initialize(axis,
+                    (changedCoordinate, parameter) => _modelChangeRequest(axis, changedCoordinate, parameter));
                 _uiPoolLambda.Add(newUI);
             }
 
             while (_uiPoolMue.Count < mueCoordinates.Count)
             {
                 var newUI = Instantiate(_mueUiPrefab, transform);
-                newUI.Initialize(axis, _direction, (changedCoordinate, parameter) =>
+                newUI.Initialize(axis, (changedCoordinate, parameter) =>
                     _modelChangeRequest(axis, changedCoordinate, parameter));
-                _uiPoolMue.Add(newUI);
+
+                var newUI2D = Instantiate(_mueUi2DPrefab, transform);
+
+                _uiPoolMue.Add((newUI, newUI2D));
             }
 
             //update uis
@@ -85,22 +90,24 @@ namespace UI
                 switch (coordinate)
                 {
                     case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(coordinate, layoutInfo);
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(coordinate, layoutInfo, _direction, _padding);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(coordinate, layoutInfo);
+                        _uiPoolMue[nextMueUI].ui.UpdateUI(coordinate, layoutInfo, _direction, _padding);
+                        _uiPoolMue[nextMueUI].ui2D.UpdateUI(coordinate, layoutInfo, _direction, _padding);
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(coordinate, layoutInfo);
+                        _originUI.UpdateUI(coordinate, layoutInfo, _direction, _padding);
                         break;
                 }
             }
         }
 
-        private readonly List<CoordinateUI> _uiPoolMue = new List<CoordinateUI>();
+        private readonly List<(MueUI ui, MueUI2D ui2D)> _uiPoolMue = new List<(MueUI, MueUI2D)>();
         private readonly List<CoordinateUI> _uiPoolLambda = new List<CoordinateUI>();
         private CoordinateUI _originUI;
+        private Vector3 _direction;
     }
 }
