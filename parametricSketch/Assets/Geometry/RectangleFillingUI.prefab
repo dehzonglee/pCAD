@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 732502937695208256}
   - component: {fileID: 732502937695208259}
   m_Layer: 5
-  m_Name: RectangleUI2D
+  m_Name: RectangleFillingUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,9 +87,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.90588236, g: 0.99215686, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  GridCellSize: 17.9
