@@ -24,10 +24,13 @@ public class RectangleOutlineUI : MaskableGraphic
         var p2World = _upperRightCornerWorld;
         var p3World = new Vector3(_lowerLeftCornerWorld.x, 0f, _upperRightCornerWorld.z);
 
-        UIMeshGenerationHelper.AddLine(vh, p0World, p1World - p0World, width, base.color);
-        UIMeshGenerationHelper.AddLine(vh, p1World, p2World - p1World, width, base.color);
-        UIMeshGenerationHelper.AddLine(vh, p2World, p3World - p2World, width, base.color);
-        UIMeshGenerationHelper.AddLine(vh, p3World, p0World - p3World, width, base.color);
+        UIMeshGenerationHelper.AddLine(vh, p0World, p1World - p0World, width, base.color,
+            UIMeshGenerationHelper.CapsType.Round);
+        UIMeshGenerationHelper.AddLine(vh, p1World, p2World - p1World, width, base.color,
+            UIMeshGenerationHelper.CapsType.Round);
+        UIMeshGenerationHelper.AddLine(vh, p2World, p3World - p2World, width, base.color,
+            UIMeshGenerationHelper.CapsType.Round);
+        UIMeshGenerationHelper.AddLine(vh, p3World, p0World - p3World, width, base.color,
+            UIMeshGenerationHelper.CapsType.Round);
     }
-
 }
