@@ -422,9 +422,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6623ae5d0189d604994bdf2e93db3a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rectangleUIPrefab: {fileID: 114336721495925412, guid: 27e84c93730d2c242bf68ebbe85060ba,
+  rectangleFillingUIPrefab: {fileID: 732502937695208259, guid: a6da00359a4c6594c81230eda7171e7d,
     type: 3}
-  rectangleUI2DPrefab: {fileID: 732502937695208259, guid: a6da00359a4c6594c81230eda7171e7d,
+  rectangleOutlineUIPrefab: {fileID: -490368474876632340, guid: 4a934641b506eb44d82301507022473d,
     type: 3}
 --- !u!1001 &1509112552
 PrefabInstance:
