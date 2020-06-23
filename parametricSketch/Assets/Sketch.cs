@@ -29,7 +29,6 @@ public class Sketch : MonoBehaviour
         public List<RectangleModel> rectangles;
     }
 
-    [Serializable]
     public class RectangleModel
     {
         public (Coordinate x, Coordinate y, Coordinate z)? P0;
@@ -63,12 +62,9 @@ public class Sketch : MonoBehaviour
                 // delete next rectangle
                 if (_model.nextRectangle != null)
                 {
-                    if (_model.nextRectangle.P0 != null)
-                    {
-                        _model.nextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                        _model.nextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                        _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                    }
+                    _model.nextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                    _model.nextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                    _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
 
                     _model.nextRectangle = null;
                 }
@@ -193,8 +189,8 @@ public class Sketch : MonoBehaviour
     private void TryStartDrag()
     {
         var dragged = CoordinateManipulation.TryToHitCoordinate(_ui.coordinateSystemUI,
-            new Vector2(Input.mousePosition.x, Input.mousePosition.y) 
-           - 0.5f * new Vector2(Screen.width, Screen.height));
+            new Vector2(Input.mousePosition.x, Input.mousePosition.y)
+            - 0.5f * new Vector2(Screen.width, Screen.height));
 
         _model.draggedCoordinate = dragged;
     }
