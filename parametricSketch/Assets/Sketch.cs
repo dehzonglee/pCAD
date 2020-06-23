@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Interaction;
 using Model;
 using UI;
 using UnityEngine;
@@ -20,14 +21,15 @@ public class Sketch : MonoBehaviour
     [Serializable]
     private struct Model
     {
-        public bool IsDragging => capturedDrag != null;
+        public bool IsDragging => draggedCoordinate != null;
         public CoordinateSystem coordinateSystem;
         public (Coordinate x, Coordinate y, Coordinate z)? nextPosition;
-        public (Axis DraggedAxis, Coordinate DraggedCoordinate)? capturedDrag;
+        public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
     }
 
+    [Serializable]
     public class RectangleModel
     {
         public (Coordinate x, Coordinate y, Coordinate z)? P0;
@@ -61,9 +63,13 @@ public class Sketch : MonoBehaviour
                 // delete next rectangle
                 if (_model.nextRectangle != null)
                 {
-                    _model.nextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                    _model.nextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                    _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                    if (_model.nextRectangle.P0 != null)
+                    {
+                        _model.nextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                        _model.nextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                        _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
+                    }
+
                     _model.nextRectangle = null;
                 }
 
@@ -77,6 +83,11 @@ public class Sketch : MonoBehaviour
 
     private void Update()
     {
+        if (_model.draggedCoordinate != null)
+        {
+            Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
+        }
+
         // switch input state
         if (Input.GetKeyDown(ManipulateCoordinatesStateKey))
             SetState(State.ManipulateCoordinates);
@@ -181,15 +192,27 @@ public class Sketch : MonoBehaviour
 
     private void TryStartDrag()
     {
-        _model.capturedDrag = MouseInput.RaycastCoordinateUI;
+        var dragged = CoordinateManipulation.TryToHitCoordinate(_ui.coordinateSystemUI,
+            new Vector2(Input.mousePosition.x, Input.mousePosition.y) 
+           - 0.5f * new Vector2(Screen.width, Screen.height));
+
+        _model.draggedCoordinate = dragged;
     }
 
     private void UpdateDrag()
     {
-        var coordinate = _model.capturedDrag.Value.DraggedCoordinate;
-        var axis = _model.capturedDrag.Value.DraggedAxis;
-        ModelChangeRequestHandler(_model.capturedDrag.Value.DraggedAxis, _model.capturedDrag.Value.DraggedCoordinate,
-            MousePositionToParameter(MouseInput.RaycastPosition, coordinate, axis));
+        //todo: decide if axis of dragged coordinate needs to be remembered
+
+        Axis axisOfDraggedCoordinate;
+        if (_model.coordinateSystem.XAxis.Coordinates.Contains(_model.draggedCoordinate))
+            axisOfDraggedCoordinate = _model.coordinateSystem.XAxis;
+        else if (_model.coordinateSystem.YAxis.Coordinates.Contains(_model.draggedCoordinate))
+            axisOfDraggedCoordinate = _model.coordinateSystem.YAxis;
+        else
+            axisOfDraggedCoordinate = _model.coordinateSystem.ZAxis;
+
+        ModelChangeRequestHandler(_model.draggedCoordinate,
+            MousePositionToParameter(MouseInput.RaycastPosition, _model.draggedCoordinate, axisOfDraggedCoordinate));
     }
 
     private float MousePositionToParameter(Vector3 mouseWorldPosition, Coordinate coordinate, Axis axis)
@@ -199,10 +222,10 @@ public class Sketch : MonoBehaviour
 
     private void CompleteDrag()
     {
-        _model.capturedDrag = null;
+        _model.draggedCoordinate = null;
     }
 
-    private void ModelChangeRequestHandler(Axis axis, Coordinate coordinate, float value)
+    private void ModelChangeRequestHandler(Coordinate coordinate, float value)
     {
         coordinate.Parameter = value;
     }

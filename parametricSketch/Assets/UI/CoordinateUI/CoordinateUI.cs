@@ -18,10 +18,9 @@ public abstract class CoordinateUI : MonoBehaviour
         public Vector3 OrthogonalDirection;
     }
 
-    public void Initialize(Axis axis, Action<Coordinate, float> modelChangeRequest)
+    public void Initialize(Action<Coordinate, float> modelChangeRequest)
     {
         _modelChangeRequest = modelChangeRequest;
-        Axis = axis;
     }
 
     public abstract void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo, Vector3 direction, float padding);
@@ -48,7 +47,6 @@ public abstract class CoordinateUI : MonoBehaviour
     }
 
     public Coordinate Coordinate;
-    public Axis Axis;
 
     private Action<Coordinate, float> _modelChangeRequest;
     private const float EPSILON = 0.001f;

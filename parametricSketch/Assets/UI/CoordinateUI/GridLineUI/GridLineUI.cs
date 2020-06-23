@@ -9,8 +9,8 @@ public class GridLineUI : MaskableGraphic
 
     public void UpdateUI(Vector3 originWorld, Vector3 directionWorld)
     {
-        _originWorld = originWorld;
-        _directionWorld = directionWorld;
+        _originScreen =WorldScreenTransformationHelper.WorldToScreenPoint(originWorld);
+        _directionScreen =WorldScreenTransformationHelper.WorldToScreenPoint( directionWorld);
         SetVerticesDirty();
     }
 
@@ -18,9 +18,21 @@ public class GridLineUI : MaskableGraphic
     {
         // quick fix: assume that rectangle is projected on the xz plane
         vh.Clear();
-        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originWorld, _directionWorld, width, base.color);
+        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, width, base.color);
     }
 
-    private Vector3 _originWorld;
-    private Vector3 _directionWorld;
+    public float GetScreenDistanceToLine(Vector2 screenPosition)
+    {
+        //https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        var o = _originScreen;
+        var p = screenPosition;
+        var v = _directionScreen.normalized;
+        var normalToPoint = (o - p) - Vector2.Dot((o - p), v) * v;
+        
+        
+        return normalToPoint.magnitude;
+    }
+    
+    private Vector2 _originScreen;
+    private Vector2 _directionScreen;
 }

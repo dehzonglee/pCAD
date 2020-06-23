@@ -74,11 +74,11 @@ public static class UIMeshGenerationHelper
         }
     }
 
-    public static void AddScreenSpanningLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld,
-        float width, Color color)
-    {
-        AddScreenSpanningLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color);
-    }
+//    public static void AddScreenSpanningLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld,
+//        float width, Color color)
+//    {
+//        AddScreenSpanningLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color);
+//    }
 
     public static void AddScreenSpanningLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen,
         float width, Color color)

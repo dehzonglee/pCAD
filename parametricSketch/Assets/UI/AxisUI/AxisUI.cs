@@ -2,25 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Interaction;
 using Model;
 using UnityEngine;
 
 namespace UI
 {
-    public class AxisUI : MonoBehaviour
+    public class AxisUI : MonoBehaviour, CoordinateManipulation.IScreenDistanceCalculator
     {
-        [SerializeField] MueUI _mueUiPrefab;
-        [SerializeField] MueUI2D _mueUi2DPrefab;
+        [SerializeField] MueUI2D _mueUi2DPrefab=null;
+        [SerializeField] LambdaUI _lambdaUiPrefab=null;
+        [SerializeField] OriginUI _originUiPrefab=null;
+        [SerializeField] protected float _padding=default;
 
-        [SerializeField] LambdaUI _lambdaUiPrefab;
+        private Action<Coordinate, float> _modelChangeRequest;
 
-        [SerializeField] OriginUI _originUiPrefab;
-        [SerializeField] protected float _padding;
-
-
-        private Action<Axis, Coordinate, float> _modelChangeRequest;
-
-        internal void Initialize(Action<Axis, Coordinate, float> modelChangeRequest, Vector3 direction, string label)
+        internal void Initialize(Action<Coordinate, float> modelChangeRequest, Vector3 direction, string label)
         {
             gameObject.name = label;
             _direction = direction;
@@ -37,8 +34,7 @@ namespace UI
             if (_originUI == null)
             {
                 var newUI = Instantiate(_originUiPrefab, transform);
-                newUI.Initialize(axis,
-                    (changedCoordinate, parameter) => _modelChangeRequest(axis, changedCoordinate, parameter));
+                newUI.Initialize((changedCoordinate, parameter) => _modelChangeRequest(changedCoordinate, parameter));
                 _originUI = newUI;
             }
 
@@ -59,19 +55,13 @@ namespace UI
             while (_uiPoolLambda.Count < lambdaCoordinates.Count)
             {
                 var newUI = Instantiate(_lambdaUiPrefab, transform);
-                newUI.Initialize(axis,
-                    (changedCoordinate, parameter) => _modelChangeRequest(axis, changedCoordinate, parameter));
+                newUI.Initialize((changedCoordinate, parameter) => _modelChangeRequest(changedCoordinate, parameter));
                 _uiPoolLambda.Add(newUI);
             }
 
             while (_uiPoolMue.Count < mueCoordinates.Count)
             {
-                var newUI = Instantiate(_mueUiPrefab, transform);
-                newUI.Initialize(axis, (changedCoordinate, parameter) =>
-                    _modelChangeRequest(axis, changedCoordinate, parameter));
-
                 var newUI2D = Instantiate(_mueUi2DPrefab, transform);
-
                 _uiPoolMue.Add(newUI2D);
             }
 
@@ -101,6 +91,12 @@ namespace UI
                         break;
                 }
             }
+        }
+
+        List<CoordinateManipulation.ScreenDistance> CoordinateManipulation.IScreenDistanceCalculator.
+            GetAllDistancesToCoordinateUIs(Vector2 screenPos)
+        {
+            return _uiPoolMue.Select(ui => ui.GetScreenDistanceToCoordinate(screenPos)).ToList();
         }
 
         private readonly List<MueUI2D> _uiPoolMue = new List<MueUI2D>();

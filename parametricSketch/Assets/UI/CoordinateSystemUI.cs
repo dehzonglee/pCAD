@@ -1,15 +1,16 @@
 ﻿using System;
+using Interaction;
 using Model;
 using UnityEngine;
 
 namespace UI
 {
-    public class CoordinateSystemUI : MonoBehaviour
+    public class CoordinateSystemUI : MonoBehaviour, CoordinateManipulation.IScreenDistanceCalculatorProvider
     {
         [SerializeField] AxisUI _axisUIPrefab;
         [SerializeField] AnchorUI _anchorUIPrefab;
 
-        public void Initialize(CoordinateSystem cs, Action<Axis, Coordinate, float> modelChangeRequest)
+        public void Initialize(CoordinateSystem cs, Action< Coordinate, float> modelChangeRequest)
         {
             _xAxisUI = Instantiate(_axisUIPrefab, transform);
             _xAxisUI.Initialize( modelChangeRequest, Vector3.right, "xAxisUI");
@@ -50,5 +51,11 @@ namespace UI
         private AxisUI _yAxisUI;
         private AxisUI _zAxisUI;
         private AnchorUI _anchorUI;
+
+        public (CoordinateManipulation.IScreenDistanceCalculator x, CoordinateManipulation.IScreenDistanceCalculator y,
+            CoordinateManipulation.IScreenDistanceCalculator z) GetProvidersForAxis()
+        {
+            return (_xAxisUI, _yAxisUI, _zAxisUI);
+        }
     }
 }
