@@ -53,8 +53,7 @@ namespace UI
             {
                 var uiToRemove = _uiPoolMue[0];
                 _uiPoolMue.Remove(uiToRemove);
-                Destroy(uiToRemove.ui.gameObject);
-                Destroy(uiToRemove.ui2D.gameObject);
+                Destroy(uiToRemove.gameObject);
             }
 
             while (_uiPoolLambda.Count < lambdaCoordinates.Count)
@@ -73,7 +72,7 @@ namespace UI
 
                 var newUI2D = Instantiate(_mueUi2DPrefab, transform);
 
-                _uiPoolMue.Add((newUI, newUI2D));
+                _uiPoolMue.Add(newUI2D);
             }
 
             //update uis
@@ -94,8 +93,7 @@ namespace UI
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].ui.UpdateUI(coordinate, layoutInfo, _direction, _padding);
-                        _uiPoolMue[nextMueUI].ui2D.UpdateUI(coordinate, layoutInfo, _direction, _padding);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding);
                         nextMueUI++;
                         break;
                     case Origin origin:
@@ -105,7 +103,7 @@ namespace UI
             }
         }
 
-        private readonly List<(MueUI ui, MueUI2D ui2D)> _uiPoolMue = new List<(MueUI, MueUI2D)>();
+        private readonly List<MueUI2D> _uiPoolMue = new List<MueUI2D>();
         private readonly List<CoordinateUI> _uiPoolLambda = new List<CoordinateUI>();
         private CoordinateUI _originUI;
         private Vector3 _direction;

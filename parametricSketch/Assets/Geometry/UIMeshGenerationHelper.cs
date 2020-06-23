@@ -45,17 +45,10 @@ public static class UIMeshGenerationHelper
         vh.AddTriangle(i + 3, i + 2, i + 0);
     }
 
-
-    public static Vector2 WorldToScreenPoint(Vector3 worldPosition)
-    {
-        var screenCenter = new Vector2(Screen.width, Screen.height) / 2f;
-        return RectTransformUtility.WorldToScreenPoint(Camera.main, worldPosition) - screenCenter;
-    }
-
     public static void AddLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld, float width, Color color,
         CapsType capsType)
     {
-        AddLine(vh, WorldToScreenPoint(originWorld), WorldToScreenPoint(directionWorld), width, color, capsType);
+        AddLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color, capsType);
     }
 
     public static void AddLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen, float width, Color color,
@@ -84,7 +77,7 @@ public static class UIMeshGenerationHelper
     public static void AddScreenSpanningLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld,
         float width, Color color)
     {
-        AddScreenSpanningLine(vh, WorldToScreenPoint(originWorld), WorldToScreenPoint(directionWorld), width, color);
+        AddScreenSpanningLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color);
     }
 
     public static void AddScreenSpanningLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen,
@@ -161,10 +154,10 @@ public static class UIMeshGenerationHelper
         AddQuadrilateral(
             vh,
             (
-                WorldToScreenPoint(worldPosition.p0),
-                WorldToScreenPoint(worldPosition.p1),
-                WorldToScreenPoint(worldPosition.p2),
-                WorldToScreenPoint(worldPosition.p3)
+                WorldScreenTransformationHelper.WorldToScreenPoint(worldPosition.p0),
+                WorldScreenTransformationHelper.WorldToScreenPoint(worldPosition.p1),
+                WorldScreenTransformationHelper.WorldToScreenPoint(worldPosition.p2),
+                WorldScreenTransformationHelper.WorldToScreenPoint(worldPosition.p3)
             ),
             color);
     }
@@ -227,7 +220,7 @@ public static class UIMeshGenerationHelper
 
     public static void AddCircle(VertexHelper vh, Vector3 positionWorld, float width, Color color)
     {
-        var positionScreen = WorldToScreenPoint(positionWorld);
+        var positionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
         AddCircleSegment(vh, positionScreen, Vector2.right * width, 360f, color);
     }
 
