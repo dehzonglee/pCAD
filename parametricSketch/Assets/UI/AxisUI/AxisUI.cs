@@ -11,7 +11,7 @@ namespace UI
     public class AxisUI : MonoBehaviour, CoordinateManipulation.IScreenDistanceCalculator
     {
         [SerializeField] MueUI2D _mueUi2DPrefab=null;
-        [SerializeField] LambdaUI _lambdaUiPrefab=null;
+        [SerializeField] LambdaUI2D _lambdaUiPrefab=null;
         [SerializeField] OriginUI _originUiPrefab=null;
         [SerializeField] protected float _padding=default;
 
@@ -55,7 +55,6 @@ namespace UI
             while (_uiPoolLambda.Count < lambdaCoordinates.Count)
             {
                 var newUI = Instantiate(_lambdaUiPrefab, transform);
-                newUI.Initialize((changedCoordinate, parameter) => _modelChangeRequest(changedCoordinate, parameter));
                 _uiPoolLambda.Add(newUI);
             }
 
@@ -79,7 +78,7 @@ namespace UI
                 switch (coordinate)
                 {
                     case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(coordinate, layoutInfo, _direction, _padding);
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
@@ -100,7 +99,7 @@ namespace UI
         }
 
         private readonly List<MueUI2D> _uiPoolMue = new List<MueUI2D>();
-        private readonly List<CoordinateUI> _uiPoolLambda = new List<CoordinateUI>();
+        private readonly List<LambdaUI2D> _uiPoolLambda = new List<LambdaUI2D>();
         private CoordinateUI _originUI;
         private Vector3 _direction;
     }

@@ -48,11 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 537f52a6ea44e4b70929d1ba8b2b2fb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mueUiPrefab: {fileID: 114199161206364966, guid: bb80e564e042af849ae2bb17e5569012,
-    type: 3}
   _mueUi2DPrefab: {fileID: 5026579306566173176, guid: 68b680aba12ab3b4ba436a37f4f17565,
     type: 3}
-  _lambdaUiPrefab: {fileID: 114530041388460286, guid: b4cd0d4f4c4da4ca0b52b5b8b6f5abcd,
+  _lambdaUiPrefab: {fileID: -3366539156561874925, guid: 6dff2981c801153448c9f5a8c04eb66e,
     type: 3}
   _originUiPrefab: {fileID: 114279801275401390, guid: 282723716d8a349879f9271d1cb565c2,
     type: 3}
