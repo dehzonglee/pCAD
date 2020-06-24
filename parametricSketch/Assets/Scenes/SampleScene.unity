@@ -511,6 +511,30 @@ PrefabInstance:
       propertyPath: _ui.coordinateSystemUI
       value: 
       objectReference: {fileID: 1020661455}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _coordinateUIStyle
+      value: 
+      objectReference: {fileID: 11400000, guid: ff1b067ce3ea36d48959c4063ee0d599,
+        type: 2}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _geometryStyle
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f3a1f88db3c3b544ba5e01905151223,
+        type: 2}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _sketchStyle.GeometryStyle
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f3a1f88db3c3b544ba5e01905151223,
+        type: 2}
+    - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
+        type: 3}
+      propertyPath: _sketchStyle.CoordinateUIStyle
+      value: 
+      objectReference: {fileID: 11400000, guid: ff1b067ce3ea36d48959c4063ee0d599,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97211cfa6f797b548a710f1fdd9f7e96, type: 3}
 --- !u!1 &1813854478

@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04582b7b5c90d84d864d96e3164dbe5, type: 3}
+  m_Name: CoordianteUIStyle
+  m_EditorClassIdentifier: 
+  LambdaStyle:
+    Default:
+      GridLineStyle:
+        Color: {r: 1, g: 0.7971698, b: 0.9642064, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+    Dimmed:
+      GridLineStyle:
+        Color: {r: 1, g: 0.5424528, b: 0.89577234, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+    Focus:
+      GridLineStyle:
+        Color: {r: 1, g: 0.5424528, b: 0.929977, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+  MueStyle:
+    Default:
+      GridLineStyle:
+        Color: {r: 0.888, g: 0.888, b: 0.888, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0.811, g: 0.811, b: 0.811, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+    Dimmed:
+      GridLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+    Focus:
+      GridLineStyle:
+        Color: {r: 0.90900004, g: 0.90900004, b: 0.90900004, a: 0.56078434}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      DimensionLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      LabelStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        FontSize: 10
+  OriginStyle:
+    Default:
+      GridLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+    Dimmed:
+      GridLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+    Focus:
+      GridLineStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5
+      CoordinateGizmoStyle:
+        Color: {r: 0, g: 0, b: 0, a: 1}
+        Width: 0.5

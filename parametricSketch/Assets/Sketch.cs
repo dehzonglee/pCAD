@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 public class Sketch : MonoBehaviour
 {
     [SerializeField] private UI _ui;
-    private Model _model;
+    [SerializeField] private SketchStyle _sketchStyle;
 
     [Serializable]
     public struct UI
@@ -33,6 +33,7 @@ public class Sketch : MonoBehaviour
     {
         public (Coordinate x, Coordinate y, Coordinate z)? P0;
         public (Coordinate x, Coordinate y, Coordinate z)? P1;
+        public bool IsBaked;
     }
 
     private void Start()
@@ -156,6 +157,7 @@ public class Sketch : MonoBehaviour
                     {
                         //complete rectangle
                         _model.nextRectangle.P1 = _model.nextPosition.Value;
+                        _model.nextRectangle.IsBaked = true;
                         _model.nextRectangle = null;
                     }
                 }
@@ -175,8 +177,8 @@ public class Sketch : MonoBehaviour
 
     private void UpdateUI()
     {
-        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem);
-        _ui.rectanglesUI.UpdateUI(_model.rectangles);
+        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle);
+        _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
     private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
@@ -237,6 +239,7 @@ public class Sketch : MonoBehaviour
     private const KeyCode DrawKey = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;
+    private Model _model;
 
     private State _state = State.ManipulateCoordinates;
 }

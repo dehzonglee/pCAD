@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class GridLineUI : MaskableGraphic
 {
-    [SerializeField] private float width = 1f;
-
-    public void UpdateUI(Vector3 originWorld, Vector3 directionWorld)
+    public void UpdateUI(Vector3 originWorld, Vector3 directionWorld,
+        CoordinateUIStyle.GridLineStyle lambdaStyleGridLineStyle)
     {
         _originScreen =WorldScreenTransformationHelper.WorldToScreenPoint(originWorld);
         _directionScreen =WorldScreenTransformationHelper.WorldToScreenPoint( directionWorld);
+        _style = lambdaStyleGridLineStyle;
         SetVerticesDirty();
     }
 
@@ -18,7 +18,7 @@ public class GridLineUI : MaskableGraphic
     {
         // quick fix: assume that rectangle is projected on the xz plane
         vh.Clear();
-        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, width, base.color);
+        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color);
     }
 
     public float GetScreenDistanceToLine(Vector2 screenPosition)
@@ -32,7 +32,9 @@ public class GridLineUI : MaskableGraphic
         
         return normalToPoint.magnitude;
     }
-    
+
+    private CoordinateUIStyle.GridLineStyle _style;
+
     private Vector2 _originScreen;
     private Vector2 _directionScreen;
 }

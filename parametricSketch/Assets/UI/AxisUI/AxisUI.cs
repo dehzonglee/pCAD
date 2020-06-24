@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Interaction;
 using Model;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace UI
 {
@@ -24,7 +25,8 @@ namespace UI
             _modelChangeRequest = modelChangeRequest;
         }
 
-        public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor)
+        public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
+            CoordinateUIStyle coordinateUIStyle)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -77,15 +79,15 @@ namespace UI
                 switch (coordinate)
                 {
                     case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding);
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,coordinateUIStyle.LambdaStyle);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding,coordinateUIStyle.MueStyle);
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding);
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding,coordinateUIStyle.OriginStyle);
                         break;
                 }
             }

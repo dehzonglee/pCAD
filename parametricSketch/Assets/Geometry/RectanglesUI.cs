@@ -13,7 +13,7 @@ namespace UI
         [FormerlySerializedAs("rectangleOutlineUI2DPrefab")] [SerializeField]
         private RectangleOutlineUI rectangleOutlineUIPrefab;
 
-        public void UpdateUI(List<Sketch.RectangleModel> rectangleModels)
+        public void UpdateUI(List<Sketch.RectangleModel> rectangleModels, GeometryStyle.RectangleStyleSet styleSet)
         {
             var validRectangles = rectangleModels.Where(rm => rm.P0.HasValue && rm.P1.HasValue).ToList();
             while (_uiPool.Count > validRectangles.Count)
@@ -36,9 +36,9 @@ namespace UI
                 var rectangleModel = validRectangles[i];
                 var p0 = rectangleModel.P0.Value;
                 var p1 = rectangleModel.P1.Value;
-
-                _uiPool[i].filling.UpdateCorners(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1));
-                _uiPool[i].outline.UpdateCorners(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1));
+                var style = rectangleModel.IsBaked ? styleSet.Default : styleSet.Focus;
+                _uiPool[i].filling.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
+                _uiPool[i].outline.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
             }
         }
 

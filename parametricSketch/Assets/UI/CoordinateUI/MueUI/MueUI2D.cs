@@ -13,8 +13,10 @@ public class MueUI2D : MonoBehaviour
     [SerializeField] protected CoordinateDimensionLineUI _coordinateDimensionLineUI = null;
     [SerializeField] protected CoordinateLabelUI _coordinateLabelUI = null;
 
-    public void UpdateUI(Mue coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding)
+    public void UpdateUI(Mue coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
+        CoordinateUIStyle.MueStyleSet styleSet)
     {
+        var style = coordinate.IsPreview ? styleSet.Focus : styleSet.Default;
         _coordinate = coordinate;
         var labelString = coordinate.Parameter.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
@@ -26,11 +28,11 @@ public class MueUI2D : MonoBehaviour
         var labelOffset = padding * 0.5f * layoutInfo.OrthogonalDirection;
         var labelPosition = (coordinateUIPositionWorld + parentCoordinateUIPositionWorld) * 0.5f + labelOffset;
         
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection);
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld);
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle);
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld,style.CoordinateGizmoStyle);
         _coordinateDimensionLineUI.UpdateUI(coordinateUIPositionWorld, parentCoordinateUIPositionWorld,
-            coordinate.IsPreview);
-        _coordinateLabelUI.UpdateUI(labelString, labelPosition);
+            coordinate.IsPreview, style.DimensionLineStyle);
+        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)
