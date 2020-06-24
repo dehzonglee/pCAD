@@ -1,15 +1,31 @@
+using Interaction;
 using UnityEngine;
 
-public class OriginUI : CoordinateUI
+public class OriginUI : MonoBehaviour
 {
-    public override void UpdateUI(Coordinate coordinate, LayoutInfo layoutInfo, Vector3 direction, float padding)
-    {
-        Coordinate = coordinate;
-        _label.gameObject.SetActive(false);
+    [SerializeField] protected GridLineUI _gridLineUI = null;
+    [SerializeField] protected CoordinateGizmoUI _coordinateGizmoUI = null;
 
-        var coordinateUIPosition = direction * Coordinate.Value;
-        transform.position = coordinateUIPosition;
+    public void UpdateUI(Origin coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding)
+    {
+        _coordinate = coordinate;
+        var labelString = coordinate.Parameter.ToString("F");
+        gameObject.name = $"Origin:{labelString}";
+
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
+        var coordinateUIPositionWorld = direction * coordinate.Value + offset;
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection);
         
-        UpdateBase();
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld);
     }
+
+    public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)
+    {
+        var distance = _gridLineUI.GetScreenDistanceToLine(screenPos);
+        Debug.Log($"distance to {_coordinate.Parameter} is {distance}");
+        return new CoordinateManipulation.ScreenDistance()
+            {Coordinate = _coordinate, ScreenDistanceToCoordinate = distance};
+    }
+
+    private Origin _coordinate;
 }

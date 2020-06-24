@@ -52,6 +52,6 @@ MonoBehaviour:
     type: 3}
   _lambdaUiPrefab: {fileID: -3366539156561874925, guid: 6dff2981c801153448c9f5a8c04eb66e,
     type: 3}
-  _originUiPrefab: {fileID: 114279801275401390, guid: 282723716d8a349879f9271d1cb565c2,
+  _originUiPrefab: {fileID: 1762832287587304806, guid: a95661d4b9b1e674abf94072b030088f,
     type: 3}
   _padding: 0.01

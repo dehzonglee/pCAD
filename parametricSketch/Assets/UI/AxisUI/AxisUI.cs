@@ -34,7 +34,6 @@ namespace UI
             if (_originUI == null)
             {
                 var newUI = Instantiate(_originUiPrefab, transform);
-                newUI.Initialize((changedCoordinate, parameter) => _modelChangeRequest(changedCoordinate, parameter));
                 _originUI = newUI;
             }
 
@@ -86,7 +85,7 @@ namespace UI
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(coordinate, layoutInfo, _direction, _padding);
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding);
                         break;
                 }
             }
@@ -100,7 +99,7 @@ namespace UI
 
         private readonly List<MueUI2D> _uiPoolMue = new List<MueUI2D>();
         private readonly List<LambdaUI2D> _uiPoolLambda = new List<LambdaUI2D>();
-        private CoordinateUI _originUI;
+        private OriginUI _originUI;
         private Vector3 _direction;
     }
 }

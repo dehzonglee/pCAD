@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5026579306566173177}
-  - component: {fileID: 5026579306566173176}
   - component: {fileID: -3366539156561874925}
   m_Layer: 5
   m_Name: LambdaUI2D
@@ -43,22 +42,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5026579306566173176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5026579306566173178}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1acf48a0a816aab43974a3001ef15823, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gridLineUI: {fileID: 2658368990494461100}
-  _coordinateGizmoUI: {fileID: 5260494749330795239}
-  _coordinateDimensionLineUI: {fileID: 4216211414883100461}
-  _coordinateLabelUI: {fileID: 7088614431622614124}
 --- !u!114 &-3366539156561874925
 MonoBehaviour:
   m_ObjectHideFlags: 0
