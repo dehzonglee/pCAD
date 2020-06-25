@@ -35,26 +35,24 @@ namespace UI
 
             UpdatePool(lambdaCoordinates, mueCoordinates);
 
-            var layoutIndex = 0;
-            var row = new CoordinateRow();
+            var rows = new List<CoordinateRow>();
+            rows.Add(new CoordinateRow(0));
 
             //update uis
-            for (var i = 0; i < axis.Coordinates.Count; i++)
+            foreach (var c in axis.Coordinates)
             {
-                var c = axis.Coordinates[i];
-
-                // try to fit multiple coordinates into one row
-                if (!row.DoesCoordinateFitIntoRow(c))
+                if (!rows.Any(r => r.DoesCoordinateFitIntoRow(c)))
                 {
-                    row = new CoordinateRow();
-                    layoutIndex++;
+                    var newRow = new CoordinateRow(rows.Count);
+                    rows.Add(newRow);
                 }
 
-                row.AddCoordinate(c);
+                var selectedRow = rows.First(r => r.DoesCoordinateFitIntoRow(c));
+                selectedRow.AddCoordinate(c);
 
                 var layoutInfo = new CoordinateUI.LayoutInfo()
                 {
-                    Index = -layoutIndex,
+                    Index = -selectedRow.Index,
                     OrthogonalAnchor = orthogonalAnchor,
                     OrthogonalDirection = orthogonalDirection,
                 };
@@ -79,6 +77,13 @@ namespace UI
 
         private class CoordinateRow
         {
+            public readonly int Index;
+
+            public CoordinateRow(int index)
+            {
+                Index = index;
+            }
+
             public void AddCoordinate(Coordinate c)
             {
                 _coordinates.Add(c);

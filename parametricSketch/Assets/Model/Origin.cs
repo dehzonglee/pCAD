@@ -7,7 +7,7 @@ public class Origin : Coordinate
 
     public override (float min, float max) GetBounds()
     {
-        return (0f, 0f);
+        return (float.NegativeInfinity, float.PositiveInfinity); //make origin block the layout row, maybe this should be done in the ui instead
     }
 
     public Origin() : base(false, null, null, new List<Coordinate>())
