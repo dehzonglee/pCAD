@@ -48,7 +48,8 @@ public static class UIMeshGenerationHelper
     public static void AddLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld, float width, Color color,
         CapsType capsType)
     {
-        AddLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color, capsType);
+        AddLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld),
+            WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color, capsType);
     }
 
     public static void AddLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen, float width, Color color,
@@ -73,13 +74,7 @@ public static class UIMeshGenerationHelper
                 throw new ArgumentOutOfRangeException(nameof(capsType), capsType, null);
         }
     }
-
-//    public static void AddScreenSpanningLine(VertexHelper vh, Vector3 originWorld, Vector3 directionWorld,
-//        float width, Color color)
-//    {
-//        AddScreenSpanningLine(vh, WorldScreenTransformationHelper.WorldToScreenPoint(originWorld), WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld), width, color);
-//    }
-
+    
     public static void AddScreenSpanningLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen,
         float width, Color color)
     {
@@ -136,16 +131,6 @@ public static class UIMeshGenerationHelper
             var p1 = circleCenterScreen + RotateVector(startVector, angleP1);
             AddTriangle(vh, (circleCenterScreen, p0, p1), color);
         }
-    }
-
-    private static Vector2 RotateVector(Vector2 v, float angleInDegrees)
-    {
-        var angleInRadians = angleInDegrees / 180f * Mathf.PI;
-        var cosOfAngle = Mathf.Cos(angleInRadians);
-        var sinOfAngle = Mathf.Sin(angleInRadians);
-        return new Vector2(
-            v.x * cosOfAngle - v.y * sinOfAngle,
-            v.x * sinOfAngle - v.y * cosOfAngle);
     }
 
     public static void AddQuadrilateral(VertexHelper vh, (Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3) worldPosition,
@@ -210,6 +195,54 @@ public static class UIMeshGenerationHelper
         vh.AddTriangle(i + 0, i + 2, i + 1);
     }
 
+    public static void AddCircle(VertexHelper vh, Vector3 positionWorld, float width, Color color)
+    {
+        var positionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
+        AddCircleSegment(vh, positionScreen, Vector2.right * width, 360f, color);
+    }
+
+    public static void AddArrow(VertexHelper vh, Vector3 positionWorld, Vector3 directionWorld, float width,
+        Color color, float angle)
+    {
+        var positionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
+        var directionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld);
+
+        var v = -directionScreen / directionScreen.magnitude * width;
+        var p0 = positionScreen;
+        var p2 = p0 + v;
+        var p1 = p2 + RotateVector(-v, -angle);
+        var p3 = p2 + RotateVector(-v, angle);
+        AddQuadrilateral(vh, (p0, p1, p2, p3), color);
+    }
+
+    public static void AddMark(VertexHelper vh, Vector3 positionWorld, Vector3 directionWorld, float width,
+        float height,
+        Color color, Vector2 dimensions)
+    {
+        var positionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
+        var directionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld);
+        var wVector = dimensions.x * directionScreen.normalized;
+        var hVector = dimensions.y * RotateVector(directionScreen.normalized, 90f);
+
+        var p0 = positionScreen - wVector - hVector;
+        var p1 = positionScreen - wVector + hVector;
+        var p2 = positionScreen + wVector + hVector;
+        var p3 = positionScreen + wVector - hVector;
+        AddQuadrilateral(vh, (p0, p1, p2, p3), color);
+    }
+
+    private static Vector2
+        RotateVector(Vector2 v, float angleInDegrees)
+    {
+        var angleInRadians = angleInDegrees / 180f * Mathf.PI;
+        var cosOfAngle = Mathf.Cos(angleInRadians);
+        var sinOfAngle = Mathf.Sin(angleInRadians);
+        return new Vector2(
+            v.x * cosOfAngle - v.y * sinOfAngle,
+            v.x * sinOfAngle + v.y * cosOfAngle);
+    }
+
+
     public enum CapsType
     {
         None,
@@ -217,12 +250,5 @@ public static class UIMeshGenerationHelper
     }
 
     private const int CircleResolution = 20;
-
-    public static void AddCircle(VertexHelper vh, Vector3 positionWorld, float width, Color color)
-    {
-        var positionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
-        AddCircleSegment(vh, positionScreen, Vector2.right * width, 360f, color);
-    }
-
     private const float EPSILON = 0.01f;
 }

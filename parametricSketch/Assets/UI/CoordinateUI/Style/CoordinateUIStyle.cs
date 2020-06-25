@@ -36,6 +36,8 @@ public class CoordinateUIStyle : ScriptableObject
     [Serializable]
     public class CoordinateGizmoStyle
     {
+        public float ArrowAngle = 30f;
+        public Vector2 MarkDimensions = new Vector2(1f,2f);
         public ColorSet Color = ColorSet.DefaultSet;
         public float Width = 0.5f;
     }

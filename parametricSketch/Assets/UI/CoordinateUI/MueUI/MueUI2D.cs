@@ -4,7 +4,8 @@ using UnityEngine;
 public class MueUI2D : MonoBehaviour
 {
     [SerializeField] protected GridLineUI _gridLineUI = null;
-    [SerializeField] protected CoordinateGizmoUI _coordinateGizmoUI = null;
+    [SerializeField] protected CoordinateGizmoUI _targetGizmo = null;
+    [SerializeField] protected CoordinateGizmoUI _parentGizmo = null;
     [SerializeField] protected CoordinateDimensionLineUI _coordinateDimensionLineUI = null;
     [SerializeField] protected CoordinateLabelUI _coordinateLabelUI = null;
 
@@ -18,12 +19,13 @@ public class MueUI2D : MonoBehaviour
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
-
         var parentCoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
+        var directionWorld = coordinateUIPositionWorld - parentCoordinateUIPositionWorld;
         var labelPosition = (coordinateUIPositionWorld + parentCoordinateUIPositionWorld) * 0.5f;
 
         _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle,state);
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, style.CoordinateGizmoStyle,state);
+        _targetGizmo.UpdateUI(coordinateUIPositionWorld, directionWorld,style.CoordinateGizmoStyle,state, CoordinateGizmoUI.Type.Arrow);
+        _parentGizmo.UpdateUI(parentCoordinateUIPositionWorld, directionWorld,style.CoordinateGizmoStyle,state, CoordinateGizmoUI.Type.Mark);
         _coordinateDimensionLineUI.UpdateUI(coordinateUIPositionWorld, parentCoordinateUIPositionWorld,
             style.DimensionLineStyle,state);
         _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle,state);

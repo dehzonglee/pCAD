@@ -30,9 +30,10 @@ public class LambdaUI2D : MonoBehaviour
         var parent1CoordinateUIPositionWorld = direction * coordinate.SecondaryParentValue + offset;
         var labelPosition = coordinateUIPositionWorld; 
         _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
-        _parent0GizmoUI.UpdateUI(parent0CoordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
-        _parent1GizmoUI.UpdateUI(parent1CoordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
+        var directionWorld = parent1CoordinateUIPositionWorld - parent0CoordinateUIPositionWorld;
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state, CoordinateGizmoUI.Type.Mark);
+        _parent0GizmoUI.UpdateUI(parent0CoordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state ,CoordinateGizmoUI.Type.Circle);
+        _parent1GizmoUI.UpdateUI(parent1CoordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state ,CoordinateGizmoUI.Type.Circle);
         _coordinateDimensionLineUI.UpdateUI(parent0CoordinateUIPositionWorld, parent1CoordinateUIPositionWorld,
             style.DimensionLineStyle, state);
         _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle, state);

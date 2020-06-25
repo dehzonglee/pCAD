@@ -36,7 +36,7 @@ namespace UI
                 var rectangleModel = validRectangles[i];
                 var p0 = rectangleModel.P0.Value;
                 var p1 = rectangleModel.P1.Value;
-                var style = rectangleModel.IsBaked ? styleSet.Default : styleSet.Focus;
+                var style = rectangleModel.IsBaked ? styleSet.DefaultStyle : styleSet.FocusStyle;
                 _uiPool[i].filling.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
                 _uiPool[i].outline.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
             }

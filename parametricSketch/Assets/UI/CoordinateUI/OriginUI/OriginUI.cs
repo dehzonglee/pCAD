@@ -18,7 +18,7 @@ public class OriginUI : MonoBehaviour
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
         
         _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection,style.GridLineStyle,state);
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld,style.CoordinateGizmoStyle,state);
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, direction,style.CoordinateGizmoStyle,state,CoordinateGizmoUI.Type.Mark);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)
