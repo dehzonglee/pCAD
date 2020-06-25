@@ -15,32 +15,27 @@ public class LambdaUI2D : MonoBehaviour
     [SerializeField] protected CoordinateLabelUI _coordinateLabelUI = null;
 
     public void UpdateUI(Lambda coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
-        CoordinateUIStyle.LambdaStyleSet styleSet)
+        CoordinateUIStyle.LambdaUIStyle style)
     {
-        var style =coordinate.IsPreview?styleSet.Focus: styleSet.Default;
+        var state = coordinate.IsPreview ? SketchStyle.State.Focus : SketchStyle.State.Default;
         //todo: set style in initialize method
         _coordinate = coordinate;
-        var labelString = coordinate.Parameter.ToString("F");
+        var labelString = "1 / 2"; // coordinate.Parameter.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
 
-        var primaryParentCoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
-        var secondaryParentCoordinateUIPositionWorld = direction * coordinate.SecondaryParentValue + offset;
-        var labelOffset = padding * 0.5f * layoutInfo.OrthogonalDirection;
-        var labelPosition = coordinateUIPositionWorld + labelOffset;
-
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle);
-
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, style.CoordinateGizmoStyle);
-        _parent0GizmoUI.UpdateUI(primaryParentCoordinateUIPositionWorld, style.CoordinateGizmoStyle);
-        _parent1GizmoUI.UpdateUI(secondaryParentCoordinateUIPositionWorld, style.CoordinateGizmoStyle);
-        _coordinateDimensionLineUI.UpdateUI(
-            primaryParentCoordinateUIPositionWorld,
-            secondaryParentCoordinateUIPositionWorld,
-            coordinate.IsPreview, style.DimensionLineStyle);
-        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle);
+        var parent0CoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
+        var parent1CoordinateUIPositionWorld = direction * coordinate.SecondaryParentValue + offset;
+        var labelPosition = coordinateUIPositionWorld; 
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
+        _parent0GizmoUI.UpdateUI(parent0CoordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
+        _parent1GizmoUI.UpdateUI(parent1CoordinateUIPositionWorld, style.CoordinateGizmoStyle, state);
+        _coordinateDimensionLineUI.UpdateUI(parent0CoordinateUIPositionWorld, parent1CoordinateUIPositionWorld,
+            style.DimensionLineStyle, state);
+        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle, state);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

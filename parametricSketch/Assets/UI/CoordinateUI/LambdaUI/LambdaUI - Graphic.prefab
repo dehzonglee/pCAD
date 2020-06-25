@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5026579306566173177}
   - component: {fileID: -3366539156561874925}
   m_Layer: 5
-  m_Name: LambdaUI2D
+  m_Name: LambdaUI - Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -386,6 +386,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CoordinateLabelUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8852593373445984207, guid: b9c00088c7cbdd64eaf537528924c2af,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5054940790798160685, guid: b9c00088c7cbdd64eaf537528924c2af,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -454,12 +459,12 @@ PrefabInstance:
     - target: {fileID: 5054940790798160685, guid: b9c00088c7cbdd64eaf537528924c2af,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5054940790798160685, guid: b9c00088c7cbdd64eaf537528924c2af,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5054940790798160685, guid: b9c00088c7cbdd64eaf537528924c2af,
         type: 3}
@@ -490,11 +495,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8852593373445984207, guid: b9c00088c7cbdd64eaf537528924c2af,
-        type: 3}
-      propertyPath: m_fontSizeBase
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9c00088c7cbdd64eaf537528924c2af, type: 3}

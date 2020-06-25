@@ -4,24 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "paraSketch/CoordinateUIStyle")]
 public class CoordinateUIStyle : ScriptableObject
 {
-    public LambdaStyleSet LambdaStyle;
-    public MueStyleSet MueStyle;
-    public OriginStyleSet OriginStyle;
-
-    [Serializable]
-    public class LambdaStyleSet : SketchStyle.StyleSet<LambdaUIStyle>
-    {
-    }
-
-    [Serializable]
-    public class MueStyleSet : SketchStyle.StyleSet<MueUIStyle>
-    {
-    }
-
-    [Serializable]
-    public class OriginStyleSet : SketchStyle.StyleSet<OriginUIStyle>
-    {
-    }
+    public LambdaUIStyle LambdaStyle;
+    public MueUIStyle MueStyle;
+    public OriginUIStyle OriginStyle;
 
     [Serializable]
     public class OriginUIStyle
@@ -51,29 +36,34 @@ public class CoordinateUIStyle : ScriptableObject
     [Serializable]
     public class CoordinateGizmoStyle
     {
-        public Color Color = Color.black;
+        public ColorSet Color = ColorSet.DefaultSet;
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class GridLineStyle
     {
-        public Color Color = Color.black;
+        public ColorSet Color = ColorSet.DefaultSet;
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class DimensionLineStyle
     {
-        public Color Color = Color.black;
+        public ColorSet Color = ColorSet.DefaultSet;
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class LabelStyle
     {
-        public Color Color = Color.black;
+        public ColorSet Color = ColorSet.DefaultSet;
         public float FontSize = 10f;
     }
 
+    [Serializable]
+    public class ColorSet : SketchStyle.StyleSet<Color>
+    {
+        public static ColorSet DefaultSet => new ColorSet() {DefaultStyle = Color.black, DimmedStyle = Color.grey, FocusStyle = Color.blue};
+    }
 }

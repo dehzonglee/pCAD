@@ -54,4 +54,4 @@ MonoBehaviour:
     type: 3}
   _originUiPrefab: {fileID: 1762832287587304806, guid: a95661d4b9b1e674abf94072b030088f,
     type: 3}
-  _padding: 0.01
+  _padding: 0.015

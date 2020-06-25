@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GridLineUI : MaskableGraphic
 {
     public void UpdateUI(Vector3 originWorld, Vector3 directionWorld,
-        CoordinateUIStyle.GridLineStyle lambdaStyleGridLineStyle)
+        CoordinateUIStyle.GridLineStyle lambdaStyleGridLineStyle, SketchStyle.State state)
     {
         _originScreen =WorldScreenTransformationHelper.WorldToScreenPoint(originWorld);
         _directionScreen =WorldScreenTransformationHelper.WorldToScreenPoint( directionWorld);
@@ -18,7 +18,7 @@ public class GridLineUI : MaskableGraphic
     {
         // quick fix: assume that rectangle is projected on the xz plane
         vh.Clear();
-        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color);
+        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color.GetForState(_state));
     }
 
     public float GetScreenDistanceToLine(Vector2 screenPosition)
@@ -34,7 +34,7 @@ public class GridLineUI : MaskableGraphic
     }
 
     private CoordinateUIStyle.GridLineStyle _style;
-
+    private SketchStyle.State _state;
     private Vector2 _originScreen;
     private Vector2 _directionScreen;
 }

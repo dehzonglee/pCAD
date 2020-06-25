@@ -13,104 +13,65 @@ MonoBehaviour:
   m_Name: CoordianteUIStyle
   m_EditorClassIdentifier: 
   LambdaStyle:
-    Default:
-      GridLineStyle:
-        Color: {r: 1, g: 0.7971698, b: 0.9642064, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
-    Dimmed:
-      GridLineStyle:
-        Color: {r: 1, g: 0.5424528, b: 0.89577234, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
-    Focus:
-      GridLineStyle:
-        Color: {r: 1, g: 0.5424528, b: 0.929977, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
+    GridLineStyle:
+      Color:
+        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.050980393}
+        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.011764706}
+        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 0.101960786}
+      Width: 0.5
+    CoordinateGizmoStyle:
+      Color:
+        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.5176471}
+        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+      Width: 0.5
+    DimensionLineStyle:
+      Color:
+        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.2}
+        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+      Width: 0.5
+    LabelStyle:
+      Color:
+        DefaultStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
+        DimmedStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
+        FocusStyle: {r: 0.47166267, g: 0, b: 0.497, a: 1}
+      FontSize: 10
   MueStyle:
-    Default:
-      GridLineStyle:
-        Color: {r: 0.888, g: 0.888, b: 0.888, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0.811, g: 0.811, b: 0.811, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
-    Dimmed:
-      GridLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
-    Focus:
-      GridLineStyle:
-        Color: {r: 0.90900004, g: 0.90900004, b: 0.90900004, a: 0.56078434}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      DimensionLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      LabelStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        FontSize: 10
+    GridLineStyle:
+      Color:
+        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
+        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
+        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
+      Width: 0.5
+    CoordinateGizmoStyle:
+      Color:
+        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.49803922}
+        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+      Width: 0.5
+    DimensionLineStyle:
+      Color:
+        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.5019608}
+        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+      Width: 0.5
+    LabelStyle:
+      Color:
+        DefaultStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.49803922}
+        DimmedStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.5019608}
+        FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 1}
+      FontSize: 10
   OriginStyle:
-    Default:
-      GridLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-    Dimmed:
-      GridLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-    Focus:
-      GridLineStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
-      CoordinateGizmoStyle:
-        Color: {r: 0, g: 0, b: 0, a: 1}
-        Width: 0.5
+    GridLineStyle:
+      Color:
+        DefaultStyle: {r: 1, g: 0.8098252, b: 0, a: 0.050980393}
+        DimmedStyle: {r: 1, g: 0.8098252, b: 0, a: 0.050980393}
+        FocusStyle: {r: 1, g: 0.8098252, b: 0, a: 0.101960786}
+      Width: 0.5
+    CoordinateGizmoStyle:
+      Color:
+        DefaultStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
+        DimmedStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
+        FocusStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
+      Width: 0.5

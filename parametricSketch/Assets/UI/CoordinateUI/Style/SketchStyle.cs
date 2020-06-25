@@ -8,8 +8,35 @@ public class SketchStyle
     
     public class StyleSet<T>
     {
-        public T Default;
-        public T Dimmed;
-        public T Focus;
+        public T DefaultStyle;
+        public T DimmedStyle;
+        public T FocusStyle;
+
+        public T GetForState(State state)
+        {
+            switch (state)
+            {
+                case State.Default:
+                    return DefaultStyle;
+                    break;
+                case State.Dimmed:
+                    return DimmedStyle;
+                    break;
+                case State.Focus:
+                    return FocusStyle;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
+        }
+        
     }
+    
+        public enum State
+        {
+            Default,
+            Dimmed,
+            Focus
+        }
+    
 }
