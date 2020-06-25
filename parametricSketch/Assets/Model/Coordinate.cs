@@ -38,6 +38,8 @@ public abstract class Coordinate
         }
     }
 
+    public abstract (float min, float max) GetBounds();
+    
     public void RegisterCoordinate(Coordinate child, Action onValueChanged)
     {
         _dependentCoordinates.Add(child);

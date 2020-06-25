@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04582b7b5c90d84d864d96e3164dbe5, type: 3}
   m_Name: CoordianteUIStyle
   m_EditorClassIdentifier: 
-  LambdaStyle:
+  Lambda:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.050980393}
@@ -39,7 +39,7 @@ MonoBehaviour:
         DimmedStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
         FocusStyle: {r: 0.47166267, g: 0, b: 0.497, a: 1}
       FontSize: 10
-  MueStyle:
+  Mue:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
@@ -66,7 +66,7 @@ MonoBehaviour:
         DimmedStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.5019608}
         FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 1}
       FontSize: 10
-  OriginStyle:
+  Origin:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0.5943396, g: 0.48246393, b: 0, a: 0.050980393}
@@ -81,3 +81,11 @@ MonoBehaviour:
         DimmedStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
         FocusStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
       Width: 0.5
+  Anchor:
+    CircleStyle:
+      Color:
+        DefaultStyle: {r: 1, g: 0.36400002, b: 0.42635322, a: 1}
+        DimmedStyle: {r: 1, g: 0.846, b: 0.846, a: 1}
+        FocusStyle: {r: 0, g: 0, b: 1, a: 1}
+      Radius: 2.79
+      Width: 1.12

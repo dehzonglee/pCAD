@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class Lambda : Coordinate
@@ -21,5 +22,12 @@ public class Lambda : Coordinate
         : base(isPreview, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
     {
         Parameter = lambda;
+    }
+
+    public override (float min, float max) GetBounds()
+    {
+        var min = Mathf.Min(ParentValue, SecondaryParentValue);
+        var max = Mathf.Max(ParentValue, SecondaryParentValue);
+        return (min, max);
     }
 }

@@ -40,7 +40,6 @@ public class Sketch : MonoBehaviour
     {
         _model.coordinateSystem = new CoordinateSystem();
         _model.rectangles = new List<RectangleModel>();
-
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize(_model.coordinateSystem, ModelChangeRequestHandler);
     }
@@ -199,7 +198,7 @@ public class Sketch : MonoBehaviour
 
     private void UpdateDrag()
     {
-        //todo: decide if axis of dragged coordinate needs to be remembered
+        //todo: decide if axis of dragged coordinate should stored somewhere
 
         Axis axisOfDraggedCoordinate;
         if (_model.coordinateSystem.XAxis.Coordinates.Contains(_model.draggedCoordinate))

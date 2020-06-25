@@ -11,10 +11,10 @@ namespace UI
 {
     public class AxisUI : MonoBehaviour, CoordinateManipulation.IScreenDistanceCalculator
     {
-        [SerializeField] MueUI2D _mueUi2DPrefab=null;
-        [SerializeField] LambdaUI2D _lambdaUiPrefab=null;
-        [SerializeField] OriginUI _originUiPrefab=null;
-        [SerializeField] protected float _padding=default;
+        [SerializeField] MueUI2D _mueUi2DPrefab = null;
+        [SerializeField] LambdaUI2D _lambdaUiPrefab = null;
+        [SerializeField] OriginUI _originUiPrefab = null;
+        [SerializeField] protected float _padding = default;
 
         private Action<Coordinate, float> _modelChangeRequest;
 
@@ -33,6 +33,77 @@ namespace UI
             var nextLambdaUI = 0;
             var nextMueUI = 0;
 
+            UpdatePool(lambdaCoordinates, mueCoordinates);
+
+            var layoutIndex = 0;
+            var row = new CoordinateRow();
+
+            //update uis
+            for (var i = 0; i < axis.Coordinates.Count; i++)
+            {
+                var c = axis.Coordinates[i];
+
+                // try to fit multiple coordinates into one row
+                if (!row.DoesCoordinateFitIntoRow(c))
+                {
+                    row = new CoordinateRow();
+                    layoutIndex++;
+                }
+
+                row.AddCoordinate(c);
+
+                var layoutInfo = new CoordinateUI.LayoutInfo()
+                {
+                    Index = -layoutIndex,
+                    OrthogonalAnchor = orthogonalAnchor,
+                    OrthogonalDirection = orthogonalDirection,
+                };
+
+                switch (c)
+                {
+                    case Lambda lambda:
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,
+                            coordinateUIStyle.Lambda);
+                        nextLambdaUI++;
+                        break;
+                    case Mue mue:
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue);
+                        nextMueUI++;
+                        break;
+                    case Origin origin:
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding, coordinateUIStyle.Origin);
+                        break;
+                }
+            }
+        }
+
+        private class CoordinateRow
+        {
+            public void AddCoordinate(Coordinate c)
+            {
+                _coordinates.Add(c);
+            }
+
+            public bool DoesCoordinateFitIntoRow(Coordinate c)
+            {
+                var coordinateBounds = c.GetBounds();
+
+                foreach (var otherC in _coordinates)
+                {
+                    var doesNotCollide = coordinateBounds.max <= otherC.GetBounds().min ||
+                                         coordinateBounds.min >= otherC.GetBounds().max;
+                    if (!doesNotCollide)
+                        return false;
+                }
+
+                return true;
+            }
+
+            private List<Coordinate> _coordinates = new List<Coordinate>();
+        }
+
+        private void UpdatePool(List<Coordinate> lambdaCoordinates, List<Coordinate> mueCoordinates)
+        {
             if (_originUI == null)
             {
                 var newUI = Instantiate(_originUiPrefab, transform);
@@ -63,33 +134,6 @@ namespace UI
             {
                 var newUI2D = Instantiate(_mueUi2DPrefab, transform);
                 _uiPoolMue.Add(newUI2D);
-            }
-
-            //update uis
-            for (var i = 0; i < axis.Coordinates.Count; i++)
-            {
-                var coordinate = axis.Coordinates[i];
-                var layoutInfo = new CoordinateUI.LayoutInfo()
-                {
-                    Index = -i,
-                    OrthogonalAnchor = orthogonalAnchor,
-                    OrthogonalDirection = orthogonalDirection,
-                };
-
-                switch (coordinate)
-                {
-                    case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,coordinateUIStyle.Lambda);
-                        nextLambdaUI++;
-                        break;
-                    case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding,coordinateUIStyle.Mue);
-                        nextMueUI++;
-                        break;
-                    case Origin origin:
-                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding,coordinateUIStyle.Origin);
-                        break;
-                }
             }
         }
 
