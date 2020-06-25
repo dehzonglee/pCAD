@@ -120,6 +120,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &67843171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 67843172}
+  - component: {fileID: 67843173}
+  m_Layer: 5
+  m_Name: RectangleUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &67843172
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67843171}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1020661459}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &67843173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67843171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6623ae5d0189d604994bdf2e93db3a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectangleFillingUIPrefab: {fileID: 732502937695208259, guid: a6da00359a4c6594c81230eda7171e7d,
+    type: 3}
+  rectangleOutlineUIPrefab: {fileID: -490368474876632340, guid: 4a934641b506eb44d82301507022473d,
+    type: 3}
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +359,6 @@ GameObject:
   - component: {fileID: 1020661457}
   - component: {fileID: 1020661456}
   - component: {fileID: 1020661455}
-  - component: {fileID: 1020661460}
   m_Layer: 5
   m_Name: UI-Canvas
   m_TagString: Untagged
@@ -401,7 +452,8 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 67843172}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -410,22 +462,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1020661460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1020661454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6623ae5d0189d604994bdf2e93db3a4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rectangleFillingUIPrefab: {fileID: 732502937695208259, guid: a6da00359a4c6594c81230eda7171e7d,
-    type: 3}
-  rectangleOutlineUIPrefab: {fileID: -490368474876632340, guid: 4a934641b506eb44d82301507022473d,
-    type: 3}
 --- !u!1001 &1509112552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -485,7 +521,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _ui.Rectangles
       value: 
-      objectReference: {fileID: 1020661460}
+      objectReference: {fileID: 0}
     - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
         type: 3}
       propertyPath: _ui.CoordinateSystem
@@ -500,12 +536,12 @@ PrefabInstance:
         type: 3}
       propertyPath: _ui.rectangles
       value: 
-      objectReference: {fileID: 1020661460}
+      objectReference: {fileID: 0}
     - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
         type: 3}
       propertyPath: _ui.rectanglesUI
       value: 
-      objectReference: {fileID: 1020661460}
+      objectReference: {fileID: 67843173}
     - target: {fileID: 114889048767961610, guid: 97211cfa6f797b548a710f1fdd9f7e96,
         type: 3}
       propertyPath: _ui.coordinateSystemUI

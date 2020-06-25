@@ -79,15 +79,15 @@ namespace UI
                 switch (coordinate)
                 {
                     case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,coordinateUIStyle.LambdaStyle);
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,coordinateUIStyle.Lambda);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding,coordinateUIStyle.MueStyle);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding,coordinateUIStyle.Mue);
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding,coordinateUIStyle.OriginStyle);
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding,coordinateUIStyle.Origin);
                         break;
                 }
             }

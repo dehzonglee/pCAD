@@ -5,21 +5,14 @@ using UnityEngine;
 
 public class AnchorUI : MonoBehaviour
 {
-    [SerializeField]
-    Transform _primaryAnchorUI;
-    [SerializeField]
-    Transform _secondaryAnchorUI;
+    [SerializeField] CircleGizmo _primaryAnchorUI;
+    [SerializeField] CircleGizmo _secondaryAnchorUI;
 
-    public void Initalize(Anchor anchor)
+    public void UpdateUI(Anchor anchor, CoordinateUIStyle.AnchorStyle anchorStyle)
     {
-        _anchor = anchor;
+        _primaryAnchorUI.UpdateUI(anchor.PrimaryPosition, anchorStyle.CircleStyle.Radius, anchorStyle.CircleStyle.Width,
+            anchorStyle.CircleStyle.Color.DefaultStyle);
+        _secondaryAnchorUI.UpdateUI(anchor.SecondaryPosition, anchorStyle.CircleStyle.Radius,
+            anchorStyle.CircleStyle.Width, anchorStyle.CircleStyle.Color.DefaultStyle);
     }
-
-    public void UpdateUI()
-    {
-        _primaryAnchorUI.position = _anchor.PrimaryPosition;
-        _secondaryAnchorUI.position = _anchor.SecondaryPosition;
-    }
-
-    private Anchor _anchor;
 }

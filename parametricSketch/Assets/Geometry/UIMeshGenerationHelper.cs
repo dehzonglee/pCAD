@@ -74,7 +74,7 @@ public static class UIMeshGenerationHelper
                 throw new ArgumentOutOfRangeException(nameof(capsType), capsType, null);
         }
     }
-    
+
     public static void AddScreenSpanningLine(VertexHelper vh, Vector2 originScreen, Vector2 directionScreen,
         float width, Color color)
     {
@@ -229,6 +229,24 @@ public static class UIMeshGenerationHelper
         var p2 = positionScreen + wVector + hVector;
         var p3 = positionScreen + wVector - hVector;
         AddQuadrilateral(vh, (p0, p1, p2, p3), color);
+    }
+
+    public static void AddCircleOutline(VertexHelper vh, Vector3 positionWorld, float radius, float width, Color color)
+    {
+        var centerScreen = WorldScreenTransformationHelper.WorldToScreenPoint(positionWorld);
+        var angleStep = 360f / CircleResolution;
+        for (var i = 0; i < CircleResolution; i++)
+        {
+            var angleP0 = i * angleStep;
+            var angleP1 = (i + 1) * angleStep;
+            var v0 = RotateVector(Vector2.right, angleP0);
+            var v1 = RotateVector(Vector2.right, angleP1);
+            AddQuadrilateral(vh,
+                (centerScreen + v0 * (radius - width), centerScreen + v0 * (radius + width),
+                    centerScreen + v1 * (radius + width), centerScreen + v1 * (radius - width)),
+                color
+            );
+        }
     }
 
     private static Vector2

@@ -1,12 +1,14 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "paraSketch/CoordinateUIStyle")]
 public class CoordinateUIStyle : ScriptableObject
 {
-    public LambdaUIStyle LambdaStyle;
-    public MueUIStyle MueStyle;
-    public OriginUIStyle OriginStyle;
+    [FormerlySerializedAs("LambdaStyle")] public LambdaUIStyle Lambda;
+    [FormerlySerializedAs("MueStyle")] public MueUIStyle Mue;
+    [FormerlySerializedAs("OriginStyle")] public OriginUIStyle Origin;
+    [FormerlySerializedAs("AnchorStyle")] public AnchorStyle Anchor;
 
     [Serializable]
     public class OriginUIStyle
@@ -31,6 +33,12 @@ public class CoordinateUIStyle : ScriptableObject
         public CoordinateGizmoStyle CoordinateGizmoStyle;
         public DimensionLineStyle DimensionLineStyle;
         public LabelStyle LabelStyle;
+    }
+
+    [Serializable]
+    public class AnchorStyle
+    {
+        public CircleStyle CircleStyle;
     }
 
     [Serializable]
@@ -61,6 +69,13 @@ public class CoordinateUIStyle : ScriptableObject
     {
         public ColorSet Color = ColorSet.DefaultSet;
         public float FontSize = 10f;
+    }
+    [Serializable]
+    public class CircleStyle
+    {
+        public ColorSet Color = ColorSet.DefaultSet;
+        public float Radius = 10f;
+        public float Width = 2f;
     }
 
     [Serializable]
