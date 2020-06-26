@@ -1,41 +1,65 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Model;
+using UI;
 using UnityEngine;
 
 public static class KeyboardInput
 {
     public class Model
     {
-        public int? ActiveInputInMM
+        private Axis.GenericVector<int?> _inputInMM = new Axis.GenericVector<int?>(null, null, null);
+
+        public Axis.GenericVector<float?> InputInM
         {
-            get => _inputInMM[_activeInputIndex];
-            set => _inputInMM[_activeInputIndex] = value;
+            get
+            {
+                var scale = 0.01f * (IsDirectionNegative ? -1f : 1f);
+                return new Axis.GenericVector<float?>(
+                    scale * _inputInMM?.X,
+                    scale * _inputInMM?.Y,
+                    scale * _inputInMM?.Z);
+            }
         }
 
+        public Axis.ID? ActiveAxis => _activeAxis;
+        private Axis.ID? _activeAxis;
+        
         public bool IsDirectionNegative;
 
-        public float? XInM => _inputInMM[0] * 0.01f * (IsDirectionNegative ? -1f : 1f);
-        public float? ZInM => _inputInMM[1] * 0.01f * (IsDirectionNegative ? -1f : 1f);
-
-        public Axis.GenericVector<float?> InputVector => new Axis.GenericVector<float?>(XInM, null, ZInM);
-
-        public Axis.GenericVector<bool> SelectionVector =>
-            new Axis.GenericVector<bool>(_activeInputIndex == 0, false, _activeInputIndex == 1);
-
-        private int _activeInputIndex = 0;
-        private readonly int?[] _inputInMM = new int?[2];
+        public int? ActiveInputInMM
+        {
+            get
+            {
+                if (_activeAxis == null)
+                    return null;
+                return _inputInMM[_activeAxis.Value];
+            }
+            set
+            {
+                if (_activeAxis == null)
+                    _activeAxis = Axis.ID.X;
+                _inputInMM[_activeAxis.Value] = value;
+            }
+        }
 
         public void SetNextAxis()
         {
-            _activeInputIndex++;
-            _activeInputIndex %= _inputInMM.Length;
+            if (!_activeAxis.HasValue)
+                _activeAxis = Axis.ID.X;
+            else if (_activeAxis.Value == Axis.ID.X)
+                _activeAxis = Axis.ID.Z;
+            else // if ==Z
+                _activeAxis = Axis.ID.X;
         }
 
         public void Reset()
         {
-            _inputInMM[0] = null;
-            _inputInMM[1] = null;
+            _inputInMM.X = null;
+            _inputInMM.Y = null;
+            _inputInMM.Z = null;
+            _activeAxis = null;
+            IsDirectionNegative = false;
         }
     }
 

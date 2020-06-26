@@ -110,7 +110,7 @@ public class Sketch : MonoBehaviour
 
                 _model.focusPosition =
                     CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
-                        _model.keyboardInputModel.InputVector);
+                        _model.keyboardInputModel.InputInM);
 
                 if (_model.focusPosition == null)
                 {
@@ -168,7 +168,7 @@ public class Sketch : MonoBehaviour
 
     private void UpdateUI()
     {
-        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle, _model.keyboardInputModel.InputVector, _model.keyboardInputModel.SelectionVector);
+        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle, _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ActiveAxis);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
