@@ -7,15 +7,12 @@ namespace UI
 {
     public class RectanglesUI : MonoBehaviour
     {
-        [FormerlySerializedAs("rectangleFillingUI2DPrefab")] [SerializeField]
-        private RectangleFillingUI rectangleFillingUIPrefab;
-
-        [FormerlySerializedAs("rectangleOutlineUI2DPrefab")] [SerializeField]
-        private RectangleOutlineUI rectangleOutlineUIPrefab;
+        [SerializeField] private RectangleFillingUI rectangleFillingUIPrefab;
+        [SerializeField] private RectangleOutlineUI rectangleOutlineUIPrefab;
 
         public void UpdateUI(List<Sketch.RectangleModel> rectangleModels, GeometryStyle.RectangleStyleSet styleSet)
         {
-            var validRectangles = rectangleModels.Where(rm => rm.P0.HasValue && rm.P1.HasValue).ToList();
+            var validRectangles = rectangleModels.Where(rm => rm.P1.HasValue).ToList();
             while (_uiPool.Count > validRectangles.Count)
             {
                 var rectangleToDestroy = _uiPool[0];
@@ -34,11 +31,11 @@ namespace UI
             for (var i = 0; i < rectangleModels.Count; i++)
             {
                 var rectangleModel = validRectangles[i];
-                var p0 = rectangleModel.P0.Value;
+                var p0 = rectangleModel.P0;
                 var p1 = rectangleModel.P1.Value;
                 var style = rectangleModel.IsBaked ? styleSet.DefaultStyle : styleSet.FocusStyle;
-                _uiPool[i].filling.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
-                _uiPool[i].outline.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1),style);
+                _uiPool[i].filling.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1), style);
+                _uiPool[i].outline.UpdateUI(CoordinateTupleToVector3(p0), CoordinateTupleToVector3(p1), style);
             }
         }
 

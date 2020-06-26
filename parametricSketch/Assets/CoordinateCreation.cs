@@ -6,7 +6,8 @@ using UnityEngine;
 public static class CoordinateCreation
 {
     public static (Coordinate x, Coordinate y, Coordinate z)? UpdateFocusPosition(
-        (Coordinate x, Coordinate y, Coordinate z)? oldFocusPosition, CoordinateSystem cs)
+        (Coordinate x, Coordinate y, Coordinate z)? oldFocusPosition, CoordinateSystem cs,
+        Sketch.KeyboardInputModel keyboardInputModel)
     {
         if (oldFocusPosition.HasValue)
         {
@@ -16,7 +17,7 @@ public static class CoordinateCreation
             if (p.z.IsPreview) p.z.Delete();
         }
 
-        return GetOrCreatePositionAtMousePosition(cs, true);
+        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInputModel);
     }
 
     public static void DeletePositionAtMousePosition(CoordinateSystem cs)
@@ -28,9 +29,10 @@ public static class CoordinateCreation
     }
 
     private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
-        CoordinateSystem coordinateSystem, bool asPreview = false)
+        CoordinateSystem coordinateSystem, bool asPreview = false, Sketch.KeyboardInputModel keyboardInputModel = null)
     {
-        var position = coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview);
+        var position =
+            coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInputModel);
         return position;
     }
 

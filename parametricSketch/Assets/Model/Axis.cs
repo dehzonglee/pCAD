@@ -46,6 +46,14 @@ namespace Model
             return newCoordinate;
         }
 
+        public Coordinate AddNewMueCoordinateWithParameter(float parameterValue, bool asPreview)
+        {
+            var newCoordinate =
+                new Mue(Anchor.PrimaryCoordinate, parameterValue, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+            Coordinates.Add(newCoordinate);
+            return newCoordinate;
+        }
+
         private void OnCoordinateChanged()
         {
             _axisChangedEvent?.Invoke();

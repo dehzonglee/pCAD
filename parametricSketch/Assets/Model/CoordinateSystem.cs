@@ -26,11 +26,16 @@ namespace Model
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview)
+        public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview,
+            Sketch.KeyboardInputModel keyboardInput)
         {
-            var x = XAxis.GetCoordinate(position.x, asPreview);
+            var x = keyboardInput.XInM.HasValue
+                ? XAxis.AddNewMueCoordinateWithParameter(keyboardInput.XInM.Value, asPreview)
+                : XAxis.GetCoordinate(position.x, asPreview);
             var y = YAxis.GetCoordinate(position.y, asPreview);
-            var z = ZAxis.GetCoordinate(position.z, asPreview);
+            var z = keyboardInput.ZInM.HasValue
+                ? ZAxis.AddNewMueCoordinateWithParameter(keyboardInput.ZInM.Value, asPreview)
+                : ZAxis.GetCoordinate(position.z, asPreview);
             return (x, y, z);
         }
 

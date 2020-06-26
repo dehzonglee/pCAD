@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Model;
 using UI;
 using UnityEngine;
@@ -26,19 +27,44 @@ public class Sketch : MonoBehaviour
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
+        public KeyboardInputModel _keyboardInputModel;
     }
 
     public class RectangleModel
     {
-        public (Coordinate x, Coordinate y, Coordinate z)? P0;
+        public (Coordinate x, Coordinate y, Coordinate z) P0;
         public (Coordinate x, Coordinate y, Coordinate z)? P1;
         public bool IsBaked;
+    }
+
+    public class KeyboardInputModel
+    {
+        public int? ActiveInputInMM
+        {
+            get => _inputInMM[_activeInputIndex];
+            set => _inputInMM[_activeInputIndex] = value;
+        }
+
+        public bool IsDirectionNegative;
+
+        public float? XInM => _inputInMM[0] * 0.01f * (IsDirectionNegative ? -1f : 1f);
+        public float? ZInM => _inputInMM[1] * 0.01f * (IsDirectionNegative ? -1f : 1f);
+
+        private int _activeInputIndex = 0;
+        private readonly int?[] _inputInMM = new int?[2];
+
+        public void SetNextAxis()
+        {
+            _activeInputIndex++;
+            _activeInputIndex %= _inputInMM.Length;
+        }
     }
 
     private void Start()
     {
         _model.coordinateSystem = new CoordinateSystem();
         _model.rectangles = new List<RectangleModel>();
+        _model._keyboardInputModel = new KeyboardInputModel();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
     }
@@ -61,10 +87,7 @@ public class Sketch : MonoBehaviour
                 // delete next rectangle
                 if (_model.nextRectangle != null)
                 {
-                    _model.nextRectangle.P0.Value.x.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                    _model.nextRectangle.P0.Value.y.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-                    _model.nextRectangle.P0.Value.z.UnregisterGeometryAndTryToDelete(_model.nextRectangle);
-
+                    RectangleCreation.AbortRectangle(_model.nextRectangle);
                     _model.nextRectangle = null;
                 }
 
@@ -105,8 +128,11 @@ public class Sketch : MonoBehaviour
 
             case State.DrawRectangle:
 
+                KeyboardInput.UpdateKeyboardInput(ref _model._keyboardInputModel);
+
                 _model.focusPosition =
-                    CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem);
+                    CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
+                        _model._keyboardInputModel);
 
                 if (_model.focusPosition == null)
                 {
@@ -128,7 +154,7 @@ public class Sketch : MonoBehaviour
                 }
 
                 // draw
-                if (Input.GetKeyDown(DrawKey))
+                if (Input.GetKeyDown(DrawKey) || Input.GetKeyDown(KeyCode.Return))
                 {
                     CoordinateCreation.BakePosition(_model.focusPosition.Value);
 
@@ -144,6 +170,9 @@ public class Sketch : MonoBehaviour
                         RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition.Value);
                         _model.nextRectangle = null;
                     }
+
+                    // reset input
+                    _model._keyboardInputModel = new KeyboardInputModel();
                 }
 
                 //update rectangle while drawing

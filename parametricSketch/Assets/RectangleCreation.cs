@@ -28,4 +28,11 @@ public static class RectangleCreation
     {
         nextRectangle.P1 = focusPosition;
     }
+
+    public static void AbortRectangle(Sketch.RectangleModel nextRectangle)
+    {
+        nextRectangle.P0.x.UnregisterGeometryAndTryToDelete(nextRectangle);
+        nextRectangle.P0.y.UnregisterGeometryAndTryToDelete(nextRectangle);
+        nextRectangle.P0.z.UnregisterGeometryAndTryToDelete(nextRectangle);
+    }
 }
