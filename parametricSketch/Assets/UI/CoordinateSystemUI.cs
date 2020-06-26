@@ -38,27 +38,13 @@ namespace UI
                 _axisUIs[axis].UpdateCoordinateUIs(
                     cs.Axes[axis],
                     _embedding[GetOrthogonalAxis(axis)],
-                    GetOrthogonalAxis(cs, axis).SmallestValue,
+                    cs.Axes[GetOrthogonalAxis(axis)].SmallestValue,
                     coordinateUIStyle,
                     inputVector[axis],
                     activeAxisInKeyboardInput == axis);
             }
 
             _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);
-        }
-
-        private static Axis GetOrthogonalAxis(CoordinateSystem cs, AxisID axis)
-        {
-            switch (axis)
-            {
-                case AxisID.X:
-                    return cs.Axes[AxisID.Z];
-                case AxisID.Y:
-                    return cs.Axes[AxisID.Y];
-                case AxisID.Z:
-                default:
-                    return cs.Axes[AxisID.X];
-            }
         }
 
         private static AxisID GetOrthogonalAxis(AxisID axis)
@@ -79,7 +65,7 @@ namespace UI
 
         private AnchorUI _anchorUI;
 
-        private GenericVector<Vector3> _embedding = new GenericVector<Vector3>()
+        private readonly GenericVector<Vector3> _embedding = new GenericVector<Vector3>()
         {
             X = Vector3.right,
             Y = Vector3.up,

@@ -23,17 +23,19 @@ public class Sketch : MonoBehaviour
     {
         public bool IsDragging => draggedCoordinate != null;
         public CoordinateSystem coordinateSystem;
-        public (Coordinate x, Coordinate y, Coordinate z)? focusPosition;
+        public GenericVector<Coordinate> focusPosition;
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
-        [FormerlySerializedAs("_keyboardInputModel")] public KeyboardInput.Model keyboardInputModel;
+
+        [FormerlySerializedAs("_keyboardInputModel")]
+        public KeyboardInput.Model keyboardInputModel;
     }
 
     public class RectangleModel
     {
-        public (Coordinate x, Coordinate y, Coordinate z) P0;
-        public (Coordinate x, Coordinate y, Coordinate z)? P1;
+        public GenericVector<Coordinate> P0;
+        public GenericVector<Coordinate> P1;
         public bool IsBaked;
     }
 
@@ -53,12 +55,12 @@ public class Sketch : MonoBehaviour
         {
             case State.ManipulateCoordinates:
                 // delete next position preview
-                if (_model.focusPosition.HasValue)
+                if (_model.focusPosition != null)
                 {
-                    var p = _model.focusPosition.Value;
-                    if (p.x.IsPreview) p.x.Delete();
-                    if (p.y.IsPreview) p.y.Delete();
-                    if (p.z.IsPreview) p.z.Delete();
+                    _model.focusPosition.ForEach(c =>
+                    {
+                        if (c.IsPreview) c.Delete();
+                    });
                     _model.focusPosition = null;
                 }
 
@@ -134,18 +136,18 @@ public class Sketch : MonoBehaviour
                 // draw
                 if (Input.GetKeyDown(DrawKey) || Input.GetKeyDown(KeyCode.Return))
                 {
-                    CoordinateCreation.BakePosition(_model.focusPosition.Value);
+                    CoordinateCreation.BakePosition(_model.focusPosition);
 
                     _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
 
                     if (_model.nextRectangle == null)
                     {
-                        _model.nextRectangle = RectangleCreation.StartNewRectangle(_model.focusPosition.Value);
+                        _model.nextRectangle = RectangleCreation.StartNewRectangle(_model.focusPosition);
                         _model.rectangles.Add(_model.nextRectangle);
                     }
                     else
                     {
-                        RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition.Value);
+                        RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition);
                         _model.nextRectangle = null;
                     }
 
@@ -155,7 +157,7 @@ public class Sketch : MonoBehaviour
 
                 //update rectangle while drawing
                 if (_model.nextRectangle != null)
-                    RectangleCreation.UpdateRectangle(_model.nextRectangle, _model.focusPosition.Value);
+                    RectangleCreation.UpdateRectangle(_model.nextRectangle, _model.focusPosition);
 
                 break;
 
@@ -168,7 +170,8 @@ public class Sketch : MonoBehaviour
 
     private void UpdateUI()
     {
-        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle, _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ActiveAxis);
+        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle,
+            _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ActiveAxis);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 

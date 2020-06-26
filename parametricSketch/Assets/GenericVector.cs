@@ -15,6 +15,12 @@ public class GenericVector<T>
     public T Y;
     public T Z;
 
+    public void ForEach(Action<T> function)
+    {
+        function.Invoke(X);
+        function.Invoke(Y);
+        function.Invoke(Z);
+    }
 
     public T this[AxisID axis]
     {

@@ -5,41 +5,33 @@ using UnityEngine;
 
 public static class CoordinateCreation
 {
-    public static (Coordinate x, Coordinate y, Coordinate z)? UpdateFocusPosition(
-        (Coordinate x, Coordinate y, Coordinate z)? oldFocusPosition, CoordinateSystem cs,
-        GenericVector<float?> keyboardInput )
+    public static GenericVector<Coordinate> UpdateFocusPosition(
+        GenericVector<Coordinate> oldFocusPosition, CoordinateSystem cs,
+        GenericVector<float?> keyboardInput)
     {
-        if (oldFocusPosition.HasValue)
+        oldFocusPosition?.ForEach(c =>
         {
-            var p = oldFocusPosition.Value;
-            if (p.x.IsPreview) p.x.Delete();
-            if (p.y.IsPreview) p.y.Delete();
-            if (p.z.IsPreview) p.z.Delete();
-        }
+            if (c.IsPreview) c.Delete();
+        });
 
-        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInput );
+        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInput);
     }
 
     public static void DeletePositionAtMousePosition(CoordinateSystem cs)
     {
         var p = GetOrCreatePositionAtMousePosition(cs);
-        p.x.Delete();
-        p.y.Delete();
-        p.z.Delete();
+        p.ForEach(c=>c.Delete());
     }
 
-    private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
+    private static GenericVector<Coordinate> GetOrCreatePositionAtMousePosition(
         CoordinateSystem coordinateSystem, bool asPreview = false, GenericVector<float?> keyboardInput = null)
     {
-        var position =
+       return 
             coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInput);
-        return position;
     }
 
-    public static void BakePosition((Coordinate x, Coordinate y, Coordinate z) modelFocusPosition)
+    public static void BakePosition(GenericVector<Coordinate> modelFocusPosition)
     {
-        modelFocusPosition.x.Bake();
-        modelFocusPosition.y.Bake();
-        modelFocusPosition.z.Bake();
+        modelFocusPosition.ForEach(c=>c.Bake());
     }
 }

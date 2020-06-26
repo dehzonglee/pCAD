@@ -24,11 +24,11 @@ namespace Model
             var xAnchorCoordinate = Axes[AxisID.X].Anchor;
             var yAnchorCoordinate = Axes[AxisID.Y].Anchor;
             var zAnchorCoordinate = Axes[AxisID.Z].Anchor;
-            
+
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview,
+        public GenericVector<Coordinate> GetParametricPosition(Vector3 position, bool asPreview,
             GenericVector<float?> keyboardInput)
         {
             var x = keyboardInput[AxisID.X].HasValue
@@ -38,7 +38,7 @@ namespace Model
             var z = keyboardInput[AxisID.Z].HasValue
                 ? Axes[AxisID.Z].AddNewMueCoordinateWithParameter(keyboardInput[AxisID.Z].Value, asPreview)
                 : Axes[AxisID.Z].GetCoordinate(position.z, asPreview);
-            return (x, y, z);
+            return new GenericVector<Coordinate>() {X = x, Y = y, Z = z};
         }
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
