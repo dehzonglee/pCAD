@@ -12,6 +12,7 @@ namespace Model
         public Axis XAxis { get; }
         public Axis YAxis { get; }
         public Axis ZAxis { get; }
+        public Anchor Anchor { get; }
 
         public CoordinateSystem()
         {
@@ -22,7 +23,7 @@ namespace Model
             var xAnchorCoordinate = XAxis.Anchor;
             var yAnchorCoordinate = YAxis.Anchor;
             var zAnchorCoordinate = ZAxis.Anchor;
-            _anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
+            Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
         public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview)
@@ -31,11 +32,6 @@ namespace Model
             var y = YAxis.GetCoordinate(position.y, asPreview);
             var z = ZAxis.GetCoordinate(position.z, asPreview);
             return (x, y, z);
-        }
-
-        public Anchor GetAnchor()
-        {
-            return _anchor;
         }
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
@@ -58,7 +54,5 @@ namespace Model
         {
             CoordinateSystemChangedEvent?.Invoke();
         }
-
-        private readonly Anchor _anchor;
     }
 }

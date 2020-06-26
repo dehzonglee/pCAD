@@ -27,7 +27,7 @@ namespace UI
             _xAxisUI.UpdateCoordinateUIs(cs.XAxis, Vector3.forward, GetOrthogonalAxis(cs,Dimensions.X).SmallestValue,coordinateUIStyle);
             _yAxisUI.UpdateCoordinateUIs(cs.YAxis,Vector3.up, GetOrthogonalAxis(cs,Dimensions.Y).SmallestValue,coordinateUIStyle);
             _zAxisUI.UpdateCoordinateUIs(cs.ZAxis,Vector3.right, GetOrthogonalAxis(cs, Dimensions.Z).SmallestValue,coordinateUIStyle);
-            _anchorUI.UpdateUI(cs.GetAnchor(),coordinateUIStyle.Anchor);
+            _anchorUI.UpdateUI(cs.Anchor,coordinateUIStyle.Anchor);
         }
 
         private static Axis GetOrthogonalAxis(CoordinateSystem cs, int dimension)
