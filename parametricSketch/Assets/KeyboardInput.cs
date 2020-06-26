@@ -1,10 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 public static class KeyboardInput
 {
-    public static void UpdateKeyboardInput(ref Sketch.KeyboardInputModel model)
+    public class Model
+    {
+        public int? ActiveInputInMM
+        {
+            get => _inputInMM[_activeInputIndex];
+            set => _inputInMM[_activeInputIndex] = value;
+        }
+
+        public bool IsDirectionNegative;
+
+        public float? XInM => _inputInMM[0] * 0.01f * (IsDirectionNegative ? -1f : 1f);
+        public float? ZInM => _inputInMM[1] * 0.01f * (IsDirectionNegative ? -1f : 1f);
+
+        public Axis.GenericVector<float?> InputVector => new Axis.GenericVector<float?>(XInM, null, ZInM);
+
+        public Axis.GenericVector<bool> SelectionVector =>
+            new Axis.GenericVector<bool>(_activeInputIndex == 0, false, _activeInputIndex == 1);
+
+        private int _activeInputIndex = 0;
+        private readonly int?[] _inputInMM = new int?[2];
+
+        public void SetNextAxis()
+        {
+            _activeInputIndex++;
+            _activeInputIndex %= _inputInMM.Length;
+        }
+
+        public void Reset()
+        {
+            _inputInMM[0] = null;
+            _inputInMM[1] = null;
+        }
+    }
+
+
+    public static void UpdateKeyboardInput(ref Model model)
     {
         if (Input.GetKeyDown(KeyCode.Keypad0))
             AddDigit(model, 0);
@@ -34,17 +70,17 @@ public static class KeyboardInput
             SetNextAxis(model);
     }
 
-    private static void SetNextAxis(Sketch.KeyboardInputModel model)
+    private static void SetNextAxis(Model model)
     {
         model.SetNextAxis();
     }
 
-    private static void InvertDirection(Sketch.KeyboardInputModel model)
+    private static void InvertDirection(Model model)
     {
         model.IsDirectionNegative = !model.IsDirectionNegative;
     }
 
-    private static void RemoveDigit(Sketch.KeyboardInputModel model)
+    private static void RemoveDigit(Model model)
     {
         if (!model.ActiveInputInMM.HasValue)
             return;
@@ -58,7 +94,7 @@ public static class KeyboardInput
         model.ActiveInputInMM = model.ActiveInputInMM.Value / 10;
     }
 
-    private static void AddDigit(Sketch.KeyboardInputModel model, int digit)
+    private static void AddDigit(Model model, int digit)
     {
         if (!model.ActiveInputInMM.HasValue)
         {

@@ -16,7 +16,7 @@ MonoBehaviour:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.050980393}
-        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.011764706}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 0.101960786}
       Width: 0.5
     CoordinateGizmoStyle:
@@ -24,26 +24,26 @@ MonoBehaviour:
       MarkDimensions: {x: 1, y: 2}
       Color:
         DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.5176471}
-        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
       Width: 0.5
     DimensionLineStyle:
       Color:
         DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.2}
-        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
       Width: 0.5
     LabelStyle:
       Color:
         DefaultStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
-        DimmedStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0.47166267, g: 0, b: 0.497, a: 1}
       FontSize: 10
   Mue:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
+        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
         FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
       Width: 0.5
     CoordinateGizmoStyle:
@@ -51,26 +51,26 @@ MonoBehaviour:
       MarkDimensions: {x: 0.5, y: 4}
       Color:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.49803922}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
         FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
       Width: 5
     DimensionLineStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.5019608}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
         FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
       Width: 0.5
     LabelStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.49803922}
-        DimmedStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.5019608}
+        SelectedStyle: {r: 1, g: 0, b: 0.23765755, a: 1}
         FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 1}
       FontSize: 10
   Origin:
     GridLineStyle:
       Color:
         DefaultStyle: {r: 0.5943396, g: 0.48246393, b: 0, a: 0.050980393}
-        DimmedStyle: {r: 1, g: 0.8098252, b: 0, a: 0.050980393}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0.4433962, g: 0.35450387, b: 0, a: 0.101960786}
       Width: 0.5
     CoordinateGizmoStyle:
@@ -78,14 +78,14 @@ MonoBehaviour:
       MarkDimensions: {x: 1, y: 2}
       Color:
         DefaultStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
-        DimmedStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
       Width: 0.5
   Anchor:
     CircleStyle:
       Color:
         DefaultStyle: {r: 1, g: 0.36400002, b: 0.42635322, a: 1}
-        DimmedStyle: {r: 1, g: 0.846, b: 0.846, a: 1}
+        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
         FocusStyle: {r: 0, g: 0, b: 1, a: 1}
       Radius: 2.79
       Width: 1.12

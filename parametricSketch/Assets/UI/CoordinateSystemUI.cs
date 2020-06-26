@@ -11,23 +11,27 @@ namespace UI
         public void Initialize()
         {
             _xAxisUI = Instantiate(_axisUIPrefab, transform);
-            _xAxisUI.Initialize(  Vector3.right, "xAxisUI");
+            _xAxisUI.Initialize(Vector3.right, "xAxisUI");
 
             _yAxisUI = Instantiate(_axisUIPrefab, transform);
-            _yAxisUI.Initialize(  Vector3.up, "yAxisUI");
+            _yAxisUI.Initialize(Vector3.up, "yAxisUI");
 
             _zAxisUI = Instantiate(_axisUIPrefab, transform);
-            _zAxisUI.Initialize(  Vector3.forward, "zAxisUI");
+            _zAxisUI.Initialize(Vector3.forward, "zAxisUI");
 
             _anchorUI = Instantiate(_anchorUIPrefab, transform);
         }
 
-        public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle)
+        public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
+            Axis.GenericVector<float?> inputVector,Axis.GenericVector<bool> keyboardInoutSelection)
         {
-            _xAxisUI.UpdateCoordinateUIs(cs.XAxis, Vector3.forward, GetOrthogonalAxis(cs,Dimensions.X).SmallestValue,coordinateUIStyle);
-            _yAxisUI.UpdateCoordinateUIs(cs.YAxis,Vector3.up, GetOrthogonalAxis(cs,Dimensions.Y).SmallestValue,coordinateUIStyle);
-            _zAxisUI.UpdateCoordinateUIs(cs.ZAxis,Vector3.right, GetOrthogonalAxis(cs, Dimensions.Z).SmallestValue,coordinateUIStyle);
-            _anchorUI.UpdateUI(cs.Anchor,coordinateUIStyle.Anchor);
+            _xAxisUI.UpdateCoordinateUIs(cs.XAxis, Vector3.forward, GetOrthogonalAxis(cs, Dimensions.X).SmallestValue,
+                coordinateUIStyle, inputVector.X,keyboardInoutSelection.X);
+            _yAxisUI.UpdateCoordinateUIs(cs.YAxis, Vector3.up, GetOrthogonalAxis(cs, Dimensions.Y).SmallestValue,
+                coordinateUIStyle, inputVector.Y,keyboardInoutSelection.Y);
+            _zAxisUI.UpdateCoordinateUIs(cs.ZAxis, Vector3.right, GetOrthogonalAxis(cs, Dimensions.Z).SmallestValue,
+                coordinateUIStyle, inputVector.Z,keyboardInoutSelection.Z);
+            _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);
         }
 
         private static Axis GetOrthogonalAxis(CoordinateSystem cs, int dimension)

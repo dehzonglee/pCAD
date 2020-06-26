@@ -13,14 +13,14 @@ namespace UI
         [SerializeField] protected float _padding = default;
 
 
-        internal void Initialize( Vector3 direction, string label)
+        internal void Initialize(Vector3 direction, string label)
         {
             gameObject.name = label;
             _direction = direction;
         }
 
         public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
-            CoordinateUIStyle coordinateUIStyle)
+            CoordinateUIStyle coordinateUIStyle, float? keyboardInput, bool hasKeyboardInputSelection)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -59,7 +59,7 @@ namespace UI
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue, keyboardInput,hasKeyboardInputSelection);
                         nextMueUI++;
                         break;
                     case Origin origin:

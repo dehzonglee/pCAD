@@ -7,7 +7,7 @@ public static class CoordinateCreation
 {
     public static (Coordinate x, Coordinate y, Coordinate z)? UpdateFocusPosition(
         (Coordinate x, Coordinate y, Coordinate z)? oldFocusPosition, CoordinateSystem cs,
-        Sketch.KeyboardInputModel keyboardInputModel)
+        Axis.GenericVector<float?> keyboardInput )
     {
         if (oldFocusPosition.HasValue)
         {
@@ -17,7 +17,7 @@ public static class CoordinateCreation
             if (p.z.IsPreview) p.z.Delete();
         }
 
-        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInputModel);
+        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInput );
     }
 
     public static void DeletePositionAtMousePosition(CoordinateSystem cs)
@@ -29,10 +29,10 @@ public static class CoordinateCreation
     }
 
     private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
-        CoordinateSystem coordinateSystem, bool asPreview = false, Sketch.KeyboardInputModel keyboardInputModel = null)
+        CoordinateSystem coordinateSystem, bool asPreview = false, Axis.GenericVector<float?> keyboardInput = null)
     {
         var position =
-            coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInputModel);
+            coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInput);
         return position;
     }
 

@@ -9,7 +9,7 @@ public class SketchStyle
     public class StyleSet<T>
     {
         public T DefaultStyle;
-        public T DimmedStyle;
+        public T SelectedStyle;
         public T FocusStyle;
 
         public T GetForState(State state)
@@ -19,8 +19,8 @@ public class SketchStyle
                 case State.Default:
                     return DefaultStyle;
                     break;
-                case State.Dimmed:
-                    return DimmedStyle;
+                case State.Selected:
+                    return SelectedStyle;
                     break;
                 case State.Focus:
                     return FocusStyle;
@@ -35,7 +35,7 @@ public class SketchStyle
         public enum State
         {
             Default,
-            Dimmed,
+            Selected,
             Focus
         }
     

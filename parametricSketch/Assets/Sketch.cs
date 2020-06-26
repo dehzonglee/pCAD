@@ -27,7 +27,7 @@ public class Sketch : MonoBehaviour
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
-        public KeyboardInputModel _keyboardInputModel;
+        [FormerlySerializedAs("_keyboardInputModel")] public KeyboardInput.Model keyboardInputModel;
     }
 
     public class RectangleModel
@@ -37,34 +37,12 @@ public class Sketch : MonoBehaviour
         public bool IsBaked;
     }
 
-    public class KeyboardInputModel
-    {
-        public int? ActiveInputInMM
-        {
-            get => _inputInMM[_activeInputIndex];
-            set => _inputInMM[_activeInputIndex] = value;
-        }
-
-        public bool IsDirectionNegative;
-
-        public float? XInM => _inputInMM[0] * 0.01f * (IsDirectionNegative ? -1f : 1f);
-        public float? ZInM => _inputInMM[1] * 0.01f * (IsDirectionNegative ? -1f : 1f);
-
-        private int _activeInputIndex = 0;
-        private readonly int?[] _inputInMM = new int?[2];
-
-        public void SetNextAxis()
-        {
-            _activeInputIndex++;
-            _activeInputIndex %= _inputInMM.Length;
-        }
-    }
 
     private void Start()
     {
         _model.coordinateSystem = new CoordinateSystem();
         _model.rectangles = new List<RectangleModel>();
-        _model._keyboardInputModel = new KeyboardInputModel();
+        _model.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
     }
@@ -128,11 +106,11 @@ public class Sketch : MonoBehaviour
 
             case State.DrawRectangle:
 
-                KeyboardInput.UpdateKeyboardInput(ref _model._keyboardInputModel);
+                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel);
 
                 _model.focusPosition =
                     CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
-                        _model._keyboardInputModel);
+                        _model.keyboardInputModel.InputVector);
 
                 if (_model.focusPosition == null)
                 {
@@ -172,7 +150,7 @@ public class Sketch : MonoBehaviour
                     }
 
                     // reset input
-                    _model._keyboardInputModel = new KeyboardInputModel();
+                    _model.keyboardInputModel.Reset();
                 }
 
                 //update rectangle while drawing
@@ -190,7 +168,7 @@ public class Sketch : MonoBehaviour
 
     private void UpdateUI()
     {
-        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle);
+        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle, _model.keyboardInputModel.InputVector, _model.keyboardInputModel.SelectionVector);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 

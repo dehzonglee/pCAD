@@ -9,10 +9,17 @@ public class MueUI2D : MonoBehaviour
     [SerializeField] protected CoordinateLabelUI _coordinateLabelUI = null;
 
     public void UpdateUI(Mue coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
-        CoordinateUIStyle.MueUIStyle style)
+        CoordinateUIStyle.MueUIStyle style, float? keyboardInput, bool hasKeyboardInputSelection)
     {
-        var state = coordinate.IsPreview ? SketchStyle.State.Focus : SketchStyle.State.Default;
-        _coordinate = coordinate;
+
+       SketchStyle.State state;
+
+       if (coordinate.IsPreview)
+           state = hasKeyboardInputSelection ? SketchStyle.State.Selected : SketchStyle.State.Focus;
+       else
+           state = SketchStyle.State.Default;
+
+       _coordinate = coordinate;
         var labelString = coordinate.Parameter.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
 
