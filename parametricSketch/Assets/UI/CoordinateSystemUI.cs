@@ -1,6 +1,4 @@
-﻿using System;
-using Interaction;
-using Model;
+﻿using Model;
 using UnityEngine;
 
 namespace UI
@@ -10,16 +8,16 @@ namespace UI
         [SerializeField] AxisUI _axisUIPrefab;
         [SerializeField] AnchorUI _anchorUIPrefab;
 
-        public void Initialize(CoordinateSystem cs, Action< Coordinate, float> modelChangeRequest)
+        public void Initialize()
         {
             _xAxisUI = Instantiate(_axisUIPrefab, transform);
-            _xAxisUI.Initialize( modelChangeRequest, Vector3.right, "xAxisUI");
+            _xAxisUI.Initialize(  Vector3.right, "xAxisUI");
 
             _yAxisUI = Instantiate(_axisUIPrefab, transform);
-            _yAxisUI.Initialize( modelChangeRequest, Vector3.up, "yAxisUI");
+            _yAxisUI.Initialize(  Vector3.up, "yAxisUI");
 
             _zAxisUI = Instantiate(_axisUIPrefab, transform);
-            _zAxisUI.Initialize( modelChangeRequest, Vector3.forward, "zAxisUI");
+            _zAxisUI.Initialize(  Vector3.forward, "zAxisUI");
 
             _anchorUI = Instantiate(_anchorUIPrefab, transform);
         }

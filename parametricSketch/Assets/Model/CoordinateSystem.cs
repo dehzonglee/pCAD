@@ -6,13 +6,12 @@ namespace Model
     [Serializable]
     public class CoordinateSystem
     {
+        //todo subscribe and update only on change
         public event Action CoordinateSystemChangedEvent;
 
-        public Axis XAxis { get; private set; }
-
-        public Axis YAxis { get; private set; }
-
-        public Axis ZAxis { get; private set; }
+        public Axis XAxis { get; }
+        public Axis YAxis { get; }
+        public Axis ZAxis { get; }
 
         public CoordinateSystem()
         {
@@ -37,6 +36,15 @@ namespace Model
         public Anchor GetAnchor()
         {
             return _anchor;
+        }
+
+        public Axis AxisThatContainsCoordinate(Coordinate c)
+        {
+            if (XAxis.Coordinates.Contains(c))
+                return XAxis;
+            if (YAxis.Coordinates.Contains(c))
+                return YAxis;
+            return ZAxis;
         }
 
         public void SetAnchorPosition(Vector3 position)

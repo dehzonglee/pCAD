@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Interaction;
 using Model;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 namespace UI
 {
@@ -16,13 +12,11 @@ namespace UI
         [SerializeField] OriginUI _originUiPrefab = null;
         [SerializeField] protected float _padding = default;
 
-        private Action<Coordinate, float> _modelChangeRequest;
 
-        internal void Initialize(Action<Coordinate, float> modelChangeRequest, Vector3 direction, string label)
+        internal void Initialize( Vector3 direction, string label)
         {
             gameObject.name = label;
             _direction = direction;
-            _modelChangeRequest = modelChangeRequest;
         }
 
         public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
