@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Interaction;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LambdaUI2D : MonoBehaviour
 {

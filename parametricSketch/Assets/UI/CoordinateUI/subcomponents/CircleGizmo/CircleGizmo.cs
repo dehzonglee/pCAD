@@ -1,6 +1,4 @@
-﻿using System;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 //todo; split up into circle, arrow, mark

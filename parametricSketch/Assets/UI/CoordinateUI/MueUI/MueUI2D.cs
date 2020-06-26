@@ -1,5 +1,4 @@
-﻿using Interaction;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MueUI2D : MonoBehaviour
 {

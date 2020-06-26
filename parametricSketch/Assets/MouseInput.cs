@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Interaction;
-using Model;
 using UnityEngine;
 
 public static class MouseInput

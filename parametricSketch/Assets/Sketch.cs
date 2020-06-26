@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Interaction;
 using Model;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Sketch : MonoBehaviour
 {
@@ -41,7 +39,7 @@ public class Sketch : MonoBehaviour
         _model.coordinateSystem = new CoordinateSystem();
         _model.rectangles = new List<RectangleModel>();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
-        _ui.coordinateSystemUI.Initialize(_model.coordinateSystem, ModelChangeRequestHandler);
+        _ui.coordinateSystemUI.Initialize();
     }
 
     private void SetState(State newState)
@@ -95,11 +93,13 @@ public class Sketch : MonoBehaviour
         {
             case State.ManipulateCoordinates:
                 if (Input.GetKeyDown(DrawKey))
-                    TryStartDrag();
-                if (Input.GetKey(DrawKey) && _model.IsDragging)
-                    UpdateDrag();
+                    _model.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
+                if (Input.GetKey(DrawKey) && _model.draggedCoordinate != null)
+                    _model.draggedCoordinate.Parameter =
+                        CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
+                            _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
                 if (Input.GetKeyUp(DrawKey) && _model.IsDragging)
-                    CompleteDrag();
+                    _model.draggedCoordinate = null;
                 break;
 
             case State.DrawRectangle:
@@ -187,58 +187,19 @@ public class Sketch : MonoBehaviour
         return position;
     }
 
-    private void TryStartDrag()
-    {
-        var dragged = CoordinateManipulation.TryToHitCoordinate(_ui.coordinateSystemUI,
-            new Vector2(Input.mousePosition.x, Input.mousePosition.y)
-            - 0.5f * new Vector2(Screen.width, Screen.height));
-
-        _model.draggedCoordinate = dragged;
-    }
-
-    private void UpdateDrag()
-    {
-        //todo: decide if axis of dragged coordinate should stored somewhere
-
-        Axis axisOfDraggedCoordinate;
-        if (_model.coordinateSystem.XAxis.Coordinates.Contains(_model.draggedCoordinate))
-            axisOfDraggedCoordinate = _model.coordinateSystem.XAxis;
-        else if (_model.coordinateSystem.YAxis.Coordinates.Contains(_model.draggedCoordinate))
-            axisOfDraggedCoordinate = _model.coordinateSystem.YAxis;
-        else
-            axisOfDraggedCoordinate = _model.coordinateSystem.ZAxis;
-
-        ModelChangeRequestHandler(_model.draggedCoordinate,
-            MousePositionToParameter(MouseInput.RaycastPosition, _model.draggedCoordinate, axisOfDraggedCoordinate));
-    }
-
-    private float MousePositionToParameter(Vector3 mouseWorldPosition, Coordinate coordinate, Axis axis)
-    {
-        return Vector3.Dot(mouseWorldPosition, axis.Direction) - coordinate.ParentValue;
-    }
-
-    private void CompleteDrag()
-    {
-        _model.draggedCoordinate = null;
-    }
-
-    private void ModelChangeRequestHandler(Coordinate coordinate, float value)
-    {
-        coordinate.Parameter = value;
-    }
-
     private enum State
     {
         ManipulateCoordinates,
         DrawRectangle,
     }
 
+    private Model _model;
+
+    private State _state = State.ManipulateCoordinates;
+
     private const KeyCode ManipulateCoordinatesStateKey = KeyCode.Alpha1;
     private const KeyCode DrawRectanglesStateKey = KeyCode.Alpha2;
     private const KeyCode DrawKey = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;
-    private Model _model;
-
-    private State _state = State.ManipulateCoordinates;
 }
