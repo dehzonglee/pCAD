@@ -8,23 +8,25 @@ public static class KeyboardInput
 {
     public class Model
     {
-        private GenericVector<int?> _inputInMM = new GenericVector<int?>(null, null, null);
+        private GenericVector<int?> _inputInMM = new GenericVector<int?>();
 
         public GenericVector<float?> InputInM
         {
             get
             {
                 var scale = 0.01f * (IsDirectionNegative ? -1f : 1f);
-                return new GenericVector<float?>(
-                    scale * _inputInMM?.X,
-                    scale * _inputInMM?.Y,
-                    scale * _inputInMM?.Z);
+                return new GenericVector<float?>()
+                {
+                    X = scale * _inputInMM?.X,
+                    Y = scale * _inputInMM?.Y,
+                    Z = scale * _inputInMM?.Z,
+                };
             }
         }
 
         public AxisID? ActiveAxis => _activeAxis;
         private AxisID? _activeAxis;
-        
+
         public bool IsDirectionNegative;
 
         public int? ActiveInputInMM

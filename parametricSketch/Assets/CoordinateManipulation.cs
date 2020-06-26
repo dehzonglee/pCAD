@@ -30,28 +30,17 @@ public class CoordinateManipulation : MonoBehaviour
     private static Coordinate TryToHitCoordinate(
         IScreenDistanceCalculatorProvider screenDistanceProviders, Vector2 screenPos)
     {
-        var (x, y, z) = screenDistanceProviders.GetProvidersForAxis();
+        var providers = screenDistanceProviders.GetProvidersForAxis();
         Coordinate hitCoordinate = null;
         var radius = SnapRadius;
 
-        var closestOnX = GetClosestCoordinateOnAxisWithinSnapRadius(x, screenPos, radius);
-        if (closestOnX != null)
+        foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
         {
-            hitCoordinate = closestOnX.Value.Coordinate;
-            radius = closestOnX.Value.ScreenDistanceToCoordinate;
-        }
-
-        var closestOnY = GetClosestCoordinateOnAxisWithinSnapRadius(y, screenPos, radius);
-        if (closestOnY != null)
-        {
-            hitCoordinate = closestOnY.Value.Coordinate;
-            radius = closestOnY.Value.ScreenDistanceToCoordinate;
-        }
-
-        var closestOnZ = GetClosestCoordinateOnAxisWithinSnapRadius(z, screenPos, radius);
-        if (closestOnZ != null)
-        {
-            hitCoordinate = closestOnZ.Value.Coordinate;
+            var closestOnAxis = GetClosestCoordinateOnAxisWithinSnapRadius(providers[axis], screenPos, radius);
+            if (closestOnAxis == null)
+                continue;
+            hitCoordinate = closestOnAxis.Value.Coordinate;
+            radius = closestOnAxis.Value.ScreenDistanceToCoordinate;
         }
 
         return hitCoordinate;
@@ -82,8 +71,7 @@ public class CoordinateManipulation : MonoBehaviour
 
     public interface IScreenDistanceCalculatorProvider
     {
-        (IScreenDistanceCalculator x, IScreenDistanceCalculator y,
-            IScreenDistanceCalculator z) GetProvidersForAxis();
+        GenericVector<IScreenDistanceCalculator> GetProvidersForAxis();
     }
 
     public struct ScreenDistance

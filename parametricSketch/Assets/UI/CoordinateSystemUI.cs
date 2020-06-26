@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using System.Security.AccessControl;
+using Model;
 using UnityEngine;
 
 namespace UI
@@ -10,14 +11,21 @@ namespace UI
 
         public void Initialize()
         {
-            _xAxisUI = Instantiate(_axisUIPrefab, transform);
-            _xAxisUI.Initialize(Vector3.right, "xAxisUI");
+            var xAxisUI = Instantiate(_axisUIPrefab, transform);
+            xAxisUI.Initialize(_embedding[AxisID.X], "xAxisUI");
 
-            _yAxisUI = Instantiate(_axisUIPrefab, transform);
-            _yAxisUI.Initialize(Vector3.up, "yAxisUI");
+            var yAxisUI = Instantiate(_axisUIPrefab, transform);
+            yAxisUI.Initialize(_embedding[AxisID.Y], "yAxisUI");
 
-            _zAxisUI = Instantiate(_axisUIPrefab, transform);
-            _zAxisUI.Initialize(Vector3.forward, "zAxisUI");
+            var zAxisUI = Instantiate(_axisUIPrefab, transform);
+            zAxisUI.Initialize(_embedding[AxisID.Z], "zAxisUI");
+
+            _axisUIs = new GenericVector<AxisUI>()
+            {
+                X = xAxisUI,
+                Y = yAxisUI,
+                Z = zAxisUI,
+            };
 
             _anchorUI = Instantiate(_anchorUIPrefab, transform);
         }
@@ -25,38 +33,67 @@ namespace UI
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
             GenericVector<float?> inputVector, AxisID? activeAxisInKeyboardInput)
         {
-            _xAxisUI.UpdateCoordinateUIs(cs.XAxis, Vector3.forward, GetOrthogonalAxis(cs, Dimensions.X).SmallestValue,
-                coordinateUIStyle, inputVector.X, activeAxisInKeyboardInput == AxisID.X);
-            _yAxisUI.UpdateCoordinateUIs(cs.YAxis, Vector3.up, GetOrthogonalAxis(cs, Dimensions.Y).SmallestValue,
-                coordinateUIStyle, inputVector.Y, activeAxisInKeyboardInput == AxisID.Y);
-            _zAxisUI.UpdateCoordinateUIs(cs.ZAxis, Vector3.right, GetOrthogonalAxis(cs, Dimensions.Z).SmallestValue,
-                coordinateUIStyle, inputVector.Z, activeAxisInKeyboardInput == AxisID.Z);
+            foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            {
+                _axisUIs[axis].UpdateCoordinateUIs(
+                    cs.Axes[axis],
+                    _embedding[GetOrthogonalAxis(axis)],
+                    GetOrthogonalAxis(cs, axis).SmallestValue,
+                    coordinateUIStyle,
+                    inputVector[axis],
+                    activeAxisInKeyboardInput == axis);
+            }
+
             _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);
         }
 
-        private static Axis GetOrthogonalAxis(CoordinateSystem cs, int dimension)
+        private static Axis GetOrthogonalAxis(CoordinateSystem cs, AxisID axis)
         {
-            switch (dimension)
+            switch (axis)
             {
-                case Dimensions.X:
-                    return cs.ZAxis;
-                case Dimensions.Y:
-                    return cs.YAxis;
-                case Dimensions.Z:
+                case AxisID.X:
+                    return cs.Axes[AxisID.Z];
+                case AxisID.Y:
+                    return cs.Axes[AxisID.Y];
+                case AxisID.Z:
                 default:
-                    return cs.XAxis;
+                    return cs.Axes[AxisID.X];
             }
         }
 
-        private AxisUI _xAxisUI;
-        private AxisUI _yAxisUI;
-        private AxisUI _zAxisUI;
+        private static AxisID GetOrthogonalAxis(AxisID axis)
+        {
+            switch (axis)
+            {
+                case AxisID.X:
+                    return AxisID.Z;
+                case AxisID.Y:
+                    return AxisID.Y;
+                case AxisID.Z:
+                default:
+                    return AxisID.X;
+            }
+        }
+
+        private GenericVector<AxisUI> _axisUIs;
+
         private AnchorUI _anchorUI;
 
-        public (CoordinateManipulation.IScreenDistanceCalculator x, CoordinateManipulation.IScreenDistanceCalculator y,
-            CoordinateManipulation.IScreenDistanceCalculator z) GetProvidersForAxis()
+        private GenericVector<Vector3> _embedding = new GenericVector<Vector3>()
         {
-            return (_xAxisUI, _yAxisUI, _zAxisUI);
+            X = Vector3.right,
+            Y = Vector3.up,
+            Z = Vector3.forward,
+        };
+
+        public GenericVector<CoordinateManipulation.IScreenDistanceCalculator> GetProvidersForAxis()
+        {
+            return new GenericVector<CoordinateManipulation.IScreenDistanceCalculator>()
+            {
+                X = _axisUIs.X,
+                Y = _axisUIs.Y,
+                Z = _axisUIs.Z,
+            };
         }
     }
 }

@@ -63,8 +63,8 @@ MonoBehaviour:
     LabelStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.49803922}
-        SelectedStyle: {r: 1, g: 0, b: 0.23765755, a: 1}
-        FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 1}
+        SelectedStyle: {r: 0, g: 0, b: 0, a: 1}
+        FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.62352943}
       FontSize: 10
   Origin:
     GridLineStyle:

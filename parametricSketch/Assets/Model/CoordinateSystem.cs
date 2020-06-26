@@ -9,49 +9,52 @@ namespace Model
         //todo subscribe and update only on change
         public event Action CoordinateSystemChangedEvent;
 
-        public Axis XAxis { get; }
-        public Axis YAxis { get; }
-        public Axis ZAxis { get; }
+        public GenericVector<Axis> Axes { get; }
         public Anchor Anchor { get; }
 
         public CoordinateSystem()
         {
-            XAxis = new Axis(OnAxisChanged, Vector3.right);
-            YAxis = new Axis(OnAxisChanged, Vector3.up);
-            ZAxis = new Axis(OnAxisChanged, Vector3.forward);
+            Axes = new GenericVector<Axis>()
+            {
+                X = new Axis(OnAxisChanged, Vector3.right),
+                Y = new Axis(OnAxisChanged, Vector3.up),
+                Z = new Axis(OnAxisChanged, Vector3.forward)
+            };
 
-            var xAnchorCoordinate = XAxis.Anchor;
-            var yAnchorCoordinate = YAxis.Anchor;
-            var zAnchorCoordinate = ZAxis.Anchor;
+            var xAnchorCoordinate = Axes[AxisID.X].Anchor;
+            var yAnchorCoordinate = Axes[AxisID.Y].Anchor;
+            var zAnchorCoordinate = Axes[AxisID.Z].Anchor;
+            
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview, GenericVector<float?> keyboardInput)
+        public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview,
+            GenericVector<float?> keyboardInput)
         {
             var x = keyboardInput[AxisID.X].HasValue
-                ? XAxis.AddNewMueCoordinateWithParameter(keyboardInput[AxisID.X].Value, asPreview)
-                : XAxis.GetCoordinate(position.x, asPreview);
-            var y = YAxis.GetCoordinate(position.y, asPreview);
+                ? Axes[AxisID.X].AddNewMueCoordinateWithParameter(keyboardInput[AxisID.X].Value, asPreview)
+                : Axes[AxisID.X].GetCoordinate(position.x, asPreview);
+            var y = Axes[AxisID.Y].GetCoordinate(position.y, asPreview);
             var z = keyboardInput[AxisID.Z].HasValue
-                ? ZAxis.AddNewMueCoordinateWithParameter(keyboardInput[AxisID.Z].Value, asPreview)
-                : ZAxis.GetCoordinate(position.z, asPreview);
+                ? Axes[AxisID.Z].AddNewMueCoordinateWithParameter(keyboardInput[AxisID.Z].Value, asPreview)
+                : Axes[AxisID.Z].GetCoordinate(position.z, asPreview);
             return (x, y, z);
         }
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
         {
-            if (XAxis.Coordinates.Contains(c))
-                return XAxis;
-            if (YAxis.Coordinates.Contains(c))
-                return YAxis;
-            return ZAxis;
+            if (Axes[AxisID.X].Coordinates.Contains(c))
+                return Axes[AxisID.X];
+            if (Axes[AxisID.Y].Coordinates.Contains(c))
+                return Axes[AxisID.Y];
+            return Axes[AxisID.Z];
         }
 
         public void SetAnchorPosition(Vector3 position)
         {
-            XAxis.SnapAnchorToClosestCoordinate(position.x);
-            YAxis.SnapAnchorToClosestCoordinate(position.y);
-            ZAxis.SnapAnchorToClosestCoordinate(position.z);
+            Axes[AxisID.X].SnapAnchorToClosestCoordinate(position.x);
+            Axes[AxisID.Y].SnapAnchorToClosestCoordinate(position.y);
+            Axes[AxisID.Z].SnapAnchorToClosestCoordinate(position.z);
         }
 
         private void OnAxisChanged()

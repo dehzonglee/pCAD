@@ -35,6 +35,7 @@ public class MueUI2D : MonoBehaviour
         _coordinateDimensionLineUI.UpdateUI(coordinateUIPositionWorld, parentCoordinateUIPositionWorld,
             style.DimensionLineStyle,state);
         _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle,state);
+        
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

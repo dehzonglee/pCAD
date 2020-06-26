@@ -1,31 +1,25 @@
-﻿
+﻿using System;
+using Model;
 
-using System;
+public enum AxisID
+{
+    X,
+    Y,
+    Z
+};
 
-    public enum AxisID
-    {
-        X,
-        Y,
-        Z
-    };
-    
 public class GenericVector<T>
 {
+    
     public T X;
     public T Y;
     public T Z;
 
-    public GenericVector(T x, T y, T z)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
-            
+
     public T this[AxisID axis]
     {
         get => GetForAxisID(axis);
-        set => SetForAxisID(axis,value) ;
+        set => SetForAxisID(axis, value);
     }
 
     public T GetForAxisID(AxisID axis)
