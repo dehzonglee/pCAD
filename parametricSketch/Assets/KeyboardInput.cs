@@ -8,22 +8,22 @@ public static class KeyboardInput
 {
     public class Model
     {
-        private Axis.GenericVector<int?> _inputInMM = new Axis.GenericVector<int?>(null, null, null);
+        private GenericVector<int?> _inputInMM = new GenericVector<int?>(null, null, null);
 
-        public Axis.GenericVector<float?> InputInM
+        public GenericVector<float?> InputInM
         {
             get
             {
                 var scale = 0.01f * (IsDirectionNegative ? -1f : 1f);
-                return new Axis.GenericVector<float?>(
+                return new GenericVector<float?>(
                     scale * _inputInMM?.X,
                     scale * _inputInMM?.Y,
                     scale * _inputInMM?.Z);
             }
         }
 
-        public Axis.ID? ActiveAxis => _activeAxis;
-        private Axis.ID? _activeAxis;
+        public AxisID? ActiveAxis => _activeAxis;
+        private AxisID? _activeAxis;
         
         public bool IsDirectionNegative;
 
@@ -38,7 +38,7 @@ public static class KeyboardInput
             set
             {
                 if (_activeAxis == null)
-                    _activeAxis = Axis.ID.X;
+                    _activeAxis = AxisID.X;
                 _inputInMM[_activeAxis.Value] = value;
             }
         }
@@ -46,11 +46,11 @@ public static class KeyboardInput
         public void SetNextAxis()
         {
             if (!_activeAxis.HasValue)
-                _activeAxis = Axis.ID.X;
-            else if (_activeAxis.Value == Axis.ID.X)
-                _activeAxis = Axis.ID.Z;
+                _activeAxis = AxisID.X;
+            else if (_activeAxis.Value == AxisID.X)
+                _activeAxis = AxisID.Z;
             else // if ==Z
-                _activeAxis = Axis.ID.X;
+                _activeAxis = AxisID.X;
         }
 
         public void Reset()

@@ -7,7 +7,7 @@ public static class CoordinateCreation
 {
     public static (Coordinate x, Coordinate y, Coordinate z)? UpdateFocusPosition(
         (Coordinate x, Coordinate y, Coordinate z)? oldFocusPosition, CoordinateSystem cs,
-        Axis.GenericVector<float?> keyboardInput )
+        GenericVector<float?> keyboardInput )
     {
         if (oldFocusPosition.HasValue)
         {
@@ -29,7 +29,7 @@ public static class CoordinateCreation
     }
 
     private static (Coordinate x, Coordinate y, Coordinate z) GetOrCreatePositionAtMousePosition(
-        CoordinateSystem coordinateSystem, bool asPreview = false, Axis.GenericVector<float?> keyboardInput = null)
+        CoordinateSystem coordinateSystem, bool asPreview = false, GenericVector<float?> keyboardInput = null)
     {
         var position =
             coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInput);

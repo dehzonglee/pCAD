@@ -23,14 +23,14 @@ namespace UI
         }
 
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
-            Axis.GenericVector<float?> inputVector, Axis.ID? activeAxisInKeyboardInput)
+            GenericVector<float?> inputVector, AxisID? activeAxisInKeyboardInput)
         {
             _xAxisUI.UpdateCoordinateUIs(cs.XAxis, Vector3.forward, GetOrthogonalAxis(cs, Dimensions.X).SmallestValue,
-                coordinateUIStyle, inputVector.X, activeAxisInKeyboardInput == Axis.ID.X);
+                coordinateUIStyle, inputVector.X, activeAxisInKeyboardInput == AxisID.X);
             _yAxisUI.UpdateCoordinateUIs(cs.YAxis, Vector3.up, GetOrthogonalAxis(cs, Dimensions.Y).SmallestValue,
-                coordinateUIStyle, inputVector.Y, activeAxisInKeyboardInput == Axis.ID.Y);
+                coordinateUIStyle, inputVector.Y, activeAxisInKeyboardInput == AxisID.Y);
             _zAxisUI.UpdateCoordinateUIs(cs.ZAxis, Vector3.right, GetOrthogonalAxis(cs, Dimensions.Z).SmallestValue,
-                coordinateUIStyle, inputVector.Z, activeAxisInKeyboardInput == Axis.ID.Z);
+                coordinateUIStyle, inputVector.Z, activeAxisInKeyboardInput == AxisID.Z);
             _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);
         }
 
