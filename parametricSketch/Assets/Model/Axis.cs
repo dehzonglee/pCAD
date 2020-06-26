@@ -8,6 +8,67 @@ namespace Model
     [Serializable]
     public class Axis
     {
+        public enum ID
+        {
+            X,
+            Y,
+            Z
+        };
+
+        public class GenericVector<T>
+        {
+            public T X;
+            public T Y;
+            public T Z;
+
+            public GenericVector(T x, T y, T z)
+            {
+                X = x;
+                Y = y;
+                Z = z;
+            }
+            
+            public T this[ID id]
+            {
+                get => GetForID(id);
+                set => SetForID(id,value) ;
+            }
+
+            public T GetForID(ID id)
+            {
+                switch (id)
+                {
+                    case ID.X:
+                        return X;
+                    case ID.Y:
+                        return Y;
+                    case ID.Z:
+                        return Z;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(id), id, null);
+                }
+            }
+
+            public void SetForID(ID id, T value)
+            {
+                switch (id)
+                {
+                    case ID.X:
+                        X = value;
+                        break;
+                    case ID.Y:
+                        Y = value;
+                        break;
+                    case ID.Z:
+                        Z = value;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(id), id, null);
+                }
+            }
+        }
+
+
         private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
         public Vector3 Direction;

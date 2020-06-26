@@ -27,14 +27,14 @@ namespace Model
         }
 
         public (Coordinate x, Coordinate y, Coordinate z) GetParametricPosition(Vector3 position, bool asPreview,
-            Sketch.KeyboardInputModel keyboardInput)
+           Axis.GenericVector<float?> keyboardInput)
         {
-            var x = keyboardInput.XInM.HasValue
-                ? XAxis.AddNewMueCoordinateWithParameter(keyboardInput.XInM.Value, asPreview)
+            var x = keyboardInput[Axis.ID.X].HasValue
+                ? XAxis.AddNewMueCoordinateWithParameter(keyboardInput[Axis.ID.X].Value, asPreview)
                 : XAxis.GetCoordinate(position.x, asPreview);
             var y = YAxis.GetCoordinate(position.y, asPreview);
-            var z = keyboardInput.ZInM.HasValue
-                ? ZAxis.AddNewMueCoordinateWithParameter(keyboardInput.ZInM.Value, asPreview)
+            var z = keyboardInput[Axis.ID.Z].HasValue
+                ? ZAxis.AddNewMueCoordinateWithParameter(keyboardInput[Axis.ID.Z].Value, asPreview)
                 : ZAxis.GetCoordinate(position.z, asPreview);
             return (x, y, z);
         }
