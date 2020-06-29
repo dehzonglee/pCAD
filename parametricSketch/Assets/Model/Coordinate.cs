@@ -28,7 +28,7 @@ public abstract class Coordinate
         }
     }
 
-    public float Parameter
+    public MueParameter Parameter
     {
         get => _parameter;
         set
@@ -95,5 +95,5 @@ public abstract class Coordinate
     
     private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
     private List<Sketch.RectangleModel> _attachedGeometry = new List<Sketch.RectangleModel>();
-    private float _parameter;
+    private MueParameter _parameter;
 }

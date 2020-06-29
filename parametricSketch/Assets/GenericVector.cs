@@ -10,10 +10,21 @@ public enum AxisID
 
 public class GenericVector<T>
 {
-    
     public T X;
     public T Y;
     public T Z;
+
+    public GenericVector()
+    {
+    }
+    
+    public GenericVector(T defaultValue)
+    {
+        X = defaultValue;
+        Y = defaultValue;
+        Z = defaultValue;
+    }
+
 
     public void ForEach(Action<T> function)
     {

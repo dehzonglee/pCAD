@@ -7,7 +7,7 @@ public class Lambda : Coordinate
 {
     public override string Name => "Lambda";
 
-    public override float Value => (1f - Parameter) * ParentValue + Parameter * SecondaryParentValue;
+    public override float Value => (1f - Parameter.Value) * ParentValue + Parameter.Value * SecondaryParentValue;
 
     public float SecondaryParentValue => Parents[1].Value;
 
@@ -21,7 +21,7 @@ public class Lambda : Coordinate
     )
         : base(isPreview, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
     {
-        Parameter = lambda;
+        Parameter = new MueParameter() {Value = lambda};
     }
 
     public override (float min, float max) GetBounds()

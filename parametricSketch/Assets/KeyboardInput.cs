@@ -9,25 +9,20 @@ public static class KeyboardInput
     public class Model
     {
         private GenericVector<int?> _inputInMM = new GenericVector<int?>();
+//        private GenericVector<int?> _inputInMM = new GenericVector<int?>();
 
-        public GenericVector<float?> InputInM
-        {
-            get
+        public GenericVector<float?> InputInM =>
+            new GenericVector<float?>()
             {
-                var scale = 0.01f * (IsDirectionNegative ? -1f : 1f);
-                return new GenericVector<float?>()
-                {
-                    X = scale * _inputInMM?.X,
-                    Y = scale * _inputInMM?.Y,
-                    Z = scale * _inputInMM?.Z,
-                };
-            }
-        }
+                X = 0.01f * (IsDirectionNegative.X ? -1f : 1f) * _inputInMM?.X,
+                Y = 0.01f * (IsDirectionNegative.Y ? -1f : 1f) * _inputInMM?.Y,
+                Z = 0.01f * (IsDirectionNegative.Z ? -1f : 1f) * _inputInMM?.Z,
+            };
 
         public AxisID? ActiveAxis => _activeAxis;
         private AxisID? _activeAxis;
 
-        public bool IsDirectionNegative;
+        public GenericVector<bool> IsDirectionNegative = new GenericVector<bool>(false);
 
         public int? ActiveInputInMM
         {
@@ -61,7 +56,13 @@ public static class KeyboardInput
             _inputInMM.Y = null;
             _inputInMM.Z = null;
             _activeAxis = null;
-            IsDirectionNegative = false;
+            IsDirectionNegative = new GenericVector<bool>()
+            {
+                X = false,
+                Y = false,
+                Z = false,
+                
+            };
         }
     }
 
@@ -94,6 +95,8 @@ public static class KeyboardInput
             InvertDirection(model);
         if (Input.GetKeyDown(KeyCode.Tab))
             SetNextAxis(model);
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+            SetNextAxis(model);
     }
 
     private static void SetNextAxis(Model model)
@@ -103,7 +106,10 @@ public static class KeyboardInput
 
     private static void InvertDirection(Model model)
     {
-        model.IsDirectionNegative = !model.IsDirectionNegative;
+        if(model.ActiveAxis==null)
+            return;
+        
+        model.IsDirectionNegative[model.ActiveAxis.Value] = !model.IsDirectionNegative[model.ActiveAxis.Value];
     }
 
     private static void RemoveDigit(Model model)

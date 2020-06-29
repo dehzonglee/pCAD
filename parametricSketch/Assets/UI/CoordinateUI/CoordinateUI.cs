@@ -36,7 +36,7 @@ public abstract class CoordinateUI : MonoBehaviour
 
     private void CheckForParameterManipulation()
     {
-        if (Mathf.Abs(_uiExposedParameter - Coordinate.Parameter) > EPSILON)
+        if (Mathf.Abs(_uiExposedParameter - Coordinate.Parameter.Value) > EPSILON)
         {
             _modelChangeRequest.Invoke(Coordinate, _uiExposedParameter);
         }

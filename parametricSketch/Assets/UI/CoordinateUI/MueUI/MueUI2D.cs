@@ -20,7 +20,7 @@ public class MueUI2D : MonoBehaviour
            state = SketchStyle.State.Default;
 
        _coordinate = coordinate;
-        var labelString = coordinate.Parameter.ToString("F");
+        var labelString = coordinate.Parameter.Value.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);

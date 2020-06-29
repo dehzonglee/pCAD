@@ -10,7 +10,7 @@ public class OriginUI : MonoBehaviour
     {
         var state = SketchStyle.State.Default;
         _coordinate = coordinate;
-        var labelString = coordinate.Parameter.ToString("F");
+        var labelString = coordinate.Parameter.Value.ToString("F");
         gameObject.name = $"Origin:{labelString}";
 
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);

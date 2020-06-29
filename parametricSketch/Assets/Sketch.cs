@@ -99,7 +99,7 @@ public class Sketch : MonoBehaviour
                 if (Input.GetKeyDown(DrawKey))
                     _model.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
                 if (Input.GetKey(DrawKey) && _model.draggedCoordinate != null)
-                    _model.draggedCoordinate.Parameter =
+                    _model.draggedCoordinate.Parameter.Value =
                         CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
                             _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
                 if (Input.GetKeyUp(DrawKey) && _model.IsDragging)
@@ -175,6 +175,10 @@ public class Sketch : MonoBehaviour
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
+    
+    
+    
+    
     private enum State
     {
         ManipulateCoordinates,

@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class Mue : Coordinate
 {
-    public override float Value => ParentValue + Parameter;
+    public override float Value => ParentValue + Parameter.Value;
 
     public override (float min, float max) GetBounds()
     {
@@ -24,6 +24,6 @@ public class Mue : Coordinate
         bool isPreview)
         : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
-        Parameter = mue;
+        Parameter = new MueParameter() {Value = mue};
     }
 }
