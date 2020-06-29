@@ -59,10 +59,12 @@ namespace Model
         public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
             bool asPreview)
         {
+            Debug.Log($"{parameterValue} , {pointsInNegativeDirection}");
             var newCoordinate = new Mue(
                 Anchor.PrimaryCoordinate,
                 parameterValue,
-                pointsInNegativeDirection, OnCoordinateDeleted,
+                pointsInNegativeDirection, 
+                OnCoordinateDeleted,
                 OnCoordinateChanged,
                 asPreview
             );

@@ -17,9 +17,9 @@ public static class KeyboardInput
         public GenericVector<float?> InputInM =>
             new GenericVector<float?>()
             {
-                X = 0.01f * (IsDirectionNegative.X ? -1f : 1f) * _inputInMM?.X,
-                Y = 0.01f * (IsDirectionNegative.Y ? -1f : 1f) * _inputInMM?.Y,
-                Z = 0.01f * (IsDirectionNegative.Z ? -1f : 1f) * _inputInMM?.Z,
+                X = 0.01f  * _inputInMM?.X,
+                Y = 0.01f  * _inputInMM?.Y,
+                Z = 0.01f  * _inputInMM?.Z,
             };
 
         public AxisID? ActiveAxis;
