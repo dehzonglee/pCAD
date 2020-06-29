@@ -22,7 +22,7 @@ public static class KeyboardInput
                 Z = 0.01f * (IsDirectionNegative.Z ? -1f : 1f) * _inputInMM?.Z,
             };
 
-        public AxisID? ActiveAxis ;
+        public AxisID? ActiveAxis;
 
         public GenericVector<bool> IsDirectionNegative = new GenericVector<bool>(false);
 
@@ -36,6 +36,9 @@ public static class KeyboardInput
                 _inputInMM[ActiveAxis.Value] = value;
             }
         }
+
+        public MueParameter CurrentlyReferencesParameter =>
+            ActiveAxis.HasValue ? ParameterReferences[ActiveAxis.Value] : null;
 
         public void SetNextAxis()
         {
@@ -55,8 +58,8 @@ public static class KeyboardInput
             ParameterReferences = new GenericVector<MueParameter>(null);
         }
     }
-    
-    public static void UpdateKeyboardInput(ref Model model, List<MueParameter> availableParamters)
+
+    public static void UpdateKeyboardInput(ref Model model, List<MueParameter> availableParameters)
     {
         if (Input.GetKeyDown(KeyCode.Keypad0))
             AddDigit(model, 0);
@@ -79,13 +82,13 @@ public static class KeyboardInput
         if (Input.GetKeyDown(KeyCode.Keypad9))
             AddDigit(model, 9);
         if (Input.GetKeyDown(KeyCode.Backspace))
-            RemoveDigit(model);
+            RemoveInputStep(model);
         if (Input.GetKeyDown(KeyCode.KeypadMinus))
             InvertDirection(model);
         if (Input.GetKeyDown(KeyCode.Tab))
             SetNextAxis(model);
         if (Input.GetKeyDown(KeyCode.DownArrow))
-            SelectNextParameter(model, availableParamters);
+            SelectNextParameter(model, availableParameters);
     }
 
     private static void SelectNextParameter(Model model, List<MueParameter> availableParameters)
@@ -95,26 +98,27 @@ public static class KeyboardInput
         {
             logOut += $"{parameter.ID[0]}{parameter.ID[1]} {parameter.Value}|";
         }
+
         Debug.Log(logOut);
-        if(availableParameters.Count==0)
+        if (availableParameters.Count == 0)
             return;
-        
+
         if (!model.ActiveAxis.HasValue)
             model.ActiveAxis = AxisID.X;
-        
+
         var currentlySelectedParameter = model.ParameterReferences[model.ActiveAxis.Value];
         if (currentlySelectedParameter == null)
         {
             model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
             return;
         }
-        
+
         //get next in list
         var selectedIndex = availableParameters.IndexOf(currentlySelectedParameter);
         selectedIndex++;
         selectedIndex %= availableParameters.Count;
-        
-        
+
+
         model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
     }
 
@@ -125,14 +129,23 @@ public static class KeyboardInput
 
     private static void InvertDirection(Model model)
     {
-        if(model.ActiveAxis==null)
+        if (model.ActiveAxis == null)
             return;
-        
+
         model.IsDirectionNegative[model.ActiveAxis.Value] = !model.IsDirectionNegative[model.ActiveAxis.Value];
     }
 
-    private static void RemoveDigit(Model model)
+    private static void RemoveInputStep(Model model)
     {
+        if(!model.ActiveAxis.HasValue)
+            return;
+
+        if (model.ParameterReferences[model.ActiveAxis.Value] != null)
+        {
+            model.ParameterReferences[model.ActiveAxis.Value] = null;
+            return;
+        }
+        
         if (!model.ActiveInputInMM.HasValue)
             return;
 

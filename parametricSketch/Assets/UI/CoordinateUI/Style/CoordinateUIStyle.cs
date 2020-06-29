@@ -81,6 +81,6 @@ public class CoordinateUIStyle : ScriptableObject
     [Serializable]
     public class ColorSet : SketchStyle.StyleSet<Color>
     {
-        public static ColorSet DefaultSet => new ColorSet() {DefaultStyle = Color.black, SelectedStyle = Color.grey, FocusStyle = Color.blue};
+        public static ColorSet DefaultSet => new ColorSet() {DefaultStyle = Color.black, SelectedStyle = Color.grey, FocusStyle = Color.blue, ReferencedStyle = Color.magenta};
     }
 }

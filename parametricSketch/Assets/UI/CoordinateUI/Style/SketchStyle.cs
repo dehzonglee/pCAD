@@ -11,6 +11,7 @@ public class SketchStyle
         public T DefaultStyle;
         public T SelectedStyle;
         public T FocusStyle;
+        public T ReferencedStyle;
 
         public T GetForState(State state)
         {
@@ -18,13 +19,12 @@ public class SketchStyle
             {
                 case State.Default:
                     return DefaultStyle;
-                    break;
                 case State.Selected:
                     return SelectedStyle;
-                    break;
                 case State.Focus:
                     return FocusStyle;
-                    break;
+                case State.Referenced:
+                    return ReferencedStyle;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
@@ -36,7 +36,8 @@ public class SketchStyle
         {
             Default,
             Selected,
-            Focus
+            Focus,
+            Referenced
         }
     
 }

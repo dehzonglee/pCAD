@@ -31,7 +31,7 @@ namespace UI
         }
 
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
-            GenericVector<float?> inputVector, AxisID? activeAxisInKeyboardInput)
+            MueParameter referencedParameter, AxisID? activeAxisInKeyboardInput)
         {
             foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
@@ -40,7 +40,7 @@ namespace UI
                     _embedding[GetOrthogonalAxis(axis)],
                     cs.Axes[GetOrthogonalAxis(axis)].SmallestValue,
                     coordinateUIStyle,
-                    inputVector[axis],
+                    referencedParameter,
                     activeAxisInKeyboardInput == axis);
             }
 

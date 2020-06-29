@@ -82,7 +82,6 @@ public class Sketch : MonoBehaviour
 
     private void Update()
     {
-        
         if (_model.draggedCoordinate != null)
         {
             Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
@@ -110,11 +109,17 @@ public class Sketch : MonoBehaviour
 
             case State.DrawRectangle:
 
-                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel, _model.coordinateSystem.GetAllParameters());
+                KeyboardInput.UpdateKeyboardInput(
+                    ref _model.keyboardInputModel,
+                    _model.coordinateSystem.GetAllParameters()
+                );
 
-                _model.focusPosition =
-                    CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
-                        _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ParameterReferences);
+                _model.focusPosition = CoordinateCreation.UpdateFocusPosition(
+                    _model.focusPosition,
+                    _model.coordinateSystem,
+                    _model.keyboardInputModel.InputInM,
+                    _model.keyboardInputModel.ParameterReferences
+                );
 
                 if (_model.focusPosition == null)
                 {
@@ -172,13 +177,16 @@ public class Sketch : MonoBehaviour
 
     private void UpdateUI()
     {
-        _ui.coordinateSystemUI.UpdateUI(_model.coordinateSystem, _sketchStyle.CoordinateUIStyle,
-            _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ActiveAxis);
+        _ui.coordinateSystemUI.UpdateUI(
+            _model.coordinateSystem,
+            _sketchStyle.CoordinateUIStyle,
+            _model.keyboardInputModel.CurrentlyReferencesParameter,
+            _model.keyboardInputModel.ActiveAxis
+        );
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
-    
-    
+
     private enum State
     {
         ManipulateCoordinates,
