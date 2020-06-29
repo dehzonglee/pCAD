@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Model
@@ -21,10 +22,24 @@ namespace Model
             _axisChangedEvent += axisChangedCallback;
         }
 
-        public Coordinate GetCoordinate(float position, bool isPreview)
+        public Coordinate GetCoordinate(float position, float parameterValue, List<MueParameter> allParameters,
+            bool isPreview)
         {
             var closestCoordinate = GetClosestCoordinateInSnapRadius(position, isPreview);
-            return closestCoordinate ?? AddNewMueCoordinate(position, isPreview);
+            if (closestCoordinate != null)
+                return closestCoordinate;
+
+            var closestParameter = GetClosestParameterInSnapRadius(parameterValue,allParameters);
+            if (closestParameter != null)
+            {
+                return AddNewMueCoordinate(
+                    closestParameter.Value.parameter,
+                    closestParameter.Value.pointsInNegativeDirection,
+                    isPreview
+                );
+            }
+
+            return AddNewMueCoordinate(position, isPreview);
         }
 
         public AnchorCoordinates Anchor { get; }
@@ -56,6 +71,21 @@ namespace Model
             return newCoordinate;
         }
 
+        private Coordinate AddNewMueCoordinate(MueParameter parameter, bool pointsInNegativeDirection, bool asPreview)
+        {
+            var newCoordinate = new Mue(
+                Anchor.PrimaryCoordinate,
+                parameter,
+                pointsInNegativeDirection,
+                OnCoordinateDeleted,
+                OnCoordinateChanged,
+                asPreview
+            );
+            Coordinates.Add(newCoordinate);
+            return newCoordinate;
+        }
+
+
         public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
             bool asPreview)
         {
@@ -63,7 +93,7 @@ namespace Model
             var newCoordinate = new Mue(
                 Anchor.PrimaryCoordinate,
                 parameterValue,
-                pointsInNegativeDirection, 
+                pointsInNegativeDirection,
                 OnCoordinateDeleted,
                 OnCoordinateChanged,
                 asPreview
@@ -108,6 +138,44 @@ namespace Model
                 return closestCoordinate;
 
             return AddLambdaCoordinateBetweenAnchors(isPreview);
+        }
+
+        private (MueParameter parameter, bool pointsInNegativeDirection)? GetClosestParameterInSnapRadius(
+            float parameterValue, List<MueParameter> allParameters)
+        {
+            if (Coordinates.Count == 0)
+                return null;
+
+            var parametersWithDistance = allParameters.Select(p => GenerateDistanceToValue(p, parameterValue));
+
+            (MueParameter p, float distance, bool pointsInNegativeDirection)? candidate = null;
+            foreach (var p in parametersWithDistance)
+            {
+                if (!candidate.HasValue)
+                {
+                    candidate = p;
+                    continue;
+                }
+
+                if (p.distance < candidate.Value.distance)
+                    candidate = p;
+            }
+
+            if (!candidate.HasValue || candidate.Value.distance > SNAP_RADIUS)
+                return null;
+
+            return (candidate.Value.p, candidate.Value.pointsInNegativeDirection);
+
+            ( MueParameter p, float distance, bool pointsInNegativeDirection) GenerateDistanceToValue(MueParameter p,
+                float inputValue)
+            {
+                var distanceToParameter = Mathf.Abs(inputValue - p.Value);
+                var distanceToNegativeParameter = Mathf.Abs(inputValue + p.Value);
+
+                return distanceToParameter < distanceToNegativeParameter
+                    ? (p, distanceToParameter, false)
+                    : (p, distanceToNegativeParameter, true);
+            }
         }
 
         private Lambda AddLambdaCoordinateBetweenAnchors(bool isPreview)

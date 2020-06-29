@@ -32,7 +32,7 @@ namespace Model
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public GenericVector<Coordinate> GetParametricPosition(GenericVector<float> position, bool asPreview,
+        public GenericVector<Coordinate> GetParametricPosition(GenericVector<float> position, GenericVector<float> distancesToAnchor, bool asPreview,
             GenericVector<float?> keyboardInputValues, GenericVector<MueParameter> keyboardInputParameters, GenericVector<bool> keyboardInputNegativeDirection)
         {
             var output = new GenericVector<Coordinate>();
@@ -46,7 +46,7 @@ namespace Model
                 else if (keyboardInputValues[a].HasValue)
                     output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInputValues[a].Value,keyboardInputNegativeDirection[a], asPreview);
                 else
-                    output[a] = Axes[a].GetCoordinate(position[a], asPreview);
+                    output[a] = Axes[a].GetCoordinate(position[a],distancesToAnchor[a],GetAllParameters(),  asPreview);
             }
 
             return output;

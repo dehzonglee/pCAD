@@ -58,21 +58,21 @@ MonoBehaviour:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.49803922}
         SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
         FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
-        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+        ReferencedStyle: {r: 0, g: 0, b: 0, a: 1}
       Width: 5
     DimensionLineStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.5019608}
         SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
         FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
-        ReferencedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        ReferencedStyle: {r: 0, g: 0, b: 0, a: 1}
       Width: 0.5
     LabelStyle:
       Color:
         DefaultStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.49803922}
         SelectedStyle: {r: 0, g: 0, b: 0, a: 1}
         FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.62352943}
-        ReferencedStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
+        ReferencedStyle: {r: 0, g: 0, b: 0, a: 1}
       FontSize: 10
   Origin:
     GridLineStyle:
