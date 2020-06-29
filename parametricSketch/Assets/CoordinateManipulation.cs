@@ -16,14 +16,25 @@ public class CoordinateManipulation : MonoBehaviour
         return dragged;
     }
 
-    public static float UpdateDrag(Coordinate draggedCoordinate, Axis axisOfDraggedCoordinate)
+    public static (float value, bool inOppositeDirection) UpdateDrag(Coordinate draggedCoordinate,
+        Axis axisOfDraggedCoordinate)
     {
-        return MousePositionToParameter(MouseInput.RaycastPosition, draggedCoordinate, axisOfDraggedCoordinate);
+        // mouse position to parameter
+        var pos = MouseInput.RaycastPosition;
+        var worldPositionAsUnityVector = new Vector3(pos.X, pos.Y, pos.Z);
+
+        var delta = Vector3.Dot(worldPositionAsUnityVector, axisOfDraggedCoordinate.Direction) -
+                    draggedCoordinate.ParentValue;
+
+        var isInOppositeDirection = delta < 0f;
+        var value = isInOppositeDirection ? -delta : delta;
+        return (value, isInOppositeDirection);
     }
 
-    private static float MousePositionToParameter(GenericVector<float> mouseWorldPosition, Coordinate coordinate, Axis axis)
+    private static float MousePositionToParameter(GenericVector<float> mouseWorldPosition, Coordinate coordinate,
+        Axis axis)
     {
-        var worldPositionAsUnityVector = new Vector3(mouseWorldPosition.X,mouseWorldPosition.Y,mouseWorldPosition.Z);
+        var worldPositionAsUnityVector = new Vector3(mouseWorldPosition.X, mouseWorldPosition.Y, mouseWorldPosition.Z);
         return Vector3.Dot(worldPositionAsUnityVector, axis.Direction) - coordinate.ParentValue;
     }
 

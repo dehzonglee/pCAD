@@ -5,6 +5,7 @@ using Model;
 using UI;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.Serialization;
 
 public class Sketch : MonoBehaviour
@@ -97,14 +98,23 @@ public class Sketch : MonoBehaviour
         switch (_state)
         {
             case State.ManipulateCoordinates:
+                
                 if (Input.GetKeyDown(DrawKey))
                     _model.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
+                
                 if (Input.GetKey(DrawKey) && _model.draggedCoordinate != null)
-                    _model.draggedCoordinate.Parameter.Value =
-                        CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
-                            _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
+                {
+                    var (value, pointsInNegativeDirection) = CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
+                        _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
+                    
+                    _model.draggedCoordinate.Parameter.Value = value;
+                    //quick fix: for now, only mue coordinates can be dragged
+                    ((Mue) _model.draggedCoordinate).PointsInNegativeDirection = pointsInNegativeDirection;
+                }
+
                 if (Input.GetKeyUp(DrawKey) && _model.IsDragging)
                     _model.draggedCoordinate = null;
+                
                 break;
 
             case State.DrawRectangle:
@@ -118,7 +128,8 @@ public class Sketch : MonoBehaviour
                     _model.focusPosition,
                     _model.coordinateSystem,
                     _model.keyboardInputModel.InputInM,
-                    _model.keyboardInputModel.ParameterReferences
+                    _model.keyboardInputModel.ParameterReferences,
+                    _model.keyboardInputModel.IsDirectionNegative
                 );
 
                 if (_model.focusPosition == null)

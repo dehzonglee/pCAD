@@ -7,32 +7,38 @@ public static class CoordinateCreation
 {
     public static GenericVector<Coordinate> UpdateFocusPosition(GenericVector<Coordinate> oldFocusPosition,
         CoordinateSystem cs,
-        GenericVector<float?> keyboardInputFloats, GenericVector<MueParameter> keyboardInputParameters)
+        GenericVector<float?> keyboardInputFloats, GenericVector<MueParameter> keyboardInputParameters,
+        GenericVector<bool> keyboardInputNegativeDirection)
     {
         oldFocusPosition?.ForEach(c =>
         {
             if (c.IsPreview) c.Delete();
         });
 
-        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInputFloats,keyboardInputParameters);
+        return GetOrCreatePositionAtMousePosition(cs, true, keyboardInputFloats, keyboardInputParameters,
+            keyboardInputNegativeDirection);
     }
 
     public static void DeletePositionAtMousePosition(CoordinateSystem cs)
     {
         var p = GetOrCreatePositionAtMousePosition(cs);
-        p.ForEach(c=>c.Delete());
+        p.ForEach(c => c.Delete());
     }
 
-    private static GenericVector<Coordinate> GetOrCreatePositionAtMousePosition(CoordinateSystem coordinateSystem,
-        bool asPreview = false, GenericVector<float?> keyboardInput = null,
-        GenericVector<MueParameter> keyboardInputParameters = null)
+    private static GenericVector<Coordinate> GetOrCreatePositionAtMousePosition(
+        CoordinateSystem coordinateSystem,
+        bool asPreview = false,
+        GenericVector<float?> keyboardInput = null,
+        GenericVector<MueParameter> keyboardInputParameters = null,
+        GenericVector<bool> keyboardInputNegativeDirection = null)
     {
-       return 
-            coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInput,keyboardInputParameters);
+        return
+            coordinateSystem.GetParametricPosition(MouseInput.RaycastPosition, asPreview, keyboardInput,
+                keyboardInputParameters, keyboardInputNegativeDirection);
     }
 
     public static void BakePosition(GenericVector<Coordinate> modelFocusPosition)
     {
-        modelFocusPosition.ForEach(c=>c.Bake());
+        modelFocusPosition.ForEach(c => c.Bake());
     }
 }

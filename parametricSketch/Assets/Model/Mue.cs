@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class Mue : Coordinate
 {
-    public override float Value => ParentValue + Parameter.Value;
+    public override float Value =>
+        PointsInNegativeDirection ? ParentValue - Parameter.Value : ParentValue + Parameter.Value;
 
     public override (float min, float max) GetBounds()
     {
@@ -20,14 +22,15 @@ public class Mue : Coordinate
     public Mue(
         Coordinate parent,
         float mue,
+        bool pointsInNegativeDirection,
         Action<Coordinate> onDeleted,
         Action onChanged,
         bool isPreview)
         : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
+        PointsInNegativeDirection = pointsInNegativeDirection;
         var id = GUID.Generate().ToString();
 //        Debug.Log($"create paramter with {mue} and id: {id}");
-
         if (Parameter == null)
             Parameter = new MueParameter(id, mue);
         else
@@ -37,6 +40,7 @@ public class Mue : Coordinate
     public Mue(
         Coordinate parent,
         MueParameter parameterReference,
+        bool pointsInNegativeDirection,
         Action<Coordinate> onDeleted,
         Action onChanged,
         bool isPreview)
@@ -44,6 +48,9 @@ public class Mue : Coordinate
     {
 //        Debug.Log($"create paramter with refrence {parameterReference.ID}");
 
+        PointsInNegativeDirection = pointsInNegativeDirection;
         Parameter = parameterReference;
     }
+
+    [FormerlySerializedAs("_pointsInNegativeDirection")] public bool PointsInNegativeDirection;
 }

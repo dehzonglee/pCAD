@@ -42,25 +42,29 @@ namespace Model
         {
             
             var delta = position - Anchor.PrimaryCoordinate.Value;
+            var pointsInNegativeDirection = delta < 0f;
+            if (pointsInNegativeDirection)
+                delta *= -1f;
+            
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+                new Mue(Anchor.PrimaryCoordinate, delta,pointsInNegativeDirection, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
 
-        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool asPreview)
+        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue,bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterValue, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+                new Mue(Anchor.PrimaryCoordinate, parameterValue, pointsInNegativeDirection,OnCoordinateDeleted, OnCoordinateChanged, asPreview);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
 
         
-        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference, bool asPreview)
+        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference,bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterReference, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+                new Mue(Anchor.PrimaryCoordinate, parameterReference,pointsInNegativeDirection, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }

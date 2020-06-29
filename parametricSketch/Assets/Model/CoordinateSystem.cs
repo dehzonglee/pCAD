@@ -33,7 +33,7 @@ namespace Model
         }
 
         public GenericVector<Coordinate> GetParametricPosition(GenericVector<float> position, bool asPreview,
-            GenericVector<float?> keyboardInputValues, GenericVector<MueParameter> keyboardInputParameters)
+            GenericVector<float?> keyboardInputValues, GenericVector<MueParameter> keyboardInputParameters, GenericVector<bool> keyboardInputNegativeDirection)
         {
             var output = new GenericVector<Coordinate>();
             foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
@@ -41,10 +41,10 @@ namespace Model
                 if (keyboardInputParameters[a] != null)
                 {
                     output[a] = Axes[a]
-                        .AddNewMueCoordinateWithParameterReference(keyboardInputParameters[a], asPreview);
+                        .AddNewMueCoordinateWithParameterReference(keyboardInputParameters[a],keyboardInputNegativeDirection[a], asPreview);
                 }
                 else if (keyboardInputValues[a].HasValue)
-                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInputValues[a].Value, asPreview);
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInputValues[a].Value,keyboardInputNegativeDirection[a], asPreview);
                 else
                     output[a] = Axes[a].GetCoordinate(position[a], asPreview);
             }
