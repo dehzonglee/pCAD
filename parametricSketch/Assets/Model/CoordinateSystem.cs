@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Model
 {
@@ -31,17 +32,24 @@ namespace Model
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public GenericVector<Coordinate> GetParametricPosition(Vector3 position, bool asPreview,
-            GenericVector<float?> keyboardInput)
+        public GenericVector<Coordinate> GetParametricPosition(GenericVector<float> position, bool asPreview,
+            GenericVector<float?> keyboardInputValues, GenericVector<MueParameter> keyboardInputParameters)
         {
-            var x = keyboardInput[AxisID.X].HasValue
-                ? Axes[AxisID.X].AddNewMueCoordinateWithParameter(keyboardInput[AxisID.X].Value, asPreview)
-                : Axes[AxisID.X].GetCoordinate(position.x, asPreview);
-            var y = Axes[AxisID.Y].GetCoordinate(position.y, asPreview);
-            var z = keyboardInput[AxisID.Z].HasValue
-                ? Axes[AxisID.Z].AddNewMueCoordinateWithParameter(keyboardInput[AxisID.Z].Value, asPreview)
-                : Axes[AxisID.Z].GetCoordinate(position.z, asPreview);
-            return new GenericVector<Coordinate>() {X = x, Y = y, Z = z};
+            var output = new GenericVector<Coordinate>();
+            foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            {
+                if (keyboardInputParameters[a] != null)
+                {
+                    output[a] = Axes[a]
+                        .AddNewMueCoordinateWithParameterReference(keyboardInputParameters[a], asPreview);
+                }
+                else if (keyboardInputValues[a].HasValue)
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInputValues[a].Value, asPreview);
+                else
+                    output[a] = Axes[a].GetCoordinate(position[a], asPreview);
+            }
+
+            return output;
         }
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
@@ -53,11 +61,11 @@ namespace Model
             return Axes[AxisID.Z];
         }
 
-        public void SetAnchorPosition(Vector3 position)
+        public void SetAnchorPosition(GenericVector<float> position)
         {
-            Axes[AxisID.X].SnapAnchorToClosestCoordinate(position.x);
-            Axes[AxisID.Y].SnapAnchorToClosestCoordinate(position.y);
-            Axes[AxisID.Z].SnapAnchorToClosestCoordinate(position.z);
+            Axes[AxisID.X].SnapAnchorToClosestCoordinate(position.X);
+            Axes[AxisID.Y].SnapAnchorToClosestCoordinate(position.Y);
+            Axes[AxisID.Z].SnapAnchorToClosestCoordinate(position.Z);
         }
 
         private void OnAxisChanged()
@@ -71,10 +79,23 @@ namespace Model
             foreach (var axisID in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
                 var axis = Axes[axisID];
-                output.AddRange(axis.Coordinates.Select(a => a.Parameter));
+                output.AddRange(
+                    axis.Coordinates
+                        .Where(c => c.GetType() != typeof(Origin))
+                        .Where(c => !c.IsPreview)
+                        .Select(c => c.Parameter)
+                        );
             }
 
-            return output.Distinct().ToList();
+            var distinctList = new List<MueParameter>();
+            foreach (var parameter in output)
+            {
+                if(distinctList.Any(p=>p.ID == parameter.ID))
+                    continue;
+                distinctList.Add(parameter);
+            }
+            
+            return distinctList.OrderBy(p => p.Value).ToList();
         }
     }
 }

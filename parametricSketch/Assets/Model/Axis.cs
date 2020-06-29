@@ -40,6 +40,7 @@ namespace Model
 
         private Coordinate AddNewMueCoordinate(float position, bool asPreview)
         {
+            
             var delta = position - Anchor.PrimaryCoordinate.Value;
             var newCoordinate =
                 new Mue(Anchor.PrimaryCoordinate, delta, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
@@ -47,7 +48,7 @@ namespace Model
             return newCoordinate;
         }
 
-        public Coordinate AddNewMueCoordinateWithParameter(float parameterValue, bool asPreview)
+        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool asPreview)
         {
             var newCoordinate =
                 new Mue(Anchor.PrimaryCoordinate, parameterValue, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
@@ -55,6 +56,15 @@ namespace Model
             return newCoordinate;
         }
 
+        
+        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference, bool asPreview)
+        {
+            var newCoordinate =
+                new Mue(Anchor.PrimaryCoordinate, parameterReference, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+            Coordinates.Add(newCoordinate);
+            return newCoordinate;
+        }
+        
         private void OnCoordinateChanged()
         {
             _axisChangedEvent?.Invoke();
@@ -124,5 +134,6 @@ namespace Model
 
         private const float SNAP_RADIUS = 0.01f;
         private readonly Origin _origin;
+
     }
 }

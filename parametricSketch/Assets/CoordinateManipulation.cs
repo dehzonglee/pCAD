@@ -21,9 +21,10 @@ public class CoordinateManipulation : MonoBehaviour
         return MousePositionToParameter(MouseInput.RaycastPosition, draggedCoordinate, axisOfDraggedCoordinate);
     }
 
-    private static float MousePositionToParameter(Vector3 mouseWorldPosition, Coordinate coordinate, Axis axis)
+    private static float MousePositionToParameter(GenericVector<float> mouseWorldPosition, Coordinate coordinate, Axis axis)
     {
-        return Vector3.Dot(mouseWorldPosition, axis.Direction) - coordinate.ParentValue;
+        var worldPositionAsUnityVector = new Vector3(mouseWorldPosition.X,mouseWorldPosition.Y,mouseWorldPosition.Z);
+        return Vector3.Dot(worldPositionAsUnityVector, axis.Direction) - coordinate.ParentValue;
     }
 
     [CanBeNull]

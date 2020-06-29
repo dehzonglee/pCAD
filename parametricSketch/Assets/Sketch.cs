@@ -114,7 +114,7 @@ public class Sketch : MonoBehaviour
 
                 _model.focusPosition =
                     CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
-                        _model.keyboardInputModel.InputInM);
+                        _model.keyboardInputModel.InputInM, _model.keyboardInputModel.ParameterReferences);
 
                 if (_model.focusPosition == null)
                 {

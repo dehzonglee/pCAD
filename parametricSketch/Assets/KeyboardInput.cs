@@ -49,14 +49,10 @@ public static class KeyboardInput
 
         public void Reset()
         {
-            _inputInMM = new GenericVector<int?>(null);
             ActiveAxis = null;
-            IsDirectionNegative = new GenericVector<bool>()
-            {
-                X = false,
-                Y = false,
-                Z = false,
-            };
+            _inputInMM = new GenericVector<int?>(null);
+            IsDirectionNegative = new GenericVector<bool>(false);
+            ParameterReferences = new GenericVector<MueParameter>(null);
         }
     }
     
@@ -94,6 +90,12 @@ public static class KeyboardInput
 
     private static void SelectNextParameter(Model model, List<MueParameter> availableParameters)
     {
+        var logOut = "";
+        foreach (var parameter in availableParameters)
+        {
+            logOut += $"{parameter.ID[0]}{parameter.ID[1]} {parameter.Value}|";
+        }
+        Debug.Log(logOut);
         if(availableParameters.Count==0)
             return;
         
@@ -111,7 +113,8 @@ public static class KeyboardInput
         var selectedIndex = availableParameters.IndexOf(currentlySelectedParameter);
         selectedIndex++;
         selectedIndex %= availableParameters.Count;
-
+        
+        
         model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
     }
 

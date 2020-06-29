@@ -17,12 +17,19 @@ public class GenericVector<T>
     public GenericVector()
     {
     }
-    
+
     public GenericVector(T defaultValue)
     {
         X = defaultValue;
         Y = defaultValue;
         Z = defaultValue;
+    }
+
+    public GenericVector(T x, T y, T z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
     }
 
 

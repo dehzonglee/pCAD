@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 
 public class Origin : Coordinate
 {
@@ -14,6 +15,6 @@ public class Origin : Coordinate
 
     public Origin() : base(false, null, null, new List<Coordinate>())
     {
-        Parameter = new MueParameter() {Value = 0f};
+        Parameter = new MueParameter( GUID.Generate().ToString(), 0f);
     }
 }

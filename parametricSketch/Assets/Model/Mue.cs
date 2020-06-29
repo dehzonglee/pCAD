@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -24,6 +25,25 @@ public class Mue : Coordinate
         bool isPreview)
         : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
-        Parameter = new MueParameter() {Value = mue};
+        var id = GUID.Generate().ToString();
+//        Debug.Log($"create paramter with {mue} and id: {id}");
+
+        if (Parameter == null)
+            Parameter = new MueParameter(id, mue);
+        else
+            Parameter.Value = mue;
+    }
+
+    public Mue(
+        Coordinate parent,
+        MueParameter parameterReference,
+        Action<Coordinate> onDeleted,
+        Action onChanged,
+        bool isPreview)
+        : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
+    {
+//        Debug.Log($"create paramter with refrence {parameterReference.ID}");
+
+        Parameter = parameterReference;
     }
 }
