@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Model;
 using UI;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -81,6 +82,7 @@ public class Sketch : MonoBehaviour
 
     private void Update()
     {
+        
         if (_model.draggedCoordinate != null)
         {
             Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
@@ -108,7 +110,7 @@ public class Sketch : MonoBehaviour
 
             case State.DrawRectangle:
 
-                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel);
+                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel, _model.coordinateSystem.GetAllParameters());
 
                 _model.focusPosition =
                     CoordinateCreation.UpdateFocusPosition(_model.focusPosition, _model.coordinateSystem,
@@ -175,8 +177,6 @@ public class Sketch : MonoBehaviour
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
-    
-    
     
     
     private enum State

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Model;
 using UI;
 using UnityEngine;
@@ -9,7 +10,9 @@ public static class KeyboardInput
     public class Model
     {
         private GenericVector<int?> _inputInMM = new GenericVector<int?>();
-//        private GenericVector<int?> _inputInMM = new GenericVector<int?>();
+
+        public GenericVector<MueParameter> ParameterReferences =
+            new GenericVector<MueParameter>();
 
         public GenericVector<float?> InputInM =>
             new GenericVector<float?>()
@@ -19,55 +22,45 @@ public static class KeyboardInput
                 Z = 0.01f * (IsDirectionNegative.Z ? -1f : 1f) * _inputInMM?.Z,
             };
 
-        public AxisID? ActiveAxis => _activeAxis;
-        private AxisID? _activeAxis;
+        public AxisID? ActiveAxis ;
 
         public GenericVector<bool> IsDirectionNegative = new GenericVector<bool>(false);
 
         public int? ActiveInputInMM
         {
-            get
-            {
-                if (_activeAxis == null)
-                    return null;
-                return _inputInMM[_activeAxis.Value];
-            }
+            get => ActiveAxis == null ? null : _inputInMM[ActiveAxis.Value];
             set
             {
-                if (_activeAxis == null)
-                    _activeAxis = AxisID.X;
-                _inputInMM[_activeAxis.Value] = value;
+                if (ActiveAxis == null)
+                    ActiveAxis = AxisID.X;
+                _inputInMM[ActiveAxis.Value] = value;
             }
         }
 
         public void SetNextAxis()
         {
-            if (!_activeAxis.HasValue)
-                _activeAxis = AxisID.X;
-            else if (_activeAxis.Value == AxisID.X)
-                _activeAxis = AxisID.Z;
+            if (!ActiveAxis.HasValue)
+                ActiveAxis = AxisID.X;
+            else if (ActiveAxis.Value == AxisID.X)
+                ActiveAxis = AxisID.Z;
             else // if ==Z
-                _activeAxis = AxisID.X;
+                ActiveAxis = AxisID.X;
         }
 
         public void Reset()
         {
-            _inputInMM.X = null;
-            _inputInMM.Y = null;
-            _inputInMM.Z = null;
-            _activeAxis = null;
+            _inputInMM = new GenericVector<int?>(null);
+            ActiveAxis = null;
             IsDirectionNegative = new GenericVector<bool>()
             {
                 X = false,
                 Y = false,
                 Z = false,
-                
             };
         }
     }
-
-
-    public static void UpdateKeyboardInput(ref Model model)
+    
+    public static void UpdateKeyboardInput(ref Model model, List<MueParameter> availableParamters)
     {
         if (Input.GetKeyDown(KeyCode.Keypad0))
             AddDigit(model, 0);
@@ -96,7 +89,30 @@ public static class KeyboardInput
         if (Input.GetKeyDown(KeyCode.Tab))
             SetNextAxis(model);
         if (Input.GetKeyDown(KeyCode.DownArrow))
-            SetNextAxis(model);
+            SelectNextParameter(model, availableParamters);
+    }
+
+    private static void SelectNextParameter(Model model, List<MueParameter> availableParameters)
+    {
+        if(availableParameters.Count==0)
+            return;
+        
+        if (!model.ActiveAxis.HasValue)
+            model.ActiveAxis = AxisID.X;
+        
+        var currentlySelectedParameter = model.ParameterReferences[model.ActiveAxis.Value];
+        if (currentlySelectedParameter == null)
+        {
+            model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
+            return;
+        }
+        
+        //get next in list
+        var selectedIndex = availableParameters.IndexOf(currentlySelectedParameter);
+        selectedIndex++;
+        selectedIndex %= availableParameters.Count;
+
+        model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
     }
 
     private static void SetNextAxis(Model model)

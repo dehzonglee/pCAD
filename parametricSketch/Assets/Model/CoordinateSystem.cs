@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Model
@@ -60,6 +63,18 @@ namespace Model
         private void OnAxisChanged()
         {
             CoordinateSystemChangedEvent?.Invoke();
+        }
+
+        public List<MueParameter> GetAllParameters()
+        {
+            var output = new List<MueParameter>();
+            foreach (var axisID in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            {
+                var axis = Axes[axisID];
+                output.AddRange(axis.Coordinates.Select(a => a.Parameter));
+            }
+
+            return output.Distinct().ToList();
         }
     }
 }
