@@ -9,13 +9,13 @@ public static class KeyboardInput
 {
     public class Model
     {
-        private GenericVector<int?> _inputInMM = new GenericVector<int?>();
+        private Vec<int?> _inputInMM = new Vec<int?>();
 
-        public GenericVector<MueParameter> ParameterReferences =
-            new GenericVector<MueParameter>();
+        public Vec<MueParameter> ParameterReferences =
+            new Vec<MueParameter>();
 
-        public GenericVector<float?> InputInM =>
-            new GenericVector<float?>()
+        public Vec<float?> InputInM =>
+            new Vec<float?>()
             {
                 X = 0.01f  * _inputInMM?.X,
                 Y = 0.01f  * _inputInMM?.Y,
@@ -24,7 +24,7 @@ public static class KeyboardInput
 
         public AxisID? ActiveAxis;
 
-        public GenericVector<bool> IsDirectionNegative = new GenericVector<bool>(false);
+        public Vec<bool> IsDirectionNegative = new Vec<bool>(false);
 
         public int? ActiveInputInMM
         {
@@ -53,9 +53,9 @@ public static class KeyboardInput
         public void Reset()
         {
             ActiveAxis = null;
-            _inputInMM = new GenericVector<int?>(null);
-            IsDirectionNegative = new GenericVector<bool>(false);
-            ParameterReferences = new GenericVector<MueParameter>(null);
+            _inputInMM = new Vec<int?>(null);
+            IsDirectionNegative = new Vec<bool>(false);
+            ParameterReferences = new Vec<MueParameter>(null);
         }
     }
 

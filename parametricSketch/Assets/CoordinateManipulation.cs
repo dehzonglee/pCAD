@@ -31,7 +31,7 @@ public class CoordinateManipulation : MonoBehaviour
         return (value, isInOppositeDirection);
     }
 
-    private static float MousePositionToParameter(GenericVector<float> mouseWorldPosition, Coordinate coordinate,
+    private static float MousePositionToParameter(Vec<float> mouseWorldPosition, Coordinate coordinate,
         Axis axis)
     {
         var worldPositionAsUnityVector = new Vector3(mouseWorldPosition.X, mouseWorldPosition.Y, mouseWorldPosition.Z);
@@ -83,7 +83,7 @@ public class CoordinateManipulation : MonoBehaviour
 
     public interface IScreenDistanceCalculatorProvider
     {
-        GenericVector<IScreenDistanceCalculator> GetProvidersForAxis();
+        Vec<IScreenDistanceCalculator> GetProvidersForAxis();
     }
 
     public struct ScreenDistance

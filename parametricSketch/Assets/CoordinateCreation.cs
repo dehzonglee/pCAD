@@ -5,10 +5,10 @@ using UnityEngine;
 
 public static class CoordinateCreation
 {
-    public static GenericVector<Coordinate> UpdateFocusPosition(GenericVector<Coordinate> oldFocusPosition,
+    public static Vec<Coordinate> UpdateFocusPosition(Vec<Coordinate> oldFocusPosition,
         CoordinateSystem cs,
-        GenericVector<float?> keyboardInputFloats, GenericVector<MueParameter> keyboardInputParameters,
-        GenericVector<bool> keyboardInputNegativeDirection)
+        Vec<float?> keyboardInputFloats, Vec<MueParameter> keyboardInputParameters,
+        Vec<bool> keyboardInputNegativeDirection)
     {
         oldFocusPosition?.ForEach(c =>
         {
@@ -25,16 +25,16 @@ public static class CoordinateCreation
         p.ForEach(c => c.Delete());
     }
 
-    private static GenericVector<Coordinate> GetOrCreatePositionAtMousePosition(
+    private static Vec<Coordinate> GetOrCreatePositionAtMousePosition(
         CoordinateSystem coordinateSystem,
         Anchor anchor,
         bool asPreview = false,
-        GenericVector<float?> keyboardInput = null,
-        GenericVector<MueParameter> keyboardInputParameters = null,
-        GenericVector<bool> keyboardInputNegativeDirection = null)
+        Vec<float?> keyboardInput = null,
+        Vec<MueParameter> keyboardInputParameters = null,
+        Vec<bool> keyboardInputNegativeDirection = null)
     {
         var mousePosition = MouseInput.RaycastPosition;
-        var distanceToAnchor = new GenericVector<float>(
+        var distanceToAnchor = new Vec<float>(
             mousePosition.X - anchor.PrimaryPosition.x,
             mousePosition.Y - anchor.PrimaryPosition.y,
             mousePosition.Z - anchor.PrimaryPosition.z
@@ -45,7 +45,7 @@ public static class CoordinateCreation
                 keyboardInputParameters, keyboardInputNegativeDirection);
     }
 
-    public static void BakePosition(GenericVector<Coordinate> modelFocusPosition)
+    public static void BakePosition(Vec<Coordinate> modelFocusPosition)
     {
         modelFocusPosition.ForEach(c => c.Bake());
     }

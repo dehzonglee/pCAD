@@ -20,7 +20,7 @@ namespace UI
             var zAxisUI = Instantiate(_axisUIPrefab, transform);
             zAxisUI.Initialize(_embedding[AxisID.Z], "zAxisUI");
 
-            _axisUIs = new GenericVector<AxisUI>()
+            _axisUIs = new Vec<AxisUI>()
             {
                 X = xAxisUI,
                 Y = yAxisUI,
@@ -61,20 +61,20 @@ namespace UI
             }
         }
 
-        private GenericVector<AxisUI> _axisUIs;
+        private Vec<AxisUI> _axisUIs;
 
         private AnchorUI _anchorUI;
 
-        private readonly GenericVector<Vector3> _embedding = new GenericVector<Vector3>()
+        private readonly Vec<Vector3> _embedding = new Vec<Vector3>()
         {
             X = Vector3.right,
             Y = Vector3.up,
             Z = Vector3.forward,
         };
 
-        public GenericVector<CoordinateManipulation.IScreenDistanceCalculator> GetProvidersForAxis()
+        public Vec<CoordinateManipulation.IScreenDistanceCalculator> GetProvidersForAxis()
         {
-            return new GenericVector<CoordinateManipulation.IScreenDistanceCalculator>()
+            return new Vec<CoordinateManipulation.IScreenDistanceCalculator>()
             {
                 X = _axisUIs.X,
                 Y = _axisUIs.Y,

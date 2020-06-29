@@ -39,7 +39,7 @@ namespace UI
             }
         }
 
-        private static Vector3 CoordinateTupleToVector3(GenericVector<Coordinate> tuple)
+        private static Vector3 CoordinateTupleToVector3(Vec<Coordinate> tuple)
         {
             return new Vector3(tuple.X.Value, tuple.Y.Value, tuple.Z.Value);
         }

@@ -25,7 +25,7 @@ public class Sketch : MonoBehaviour
     {
         public bool IsDragging => draggedCoordinate != null;
         public CoordinateSystem coordinateSystem;
-        public GenericVector<Coordinate> focusPosition;
+        public Vec<Coordinate> focusPosition;
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
@@ -36,8 +36,8 @@ public class Sketch : MonoBehaviour
 
     public class RectangleModel
     {
-        public GenericVector<Coordinate> P0;
-        public GenericVector<Coordinate> P1;
+        public Vec<Coordinate> P0;
+        public Vec<Coordinate> P1;
         public bool IsBaked;
     }
 

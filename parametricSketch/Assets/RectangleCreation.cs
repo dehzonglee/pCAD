@@ -5,7 +5,7 @@ using UnityEngine;
 public static class RectangleCreation
 {
     public static Sketch.RectangleModel StartNewRectangle(
-        GenericVector<Coordinate> focusPosition)
+        Vec<Coordinate> focusPosition)
     {
         var nextRectangle = new Sketch.RectangleModel {P0 = focusPosition};
         focusPosition.ForEach(c => c.AddAttachedGeometry(nextRectangle));
@@ -13,14 +13,14 @@ public static class RectangleCreation
     }
 
     public static void CompleteRectangle(Sketch.RectangleModel nextRectangle,
-        GenericVector<Coordinate> focusPosition)
+        Vec<Coordinate> focusPosition)
     {
         nextRectangle.P1 = focusPosition;
         nextRectangle.IsBaked = true;
     }
 
     public static void UpdateRectangle(Sketch.RectangleModel nextRectangle,
-        GenericVector<Coordinate> focusPosition)
+        Vec<Coordinate> focusPosition)
     {
         nextRectangle.P1 = focusPosition;
     }

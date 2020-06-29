@@ -13,12 +13,12 @@ namespace Model
         //todo subscribe and update only on change
         public event Action CoordinateSystemChangedEvent;
 
-        public GenericVector<Axis> Axes { get; }
+        public Vec<Axis> Axes { get; }
         public Anchor Anchor { get; }
 
         public CoordinateSystem()
         {
-            Axes = new GenericVector<Axis>()
+            Axes = new Vec<Axis>()
             {
                 X = new Axis(OnAxisChanged, Vector3.right),
                 Y = new Axis(OnAxisChanged, Vector3.up),
@@ -32,10 +32,10 @@ namespace Model
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
-        public GenericVector<Coordinate> GetParametricPosition(GenericVector<float> position, GenericVector<float> distancesToAnchor, bool asPreview,
-            GenericVector<float?> keyboardInputValues, GenericVector<MueParameter> keyboardInputParameters, GenericVector<bool> keyboardInputNegativeDirection)
+        public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
+            Vec<float?> keyboardInputValues, Vec<MueParameter> keyboardInputParameters, Vec<bool> keyboardInputNegativeDirection)
         {
-            var output = new GenericVector<Coordinate>();
+            var output = new Vec<Coordinate>();
             foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
                 if (keyboardInputParameters[a] != null)
@@ -61,7 +61,7 @@ namespace Model
             return Axes[AxisID.Z];
         }
 
-        public void SetAnchorPosition(GenericVector<float> position)
+        public void SetAnchorPosition(Vec<float> position)
         {
             Axes[AxisID.X].SnapAnchorToClosestCoordinate(position.X);
             Axes[AxisID.Y].SnapAnchorToClosestCoordinate(position.Y);

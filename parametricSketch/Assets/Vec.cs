@@ -8,24 +8,24 @@ public enum AxisID
     Z
 };
 
-public class GenericVector<T>
+public class Vec<T>
 {
     public T X;
     public T Y;
     public T Z;
 
-    public GenericVector()
+    public Vec()
     {
     }
 
-    public GenericVector(T defaultValue)
+    public Vec(T defaultValue)
     {
         X = defaultValue;
         Y = defaultValue;
         Z = defaultValue;
     }
 
-    public GenericVector(T x, T y, T z)
+    public Vec(T x, T y, T z)
     {
         X = x;
         Y = y;
