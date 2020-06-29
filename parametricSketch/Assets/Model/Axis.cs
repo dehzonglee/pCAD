@@ -8,7 +8,6 @@ namespace Model
     [Serializable]
     public class Axis
     {
-       
         private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
         public Vector3 Direction;
@@ -40,35 +39,48 @@ namespace Model
 
         private Coordinate AddNewMueCoordinate(float position, bool asPreview)
         {
-            
             var delta = position - Anchor.PrimaryCoordinate.Value;
             var pointsInNegativeDirection = delta < 0f;
             if (pointsInNegativeDirection)
                 delta *= -1f;
-            
-            var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, delta,pointsInNegativeDirection, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+
+            var newCoordinate = new Mue(
+                Anchor.PrimaryCoordinate,
+                delta,
+                pointsInNegativeDirection,
+                OnCoordinateDeleted,
+                OnCoordinateChanged,
+                asPreview
+            );
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
 
-        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue,bool pointsInNegativeDirection, bool asPreview)
+        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
+            bool asPreview)
         {
-            var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterValue, pointsInNegativeDirection,OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+            var newCoordinate = new Mue(
+                Anchor.PrimaryCoordinate,
+                parameterValue,
+                pointsInNegativeDirection, OnCoordinateDeleted,
+                OnCoordinateChanged,
+                asPreview
+            );
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
 
-        
-        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference,bool pointsInNegativeDirection, bool asPreview)
+
+        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference,
+            bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterReference,pointsInNegativeDirection, OnCoordinateDeleted, OnCoordinateChanged, asPreview);
+                new Mue(Anchor.PrimaryCoordinate, parameterReference, pointsInNegativeDirection, OnCoordinateDeleted,
+                    OnCoordinateChanged, asPreview);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
-        
+
         private void OnCoordinateChanged()
         {
             _axisChangedEvent?.Invoke();
@@ -138,6 +150,5 @@ namespace Model
 
         private const float SNAP_RADIUS = 0.01f;
         private readonly Origin _origin;
-
     }
 }
