@@ -15,6 +15,6 @@ public class Origin : Coordinate
 
     public Origin() : base(false, null, null, new List<Coordinate>())
     {
-        Parameter = new MueParameter( GUID.Generate().ToString(), 0f);
+        Parameter = new Parameter( GUID.Generate().ToString(), 0f);
     }
 }

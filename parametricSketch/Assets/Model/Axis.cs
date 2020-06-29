@@ -22,7 +22,7 @@ namespace Model
             _axisChangedEvent += axisChangedCallback;
         }
 
-        public Coordinate GetCoordinate(float position, float parameterValue, List<MueParameter> allParameters,
+        public Coordinate GetCoordinate(float position, float parameterValue, List<Parameter> allParameters,
             bool isPreview)
         {
             var closestCoordinate = GetClosestCoordinateInSnapRadius(position, isPreview);
@@ -71,7 +71,7 @@ namespace Model
             return newCoordinate;
         }
 
-        private Coordinate AddNewMueCoordinate(MueParameter parameter, bool pointsInNegativeDirection, bool asPreview)
+        private Coordinate AddNewMueCoordinate(Parameter parameter, bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate = new Mue(
                 Anchor.PrimaryCoordinate,
@@ -103,7 +103,7 @@ namespace Model
         }
 
 
-        public Coordinate AddNewMueCoordinateWithParameterReference(MueParameter parameterReference,
+        public Coordinate AddNewMueCoordinateWithParameterReference(Parameter parameterReference,
             bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate =
@@ -140,15 +140,15 @@ namespace Model
             return AddLambdaCoordinateBetweenAnchors(isPreview);
         }
 
-        private (MueParameter parameter, bool pointsInNegativeDirection)? GetClosestParameterInSnapRadius(
-            float parameterValue, List<MueParameter> allParameters)
+        private (Parameter parameter, bool pointsInNegativeDirection)? GetClosestParameterInSnapRadius(
+            float parameterValue, List<Parameter> allParameters)
         {
             if (Coordinates.Count == 0)
                 return null;
 
             var parametersWithDistance = allParameters.Select(p => GenerateDistanceToValue(p, parameterValue));
 
-            (MueParameter p, float distance, bool pointsInNegativeDirection)? candidate = null;
+            (Parameter p, float distance, bool pointsInNegativeDirection)? candidate = null;
             foreach (var p in parametersWithDistance)
             {
                 if (!candidate.HasValue)
@@ -166,7 +166,7 @@ namespace Model
 
             return (candidate.Value.p, candidate.Value.pointsInNegativeDirection);
 
-            ( MueParameter p, float distance, bool pointsInNegativeDirection) GenerateDistanceToValue(MueParameter p,
+            ( Parameter p, float distance, bool pointsInNegativeDirection) GenerateDistanceToValue(Parameter p,
                 float inputValue)
             {
                 var distanceToParameter = Mathf.Abs(inputValue - p.Value);

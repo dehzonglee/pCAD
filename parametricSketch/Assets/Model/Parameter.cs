@@ -1,9 +1,9 @@
-﻿public class MueParameter
+﻿public class Parameter
 {
     public readonly string ID;
     public float Value;
 
-    public MueParameter(string id, float value)
+    public Parameter(string id, float value)
     {
         ID = id;
         Value = value;

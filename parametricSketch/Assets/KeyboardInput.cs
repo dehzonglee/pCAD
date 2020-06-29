@@ -11,8 +11,8 @@ public static class KeyboardInput
     {
         private Vec<int?> _inputInMM = new Vec<int?>();
 
-        public Vec<MueParameter> ParameterReferences =
-            new Vec<MueParameter>();
+        public Vec<Parameter> ParameterReferences =
+            new Vec<Parameter>();
 
         public Vec<float?> InputInM =>
             new Vec<float?>()
@@ -37,7 +37,7 @@ public static class KeyboardInput
             }
         }
 
-        public MueParameter CurrentlyReferencesParameter =>
+        public Parameter CurrentlyReferencesParameter =>
             ActiveAxis.HasValue ? ParameterReferences[ActiveAxis.Value] : null;
 
         public void SetNextAxis()
@@ -55,11 +55,11 @@ public static class KeyboardInput
             ActiveAxis = null;
             _inputInMM = new Vec<int?>(null);
             IsDirectionNegative = new Vec<bool>(false);
-            ParameterReferences = new Vec<MueParameter>(null);
+            ParameterReferences = new Vec<Parameter>(null);
         }
     }
 
-    public static void UpdateKeyboardInput(ref Model model, List<MueParameter> availableParameters)
+    public static void UpdateKeyboardInput(ref Model model, List<Parameter> availableParameters)
     {
         if (Input.GetKeyDown(KeyCode.Keypad0))
             AddDigit(model, 0);
@@ -91,7 +91,7 @@ public static class KeyboardInput
             SelectNextParameter(model, availableParameters);
     }
 
-    private static void SelectNextParameter(Model model, List<MueParameter> availableParameters)
+    private static void SelectNextParameter(Model model, List<Parameter> availableParameters)
     {
         var logOut = "";
         foreach (var parameter in availableParameters)

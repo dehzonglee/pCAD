@@ -7,7 +7,7 @@ public static class CoordinateCreation
 {
     public static Vec<Coordinate> UpdateFocusPosition(Vec<Coordinate> oldFocusPosition,
         CoordinateSystem cs,
-        Vec<float?> keyboardInputFloats, Vec<MueParameter> keyboardInputParameters,
+        Vec<float?> keyboardInputFloats, Vec<Parameter> keyboardInputParameters,
         Vec<bool> keyboardInputNegativeDirection)
     {
         oldFocusPosition?.ForEach(c =>
@@ -30,7 +30,7 @@ public static class CoordinateCreation
         Anchor anchor,
         bool asPreview = false,
         Vec<float?> keyboardInput = null,
-        Vec<MueParameter> keyboardInputParameters = null,
+        Vec<Parameter> keyboardInputParameters = null,
         Vec<bool> keyboardInputNegativeDirection = null)
     {
         var mousePosition = MouseInput.RaycastPosition;

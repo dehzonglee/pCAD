@@ -32,14 +32,14 @@ public class Mue : Coordinate
         var id = GUID.Generate().ToString();
 //        Debug.Log($"create paramter with {mue} and id: {id}");
         if (Parameter == null)
-            Parameter = new MueParameter(id, mue);
+            Parameter = new Parameter(id, mue);
         else
             Parameter.Value = mue;
     }
 
     public Mue(
         Coordinate parent,
-        MueParameter parameterReference,
+        Parameter parameterReference,
         bool pointsInNegativeDirection,
         Action<Coordinate> onDeleted,
         Action onChanged,

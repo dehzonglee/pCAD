@@ -31,7 +31,7 @@ namespace UI
         }
 
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
-            MueParameter referencedParameter, AxisID? activeAxisInKeyboardInput)
+            Parameter referencedParameter, AxisID? activeAxisInKeyboardInput)
         {
             foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {

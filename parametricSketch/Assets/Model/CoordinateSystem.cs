@@ -33,7 +33,7 @@ namespace Model
         }
 
         public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
-            Vec<float?> keyboardInputValues, Vec<MueParameter> keyboardInputParameters, Vec<bool> keyboardInputNegativeDirection)
+            Vec<float?> keyboardInputValues, Vec<Parameter> keyboardInputParameters, Vec<bool> keyboardInputNegativeDirection)
         {
             var output = new Vec<Coordinate>();
             foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
@@ -73,9 +73,9 @@ namespace Model
             CoordinateSystemChangedEvent?.Invoke();
         }
 
-        public List<MueParameter> GetAllParameters()
+        public List<Parameter> GetAllParameters()
         {
-            var output = new List<MueParameter>();
+            var output = new List<Parameter>();
             foreach (var axisID in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
                 var axis = Axes[axisID];
@@ -87,7 +87,7 @@ namespace Model
                         );
             }
 
-            var distinctList = new List<MueParameter>();
+            var distinctList = new List<Parameter>();
             foreach (var parameter in output)
             {
                 if(distinctList.Any(p=>p.ID == parameter.ID))

@@ -22,7 +22,7 @@ public class Lambda : Coordinate
     )
         : base(isPreview, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
     {
-        Parameter = new MueParameter(GUID.Generate().ToString(), lambda);
+        Parameter = new Parameter(GUID.Generate().ToString(), lambda);
     }
 
     public override (float min, float max) GetBounds()

@@ -20,7 +20,7 @@ namespace UI
         }
 
         public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
-            CoordinateUIStyle coordinateUIStyle,  MueParameter referencesParameter, bool hasKeyboardInputSelection)
+            CoordinateUIStyle coordinateUIStyle,  Parameter referencesParameter, bool hasKeyboardInputSelection)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
