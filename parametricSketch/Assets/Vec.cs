@@ -1,18 +1,39 @@
 ﻿using System;
-using Model;
+using System.Collections;
+using System.Collections.Generic;
 
-public enum AxisID
+public abstract class Vec
 {
-    X,
-    Y,
-    Z
-};
+    public enum AxisID
+    {
+        X,
+        Y,
+        Z
+    };
 
-public class Vec<T>
+    public static AxisID[] AxisIDs => new[] {AxisID.X, AxisID.Y, AxisID.Z};
+    
+    public static AxisID GetOrthogonalAxis(AxisID axis)
+    {
+        switch (axis)
+        {
+            case AxisID.X:
+                return AxisID.Z;
+            case AxisID.Y:
+                return AxisID.Y;
+            case AxisID.Z:
+            default:
+                return AxisID.X;
+        }
+    }
+}
+
+public class Vec<T> : Vec, IEnumerable<T>
 {
     public T X;
     public T Y;
     public T Z;
+
 
     public Vec()
     {
@@ -31,7 +52,6 @@ public class Vec<T>
         Y = y;
         Z = z;
     }
-
 
     public void ForEach(Action<T> function)
     {
@@ -77,5 +97,19 @@ public class Vec<T>
             default:
                 throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
         }
+    }
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        yield return X;
+        yield return Y;
+        yield return Z;
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        yield return X;
+        yield return Y;
+        yield return Z;
     }
 }

@@ -9,29 +9,10 @@ public static class KeyboardInput
 {
     public class Model
     {
-        public readonly Parameters Parameters = new Parameters();
-        public AxisID? ActiveAxis = null;
-
-        public DimensionInput ActiveDimensionInput
-        {
-            get => ActiveAxis == null ? null : Parameters.InputInMM[ActiveAxis.Value];
-            set
-            {
-                if (ActiveAxis == null)
-                    ActiveAxis = AxisID.X;
-                Parameters.InputInMM[ActiveAxis.Value] = value;
-            }
-        }
-
-        public Parameter CurrentlyReferencesParameter =>
-            ActiveAxis.HasValue ? Parameters.ParameterReferences[ActiveAxis.Value] : null;
-    }
-
-    public class Parameters
-    {
         public readonly Vec<bool> IsDirectionNegative = new Vec<bool>(false);
         public readonly Vec<Parameter> ParameterReferences = new Vec<Parameter>(null);
-        public readonly Vec<DimensionInput> InputInMM = new Vec<DimensionInput>(null);
+        public readonly Vec<DimensionInput> DimensionInput = new Vec<DimensionInput>(null);
+        public AxisID? ActiveAxis = null;
     }
 
     public class DimensionInput
@@ -74,26 +55,28 @@ public static class KeyboardInput
 
     private static void SelectNextParameter(Model model, List<Parameter> availableParameters)
     {
+        // there are no parameters to select from
         if (availableParameters.Count == 0)
             return;
 
+        // no axis selected, default select x axis
         if (!model.ActiveAxis.HasValue)
             model.ActiveAxis = AxisID.X;
 
-        var currentlySelectedParameter = model.Parameters.ParameterReferences[model.ActiveAxis.Value];
+        // no parameter selected yet, select first in list  
+        var currentlySelectedParameter = model.ParameterReferences[model.ActiveAxis.Value];
         if (currentlySelectedParameter == null)
         {
-            model.Parameters.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
+            model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
             return;
         }
 
-        //get next in list
+        // get next in the list
         var selectedIndex = availableParameters.IndexOf(currentlySelectedParameter);
         selectedIndex++;
         selectedIndex %= availableParameters.Count;
 
-
-        model.Parameters.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
+        model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
     }
 
     private static void SetNextAxis(Model model)
@@ -111,42 +94,58 @@ public static class KeyboardInput
         if (model.ActiveAxis == null)
             return;
 
-        model.Parameters.IsDirectionNegative[model.ActiveAxis.Value] =
-            !model.Parameters.IsDirectionNegative[model.ActiveAxis.Value];
+        model.IsDirectionNegative[model.ActiveAxis.Value] = !model.IsDirectionNegative[model.ActiveAxis.Value];
     }
 
     private static void RemoveInputStep(Model model)
     {
+        // there is no input, do nothing
         if (!model.ActiveAxis.HasValue)
             return;
 
-        if (model.Parameters.ParameterReferences[model.ActiveAxis.Value] != null)
+        var a = model.ActiveAxis.Value;
+
+        // there is a parameter referenced, remove it
+        if (model.ParameterReferences[a] != null)
         {
-            model.Parameters.ParameterReferences[model.ActiveAxis.Value] = null;
+            model.ParameterReferences[a] = null;
+            model.ActiveAxis = null;
             return;
         }
 
-        if (model.ActiveDimensionInput == null)
+        // there is no dimension input, do nothing
+        if (model.DimensionInput[a] == null)
             return;
 
-        if (model.ActiveDimensionInput.InMM < 10)
+        // there is only one digit dimension input, remove it
+        if (model.DimensionInput[a].InMM < 10)
         {
-            model.ActiveDimensionInput = null;
+            model.DimensionInput[a] = null;
+            model.ActiveAxis = null;
             return;
         }
 
-        model.ActiveDimensionInput.InMM /= 10;
+        // there was is a multi digit input, shorten it 
+        model.DimensionInput[model.ActiveAxis.Value].InMM /= 10;
     }
 
     private static void AddDigit(Model model, int digit)
     {
-        if (model.ActiveDimensionInput == null)
+        // select first axis if nothing selected
+        if (model.ActiveAxis == null)
+            model.ActiveAxis = AxisID.X;
+
+        var a = model.ActiveAxis.Value;
+
+        // set the first digit
+        if (model.DimensionInput[a] == null)
         {
-            model.ActiveDimensionInput = new DimensionInput() {InMM = digit};
+            model.DimensionInput[a] = new DimensionInput() {InMM = digit};
             return;
         }
 
-        var currentValue = model.ActiveDimensionInput.InMM;
-        model.ActiveDimensionInput.InMM = currentValue * 10 + digit;
+        // add another digit in the end
+        var currentValue = model.DimensionInput[a].InMM;
+        model.DimensionInput[a].InMM = currentValue * 10 + digit;
     }
 }

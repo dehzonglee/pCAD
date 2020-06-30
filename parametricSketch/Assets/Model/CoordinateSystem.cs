@@ -18,34 +18,36 @@ namespace Model
 
         public CoordinateSystem()
         {
-            Axes = new Vec<Axis>()
+            
+            Axes = new Vec<Axis>
             {
                 X = new Axis(OnAxisChanged, Vector3.right),
                 Y = new Axis(OnAxisChanged, Vector3.up),
                 Z = new Axis(OnAxisChanged, Vector3.forward)
             };
 
-            var xAnchorCoordinate = Axes[AxisID.X].Anchor;
-            var yAnchorCoordinate = Axes[AxisID.Y].Anchor;
-            var zAnchorCoordinate = Axes[AxisID.Z].Anchor;
+            
+            var xAnchorCoordinate = Axes[Vec.AxisID.X].Anchor;
+            var yAnchorCoordinate = Axes[Vec.AxisID.Y].Anchor;
+            var zAnchorCoordinate = Axes[Vec.AxisID.Z].Anchor;
 
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
         public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
-            KeyboardInput.Parameters keyboardInput)
+            KeyboardInput.Model keyboardInput)
         {
             var output = new Vec<Coordinate>();
             foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
-                if ( keyboardInput?.ParameterReferences[a] != null)
+                if (keyboardInput?.ParameterReferences[a] != null)
                 {
                     output[a] = Axes[a]
                         .AddNewMueCoordinateWithParameterReference(keyboardInput.ParameterReferences[a],
                             keyboardInput.IsDirectionNegative[a], asPreview);
                 }
-                else if (keyboardInput?.InputInMM[a] != null)
-                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInput.InputInMM[a].InM,
+                else if (keyboardInput.DimensionInput[a] != null)
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInput.DimensionInput[a].InM,
                         keyboardInput.IsDirectionNegative[a], asPreview);
                 else
                     output[a] = Axes[a].GetCoordinate(position[a], distancesToAnchor[a], GetAllParameters(), asPreview);
@@ -56,11 +58,14 @@ namespace Model
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
         {
-            if (Axes[AxisID.X].Coordinates.Contains(c))
-                return Axes[AxisID.X];
-            if (Axes[AxisID.Y].Coordinates.Contains(c))
-                return Axes[AxisID.Y];
-            return Axes[AxisID.Z];
+            foreach (Axis a in Axes)
+            {
+                if (a.Coordinates.Contains(c))
+                    return a;
+            }
+
+            Debug.LogError($"No Axis contains the coordiante {c}");
+            return null;
         }
 
         public void SetAnchorPosition(Vec<float> position)

@@ -6,7 +6,7 @@ using UnityEngine;
 public static class CoordinateCreation
 {
     public static Vec<Coordinate> UpdateCursorPosition(Vec<Coordinate> oldFocusPosition,
-        CoordinateSystem cs, KeyboardInput.Parameters keyboardInput)
+        CoordinateSystem cs, KeyboardInput.Model keyboardInput)
     {
         oldFocusPosition?.ForEach(c =>
         {
@@ -25,7 +25,7 @@ public static class CoordinateCreation
     private static Vec<Coordinate> GetOrCreatePositionAtMousePosition(CoordinateSystem coordinateSystem,
         Anchor anchor,
         bool asPreview = false,
-        KeyboardInput.Parameters keyboardInputParameters = null)
+        KeyboardInput.Model keyboardInput = null)
     {
         var mousePosition = MouseInput.RaycastPosition;
         var distanceToAnchor = new Vec<float>(
@@ -35,7 +35,7 @@ public static class CoordinateCreation
         );
 
         return
-            coordinateSystem.GetParametricPosition(mousePosition, distanceToAnchor, asPreview, keyboardInputParameters);
+            coordinateSystem.GetParametricPosition(mousePosition, distanceToAnchor, asPreview, keyboardInput);
     }
 
     public static void BakePosition(Vec<Coordinate> modelFocusPosition)

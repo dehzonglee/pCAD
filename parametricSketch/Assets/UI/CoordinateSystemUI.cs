@@ -6,80 +6,48 @@ namespace UI
 {
     public class CoordinateSystemUI : MonoBehaviour, CoordinateManipulation.IScreenDistanceCalculatorProvider
     {
+        Vec<CoordinateManipulation.IScreenDistanceCalculator> CoordinateManipulation.IScreenDistanceCalculatorProvider.
+            GetProvidersForAxis() =>
+            new Vec<CoordinateManipulation.IScreenDistanceCalculator>(_axisUIs.X, _axisUIs.Y, _axisUIs.Z);
+
         [SerializeField] AxisUI _axisUIPrefab;
         [SerializeField] AnchorUI _anchorUIPrefab;
 
         public void Initialize()
         {
-            var xAxisUI = Instantiate(_axisUIPrefab, transform);
-            xAxisUI.Initialize(_embedding[AxisID.X], "xAxisUI");
+            _axisUIs = new Vec<AxisUI>(Instantiate(_axisUIPrefab, transform));
 
-            var yAxisUI = Instantiate(_axisUIPrefab, transform);
-            yAxisUI.Initialize(_embedding[AxisID.Y], "yAxisUI");
-
-            var zAxisUI = Instantiate(_axisUIPrefab, transform);
-            zAxisUI.Initialize(_embedding[AxisID.Z], "zAxisUI");
-
-            _axisUIs = new Vec<AxisUI>()
+            foreach (var a in Vec.AxisIDs)
             {
-                X = xAxisUI,
-                Y = yAxisUI,
-                Z = zAxisUI,
-            };
+                _axisUIs[a].Initialize(_embedding[a], $"{a} - AxisUI");
+            }
 
             _anchorUI = Instantiate(_anchorUIPrefab, transform);
         }
 
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
-            Parameter referencedParameter, AxisID? activeAxisInKeyboardInput)
+            KeyboardInput.Model keyboardInput)
         {
-            foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            foreach (var a in Vec.AxisIDs)
             {
-                _axisUIs[axis].UpdateCoordinateUIs(
-                    cs.Axes[axis],
-                    _embedding[GetOrthogonalAxis(axis)],
-                    cs.Axes[GetOrthogonalAxis(axis)].SmallestValue,
+                var referencedParameter = keyboardInput.ActiveAxis.HasValue
+                    ? keyboardInput.ParameterReferences[keyboardInput.ActiveAxis.Value]
+                    : null;
+
+                _axisUIs[a].UpdateCoordinateUIs(
+                    cs.Axes[a],
+                    _embedding[Vec.GetOrthogonalAxis(a)],
+                    cs.Axes[Vec.GetOrthogonalAxis(a)].SmallestValue,
                     coordinateUIStyle,
                     referencedParameter,
-                    activeAxisInKeyboardInput == axis);
+                    keyboardInput.ActiveAxis == a);
             }
 
             _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);
         }
-
-        private static AxisID GetOrthogonalAxis(AxisID axis)
-        {
-            switch (axis)
-            {
-                case AxisID.X:
-                    return AxisID.Z;
-                case AxisID.Y:
-                    return AxisID.Y;
-                case AxisID.Z:
-                default:
-                    return AxisID.X;
-            }
-        }
-
+        
         private Vec<AxisUI> _axisUIs;
-
         private AnchorUI _anchorUI;
-
-        private readonly Vec<Vector3> _embedding = new Vec<Vector3>()
-        {
-            X = Vector3.right,
-            Y = Vector3.up,
-            Z = Vector3.forward,
-        };
-
-        public Vec<CoordinateManipulation.IScreenDistanceCalculator> GetProvidersForAxis()
-        {
-            return new Vec<CoordinateManipulation.IScreenDistanceCalculator>()
-            {
-                X = _axisUIs.X,
-                Y = _axisUIs.Y,
-                Z = _axisUIs.Z,
-            };
-        }
+        private readonly Vec<Vector3> _embedding = new Vec<Vector3>(Vector3.right, Vector3.up, Vector3.forward);
     }
 }

@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Model;
 using UI;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using UnityEngine.Serialization;
 
 public class Sketch : MonoBehaviour
 {
@@ -23,14 +19,11 @@ public class Sketch : MonoBehaviour
     [Serializable]
     private struct Model
     {
-        public bool IsDragging => draggedCoordinate != null;
         public CoordinateSystem coordinateSystem;
         public Vec<Coordinate> focusPosition;
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
-
-        [FormerlySerializedAs("_keyboardInputModel")]
         public KeyboardInput.Model keyboardInputModel;
     }
 
@@ -40,8 +33,7 @@ public class Sketch : MonoBehaviour
         public Vec<Coordinate> P1;
         public bool IsBaked;
     }
-
-
+    
     private void Start()
     {
         _model.coordinateSystem = new CoordinateSystem();
@@ -98,36 +90,38 @@ public class Sketch : MonoBehaviour
         switch (_state)
         {
             case State.ManipulateCoordinates:
-                
-                if (Input.GetKeyDown(DrawKey))
+
+                // start drag
+                if (Input.GetKeyDown(PrimaryMouse))
                     _model.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
-                
-                if (Input.GetKey(DrawKey) && _model.draggedCoordinate != null)
+
+                // update drag
+                if (Input.GetKey(PrimaryMouse) && _model.draggedCoordinate != null)
                 {
                     var (value, pointsInNegativeDirection) = CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
                         _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
-                    
+
                     _model.draggedCoordinate.Parameter.Value = value;
                     //quick fix: for now, only mue coordinates can be dragged
                     ((Mue) _model.draggedCoordinate).PointsInNegativeDirection = pointsInNegativeDirection;
                 }
 
-                if (Input.GetKeyUp(DrawKey) && _model.IsDragging)
+                // stop drag
+                if (Input.GetKeyUp(PrimaryMouse) && _model.draggedCoordinate != null)
                     _model.draggedCoordinate = null;
-                
+
                 break;
 
             case State.DrawRectangle:
 
-                KeyboardInput.UpdateKeyboardInput(
-                    ref _model.keyboardInputModel,
+                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel,
                     _model.coordinateSystem.GetAllParameters()
                 );
 
                 _model.focusPosition = CoordinateCreation.UpdateCursorPosition(
                     _model.focusPosition,
                     _model.coordinateSystem,
-                    _model.keyboardInputModel.Parameters
+                    _model.keyboardInputModel
                 );
 
                 if (_model.focusPosition == null)
@@ -150,7 +144,7 @@ public class Sketch : MonoBehaviour
                 }
 
                 // draw
-                if (Input.GetKeyDown(DrawKey) || Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetKeyDown(PrimaryMouse) || Input.GetKeyDown(KeyCode.Return))
                 {
                     CoordinateCreation.BakePosition(_model.focusPosition);
 
@@ -189,9 +183,7 @@ public class Sketch : MonoBehaviour
         _ui.coordinateSystemUI.UpdateUI(
             _model.coordinateSystem,
             _sketchStyle.CoordinateUIStyle,
-            _model.keyboardInputModel.CurrentlyReferencesParameter,
-            _model.keyboardInputModel.ActiveAxis
-        );
+            _model.keyboardInputModel);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 
@@ -208,7 +200,7 @@ public class Sketch : MonoBehaviour
 
     private const KeyCode ManipulateCoordinatesStateKey = KeyCode.Alpha1;
     private const KeyCode DrawRectanglesStateKey = KeyCode.Alpha2;
-    private const KeyCode DrawKey = KeyCode.Mouse0;
+    private const KeyCode PrimaryMouse = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;
 }
