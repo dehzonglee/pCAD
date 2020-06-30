@@ -42,6 +42,9 @@ namespace Model
         public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
             KeyboardInput.Model keyboardInput)
         {
+            SnappedCoordinate = new Vec<Coordinate>();
+            SnappedParameter = new Vec<Parameter>();
+            
             var output = new Vec<Coordinate>();
             foreach (var a in Vec.XYZ)
             {
@@ -53,25 +56,52 @@ namespace Model
                         keyboardInput.IsDirectionNegative[a],
                         asPreview
                     );
+                    continue;
                 }
+
                 // a dimension is set in the keyboard input
-                else if (keyboardInput?.DimensionInput[a] != null)
+                if (keyboardInput?.DimensionInput[a] != null)
+                {
                     output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(
                         keyboardInput.DimensionInput[a].InM,
                         keyboardInput.IsDirectionNegative[a],
                         asPreview
                     );
-                else
-                    output[a] = Axes[a].GetCoordinate(
-                        position[a],
-                        distancesToAnchor[a],
-                        GetAllParameters(),
+                    continue;
+                }
+
+                // try to snap to an existing coordinate
+                var snappedCoordinate = Axes[a].TryToSnapToExistingCoordinate(position[a], asPreview);
+                if (snappedCoordinate != null)
+                {
+                    output[a] = snappedCoordinate;
+                    SnappedCoordinate[a] = snappedCoordinate;
+                    continue;
+                }
+
+                // try to snap to an existing parameter
+                var parameterSnap = Axes[a].TryToSnapToExistingParameter(distancesToAnchor[a], GetAllParameters());
+                if (parameterSnap != null)
+                {
+                    output[a] = Axes[a].AddNewMueCoordinate(
+                        parameterSnap.Value.parameter,
+                        parameterSnap.Value.pointsInNegativeDirection,
                         asPreview
                     );
+                    SnappedParameter[a] = parameterSnap.Value.parameter;
+                    continue;
+                }
+
+                // create new coordinate
+                output[a] = Axes[a].AddNewMueCoordinate(position[a], asPreview);
             }
 
             return output;
         }
+
+        public Vec<Parameter> SnappedParameter ;
+
+        public Vec<Coordinate> SnappedCoordinate;
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
         {

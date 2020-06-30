@@ -33,6 +33,12 @@ namespace UI
                     ? keyboardInput.ParameterReferences[keyboardInput.ActiveAxis.Value]
                     : null;
 
+                if (referencedParameter == null)
+                {
+                    
+//                    referencedParameter = 
+                }
+                
                 _axisUIs[a].UpdateCoordinateUIs(
                     cs.Axes[a],
                     _embedding[Vec.GetOrthogonalAxis(a)],

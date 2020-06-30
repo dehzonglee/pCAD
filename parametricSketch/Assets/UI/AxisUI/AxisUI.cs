@@ -19,8 +19,13 @@ namespace UI
             _direction = direction;
         }
 
-        public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
-            CoordinateUIStyle coordinateUIStyle,  Parameter referencedParameter, bool hasKeyboardInputSelection)
+        public void UpdateCoordinateUIs(
+            Axis axis,
+            Vector3 orthogonalDirection,
+            float orthogonalAnchor,
+            CoordinateUIStyle coordinateUIStyle,
+            Parameter referencedParameter,
+            bool hasKeyboardInputSelection)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -29,8 +34,7 @@ namespace UI
 
             UpdatePool(lambdaCoordinates, mueCoordinates);
 
-            var rows = new List<CoordinateRow>();
-            rows.Add(new CoordinateRow(0));
+            var rows = new List<CoordinateRow> {new CoordinateRow(0)};
 
             //update uis
             foreach (var c in axis.Coordinates)
@@ -59,7 +63,8 @@ namespace UI
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue, hasKeyboardInputSelection, referencedParameter == c.Parameter);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue,
+                            hasKeyboardInputSelection, referencedParameter == c.Parameter);
                         nextMueUI++;
                         break;
                     case Origin origin:

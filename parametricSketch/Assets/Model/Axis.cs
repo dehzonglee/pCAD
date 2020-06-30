@@ -11,6 +11,8 @@ namespace Model
         private event Action _axisChangedEvent;
         public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
         public Vector3 Direction;
+        public AnchorCoordinates Anchor { get; }
+        public float SmallestValue => Coordinates.Select(c => c.Value).Min();
 
         public Axis(Action axisChangedCallback, Vector3 direction)
         {
@@ -21,37 +23,38 @@ namespace Model
             _axisChangedEvent += axisChangedCallback;
         }
 
-        public Coordinate GetCoordinate(float position, float parameterValue, List<Parameter> allParameters,
-            bool isPreview)
-        {
-            var closestCoordinate = GetClosestCoordinateInSnapRadius(position, isPreview);
-            if (closestCoordinate != null)
-                return closestCoordinate;
-
-            var closestParameter = GetClosestParameterInSnapRadius(parameterValue,allParameters);
-            if (closestParameter != null)
-            {
-                return AddNewMueCoordinate(
-                    closestParameter.Value.parameter,
-                    closestParameter.Value.pointsInNegativeDirection,
-                    isPreview
-                );
-            }
-
-            return AddNewMueCoordinate(position, isPreview);
-        }
-
-        public AnchorCoordinates Anchor { get; }
-
-        public float SmallestValue => Coordinates.Select(c => c.Value).Min();
-
-        public AnchorCoordinates SnapAnchorToClosestCoordinate(float position)
+        public void SnapAnchorToClosestCoordinate(float position)
         {
             Anchor.SetPrimaryCoordinate(FindClosestCoordinate(position));
-            return Anchor;
+        }
+        
+        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
+            bool asPreview)
+        {
+            Debug.Log($"{parameterValue} , {pointsInNegativeDirection}");
+            var newCoordinate = new Mue(
+                Anchor.PrimaryCoordinate,
+                parameterValue,
+                pointsInNegativeDirection,
+                OnCoordinateDeleted,
+                OnCoordinateChanged,
+                asPreview
+            );
+            Coordinates.Add(newCoordinate);
+            return newCoordinate;
+        }
+        
+        public Coordinate AddNewMueCoordinateWithParameterReference(Parameter parameterReference,
+            bool pointsInNegativeDirection, bool asPreview)
+        {
+            var newCoordinate =
+                new Mue(Anchor.PrimaryCoordinate, parameterReference, pointsInNegativeDirection, OnCoordinateDeleted,
+                    OnCoordinateChanged, asPreview);
+            Coordinates.Add(newCoordinate);
+            return newCoordinate;
         }
 
-        private Coordinate AddNewMueCoordinate(float position, bool asPreview)
+        public Coordinate AddNewMueCoordinate(float position, bool asPreview)
         {
             var delta = position - Anchor.PrimaryCoordinate.Value;
             var pointsInNegativeDirection = delta < 0f;
@@ -69,8 +72,8 @@ namespace Model
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
-
-        private Coordinate AddNewMueCoordinate(Parameter parameter, bool pointsInNegativeDirection, bool asPreview)
+        
+        public Coordinate AddNewMueCoordinate(Parameter parameter, bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate = new Mue(
                 Anchor.PrimaryCoordinate,
@@ -80,34 +83,6 @@ namespace Model
                 OnCoordinateChanged,
                 asPreview
             );
-            Coordinates.Add(newCoordinate);
-            return newCoordinate;
-        }
-
-
-        public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
-            bool asPreview)
-        {
-            Debug.Log($"{parameterValue} , {pointsInNegativeDirection}");
-            var newCoordinate = new Mue(
-                Anchor.PrimaryCoordinate,
-                parameterValue,
-                pointsInNegativeDirection,
-                OnCoordinateDeleted,
-                OnCoordinateChanged,
-                asPreview
-            );
-            Coordinates.Add(newCoordinate);
-            return newCoordinate;
-        }
-
-
-        public Coordinate AddNewMueCoordinateWithParameterReference(Parameter parameterReference,
-            bool pointsInNegativeDirection, bool asPreview)
-        {
-            var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterReference, pointsInNegativeDirection, OnCoordinateDeleted,
-                    OnCoordinateChanged, asPreview);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
@@ -124,7 +99,7 @@ namespace Model
             if (Anchor.SecondaryCoordinate == deletedCoordinate) Anchor.ResetSecondaryCoordinate();
         }
 
-        private Coordinate GetClosestCoordinateInSnapRadius(float position, bool isPreview)
+        public Coordinate TryToSnapToExistingCoordinate(float position, bool isPreview)
         {
             var closestCoordinate = FindClosestCoordinate(position);
             var distanceToClosestCoordinate = Mathf.Abs(position - closestCoordinate.Value);
@@ -139,7 +114,7 @@ namespace Model
             return AddLambdaCoordinateBetweenAnchors(isPreview);
         }
 
-        private (Parameter parameter, bool pointsInNegativeDirection)? GetClosestParameterInSnapRadius(
+        public (Parameter parameter, bool pointsInNegativeDirection)? TryToSnapToExistingParameter(
             float parameterValue, List<Parameter> allParameters)
         {
             if (Coordinates.Count == 0)
