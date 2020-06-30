@@ -46,9 +46,9 @@ public class CoordinateManipulation : MonoBehaviour
         Coordinate hitCoordinate = null;
         var radius = SnapRadius;
 
-        foreach (var axis in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+        foreach (var a in Vec.XYZ)
         {
-            var closestOnAxis = GetClosestCoordinateOnAxisWithinSnapRadius(providers[axis], screenPos, radius);
+            var closestOnAxis = GetClosestCoordinateOnAxisWithinSnapRadius(providers[a], screenPos, radius);
             if (closestOnAxis == null)
                 continue;
             hitCoordinate = closestOnAxis.Value.Coordinate;

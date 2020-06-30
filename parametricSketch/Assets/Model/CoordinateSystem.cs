@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Model
 {
@@ -18,7 +16,6 @@ namespace Model
 
         public CoordinateSystem()
         {
-            
             Axes = new Vec<Axis>
             {
                 X = new Axis(OnAxisChanged, Vector3.right),
@@ -26,7 +23,7 @@ namespace Model
                 Z = new Axis(OnAxisChanged, Vector3.forward)
             };
 
-            
+
             var xAnchorCoordinate = Axes[Vec.AxisID.X].Anchor;
             var yAnchorCoordinate = Axes[Vec.AxisID.Y].Anchor;
             var zAnchorCoordinate = Axes[Vec.AxisID.Z].Anchor;
@@ -34,23 +31,43 @@ namespace Model
             Anchor = new Anchor(xAnchorCoordinate, yAnchorCoordinate, zAnchorCoordinate);
         }
 
+        /// <summary>
+        /// Get a Vector of Coordinates for a given drawing context
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="distancesToAnchor"></param>
+        /// <param name="asPreview"></param>
+        /// <param name="keyboardInput"></param>
+        /// <returns></returns>
         public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
             KeyboardInput.Model keyboardInput)
         {
             var output = new Vec<Coordinate>();
-            foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            foreach (var a in Vec.XYZ)
             {
+                // a parameter is referenced in the keyboard input
                 if (keyboardInput?.ParameterReferences[a] != null)
                 {
-                    output[a] = Axes[a]
-                        .AddNewMueCoordinateWithParameterReference(keyboardInput.ParameterReferences[a],
-                            keyboardInput.IsDirectionNegative[a], asPreview);
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterReference(
+                        keyboardInput.ParameterReferences[a],
+                        keyboardInput.IsDirectionNegative[a],
+                        asPreview
+                    );
                 }
-                else if (keyboardInput.DimensionInput[a] != null)
-                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInput.DimensionInput[a].InM,
-                        keyboardInput.IsDirectionNegative[a], asPreview);
+                // a dimension is set in the keyboard input
+                else if (keyboardInput?.DimensionInput[a] != null)
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(
+                        keyboardInput.DimensionInput[a].InM,
+                        keyboardInput.IsDirectionNegative[a],
+                        asPreview
+                    );
                 else
-                    output[a] = Axes[a].GetCoordinate(position[a], distancesToAnchor[a], GetAllParameters(), asPreview);
+                    output[a] = Axes[a].GetCoordinate(
+                        position[a],
+                        distancesToAnchor[a],
+                        GetAllParameters(),
+                        asPreview
+                    );
             }
 
             return output;
@@ -70,9 +87,10 @@ namespace Model
 
         public void SetAnchorPosition(Vec<float> position)
         {
-            Axes[AxisID.X].SnapAnchorToClosestCoordinate(position.X);
-            Axes[AxisID.Y].SnapAnchorToClosestCoordinate(position.Y);
-            Axes[AxisID.Z].SnapAnchorToClosestCoordinate(position.Z);
+            foreach (var a in Vec.XYZ)
+            {
+                Axes[a].SnapAnchorToClosestCoordinate(position[a]);
+            }
         }
 
         private void OnAxisChanged()
@@ -83,11 +101,10 @@ namespace Model
         public List<Parameter> GetAllParameters()
         {
             var output = new List<Parameter>();
-            foreach (var axisID in new[] {AxisID.X, AxisID.Y, AxisID.Z})
+            foreach (var a in Vec.XYZ)
             {
-                var axis = Axes[axisID];
                 output.AddRange(
-                    axis.Coordinates
+                    Axes[a].Coordinates
                         .Where(c => c.GetType() != typeof(Origin))
                         .Where(c => !c.IsPreview)
                         .Select(c => c.Parameter)

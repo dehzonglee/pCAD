@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public static class RectangleCreation
+﻿public static class RectangleCreation
 {
     public static Sketch.RectangleModel StartNewRectangle(
         Vec<Coordinate> focusPosition)

@@ -11,7 +11,7 @@ public abstract class Vec
         Z
     };
 
-    public static AxisID[] AxisIDs => new[] {AxisID.X, AxisID.Y, AxisID.Z};
+    public static AxisID[] XYZ => new[] {AxisID.X, AxisID.Y, AxisID.Z};
     
     public static AxisID GetOrthogonalAxis(AxisID axis)
     {
@@ -51,6 +51,13 @@ public class Vec<T> : Vec, IEnumerable<T>
         X = x;
         Y = y;
         Z = z;
+    }
+
+    public Vec(Func<AxisID, T> generator)
+    {
+        X = generator.Invoke(AxisID.X);
+        Y = generator.Invoke(AxisID.Y);
+        Z = generator.Invoke(AxisID.Z);
     }
 
     public void ForEach(Action<T> function)

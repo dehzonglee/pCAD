@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Model;
-using UnityEngine;
+﻿using Model;
 
 public static class CoordinateCreation
 {

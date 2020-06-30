@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Model;
-using UI;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public static class KeyboardInput
@@ -10,9 +6,9 @@ public static class KeyboardInput
     public class Model
     {
         public readonly Vec<bool> IsDirectionNegative = new Vec<bool>(false);
-        public readonly Vec<Parameter> ParameterReferences = new Vec<Parameter>(null);
-        public readonly Vec<DimensionInput> DimensionInput = new Vec<DimensionInput>(null);
-        public AxisID? ActiveAxis = null;
+        public readonly Vec<Parameter> ParameterReferences = new Vec<Parameter>();
+        public readonly Vec<DimensionInput> DimensionInput = new Vec<DimensionInput>();
+        public Vec.AxisID? ActiveAxis = null;
     }
 
     public class DimensionInput
@@ -61,7 +57,7 @@ public static class KeyboardInput
 
         // no axis selected, default select x axis
         if (!model.ActiveAxis.HasValue)
-            model.ActiveAxis = AxisID.X;
+            model.ActiveAxis = Vec.AxisID.X;
 
         // no parameter selected yet, select first in list  
         var currentlySelectedParameter = model.ParameterReferences[model.ActiveAxis.Value];
@@ -82,11 +78,11 @@ public static class KeyboardInput
     private static void SetNextAxis(Model model)
     {
         if (!model.ActiveAxis.HasValue)
-            model.ActiveAxis = AxisID.X;
-        else if (model.ActiveAxis.Value == AxisID.X)
-            model.ActiveAxis = AxisID.Z;
+            model.ActiveAxis = Vec.AxisID.X;
+        else if (model.ActiveAxis.Value == Vec.AxisID.X)
+            model.ActiveAxis = Vec.AxisID.Z;
         else // if ==Z
-            model.ActiveAxis = AxisID.X;
+            model.ActiveAxis = Vec.AxisID.X;
     }
 
     private static void InvertDirection(Model model)
@@ -133,7 +129,7 @@ public static class KeyboardInput
     {
         // select first axis if nothing selected
         if (model.ActiveAxis == null)
-            model.ActiveAxis = AxisID.X;
+            model.ActiveAxis = Vec.AxisID.X;
 
         var a = model.ActiveAxis.Value;
 
