@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 namespace UI
@@ -29,22 +30,22 @@ namespace UI
         {
             foreach (var a in Vec.XYZ)
             {
-                var referencedParameter = keyboardInput.ActiveAxis.HasValue
-                    ? keyboardInput.ParameterReferences[keyboardInput.ActiveAxis.Value]
-                    : null;
-
-                if (referencedParameter == null)
+                var referencedParameters = new List<Parameter>();
+                foreach (var innerA in Vec.XYZ)
                 {
-                    
-//                    referencedParameter = 
+                    if (keyboardInput.ParameterReferences[innerA] != null)
+                        referencedParameters.Add(keyboardInput.ParameterReferences[innerA]);
+                    if(cs.SnappedParameter[innerA]!=null)
+                        referencedParameters.Add(cs.SnappedParameter[innerA]);
                 }
-                
+
+      
                 _axisUIs[a].UpdateCoordinateUIs(
                     cs.Axes[a],
                     _embedding[Vec.GetOrthogonalAxis(a)],
                     cs.Axes[Vec.GetOrthogonalAxis(a)].SmallestValue,
                     coordinateUIStyle,
-                    referencedParameter,
+                    referencedParameters,
                     keyboardInput.ActiveAxis == a);
             }
 

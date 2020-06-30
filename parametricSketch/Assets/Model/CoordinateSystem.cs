@@ -44,7 +44,7 @@ namespace Model
         {
             SnappedCoordinate = new Vec<Coordinate>();
             SnappedParameter = new Vec<Parameter>();
-            
+
             var output = new Vec<Coordinate>();
             foreach (var a in Vec.XYZ)
             {
@@ -99,9 +99,9 @@ namespace Model
             return output;
         }
 
-        public Vec<Parameter> SnappedParameter ;
+        public Vec<Parameter> SnappedParameter = new Vec<Parameter>();
 
-        public Vec<Coordinate> SnappedCoordinate;
+        public Vec<Coordinate> SnappedCoordinate = new Vec<Coordinate>();
 
         public Axis AxisThatContainsCoordinate(Coordinate c)
         {

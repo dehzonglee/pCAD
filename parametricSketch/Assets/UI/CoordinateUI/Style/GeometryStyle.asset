@@ -15,13 +15,17 @@ MonoBehaviour:
   Rectangle:
     DefaultStyle:
       OutlineColor: {r: 0.28, g: 0.28, b: 0.28, a: 1}
-      FillColor: {r: 1, g: 1, b: 1, a: 0.28627452}
+      FillColor: {r: 1, g: 0.6273585, b: 0.8117245, a: 0.28627452}
       OutlineWidth: 0.5
-    DimmedStyle:
+    SelectedStyle:
       OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-      FillColor: {r: 1, g: 1, b: 1, a: 0.49019608}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
       OutlineWidth: 0.5
     FocusStyle:
       OutlineColor: {r: 0, g: 0, b: 0, a: 1}
       FillColor: {r: 0.93333334, g: 0.76346666, b: 0.8522606, a: 0.7490196}
+      OutlineWidth: 0.5
+    ReferencedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
       OutlineWidth: 0.5
