@@ -5,33 +5,27 @@ using UnityEngine;
 
 public static class CoordinateCreation
 {
-    public static Vec<Coordinate> UpdateFocusPosition(Vec<Coordinate> oldFocusPosition,
-        CoordinateSystem cs,
-        Vec<float?> keyboardInputFloats, Vec<Parameter> keyboardInputParameters,
-        Vec<bool> keyboardInputNegativeDirection)
+    public static Vec<Coordinate> UpdateCursorPosition(Vec<Coordinate> oldFocusPosition,
+        CoordinateSystem cs, KeyboardInput.Parameters keyboardInput)
     {
         oldFocusPosition?.ForEach(c =>
         {
             if (c.IsPreview) c.Delete();
         });
 
-        return GetOrCreatePositionAtMousePosition(cs, cs.Anchor,true, keyboardInputFloats, keyboardInputParameters,
-            keyboardInputNegativeDirection);
+        return GetOrCreatePositionAtMousePosition(cs, cs.Anchor, true, keyboardInput);
     }
 
     public static void DeletePositionAtMousePosition(CoordinateSystem cs)
     {
-        var p = GetOrCreatePositionAtMousePosition(cs,cs.Anchor);
+        var p = GetOrCreatePositionAtMousePosition(cs, cs.Anchor);
         p.ForEach(c => c.Delete());
     }
 
-    private static Vec<Coordinate> GetOrCreatePositionAtMousePosition(
-        CoordinateSystem coordinateSystem,
+    private static Vec<Coordinate> GetOrCreatePositionAtMousePosition(CoordinateSystem coordinateSystem,
         Anchor anchor,
         bool asPreview = false,
-        Vec<float?> keyboardInput = null,
-        Vec<Parameter> keyboardInputParameters = null,
-        Vec<bool> keyboardInputNegativeDirection = null)
+        KeyboardInput.Parameters keyboardInputParameters = null)
     {
         var mousePosition = MouseInput.RaycastPosition;
         var distanceToAnchor = new Vec<float>(
@@ -41,8 +35,7 @@ public static class CoordinateCreation
         );
 
         return
-            coordinateSystem.GetParametricPosition(mousePosition, distanceToAnchor, asPreview, keyboardInput,
-                keyboardInputParameters, keyboardInputNegativeDirection);
+            coordinateSystem.GetParametricPosition(mousePosition, distanceToAnchor, asPreview, keyboardInputParameters);
     }
 
     public static void BakePosition(Vec<Coordinate> modelFocusPosition)

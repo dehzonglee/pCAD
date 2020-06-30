@@ -9,54 +9,35 @@ public static class KeyboardInput
 {
     public class Model
     {
-        private Vec<int?> _inputInMM = new Vec<int?>();
+        public readonly Parameters Parameters = new Parameters();
+        public AxisID? ActiveAxis = null;
 
-        public Vec<Parameter> ParameterReferences =
-            new Vec<Parameter>();
-
-        public Vec<float?> InputInM =>
-            new Vec<float?>()
-            {
-                X = 0.01f  * _inputInMM?.X,
-                Y = 0.01f  * _inputInMM?.Y,
-                Z = 0.01f  * _inputInMM?.Z,
-            };
-
-        public AxisID? ActiveAxis;
-
-        public Vec<bool> IsDirectionNegative = new Vec<bool>(false);
-
-        public int? ActiveInputInMM
+        public DimensionInput ActiveDimensionInput
         {
-            get => ActiveAxis == null ? null : _inputInMM[ActiveAxis.Value];
+            get => ActiveAxis == null ? null : Parameters.InputInMM[ActiveAxis.Value];
             set
             {
                 if (ActiveAxis == null)
                     ActiveAxis = AxisID.X;
-                _inputInMM[ActiveAxis.Value] = value;
+                Parameters.InputInMM[ActiveAxis.Value] = value;
             }
         }
 
         public Parameter CurrentlyReferencesParameter =>
-            ActiveAxis.HasValue ? ParameterReferences[ActiveAxis.Value] : null;
+            ActiveAxis.HasValue ? Parameters.ParameterReferences[ActiveAxis.Value] : null;
+    }
 
-        public void SetNextAxis()
-        {
-            if (!ActiveAxis.HasValue)
-                ActiveAxis = AxisID.X;
-            else if (ActiveAxis.Value == AxisID.X)
-                ActiveAxis = AxisID.Z;
-            else // if ==Z
-                ActiveAxis = AxisID.X;
-        }
+    public class Parameters
+    {
+        public readonly Vec<bool> IsDirectionNegative = new Vec<bool>(false);
+        public readonly Vec<Parameter> ParameterReferences = new Vec<Parameter>(null);
+        public readonly Vec<DimensionInput> InputInMM = new Vec<DimensionInput>(null);
+    }
 
-        public void Reset()
-        {
-            ActiveAxis = null;
-            _inputInMM = new Vec<int?>(null);
-            IsDirectionNegative = new Vec<bool>(false);
-            ParameterReferences = new Vec<Parameter>(null);
-        }
+    public class DimensionInput
+    {
+        public int InMM;
+        public float InM => InMM * 0.01f;
     }
 
     public static void UpdateKeyboardInput(ref Model model, List<Parameter> availableParameters)
@@ -93,23 +74,16 @@ public static class KeyboardInput
 
     private static void SelectNextParameter(Model model, List<Parameter> availableParameters)
     {
-        var logOut = "";
-        foreach (var parameter in availableParameters)
-        {
-            logOut += $"{parameter.ID[0]}{parameter.ID[1]} {parameter.Value}|";
-        }
-
-        Debug.Log(logOut);
         if (availableParameters.Count == 0)
             return;
 
         if (!model.ActiveAxis.HasValue)
             model.ActiveAxis = AxisID.X;
 
-        var currentlySelectedParameter = model.ParameterReferences[model.ActiveAxis.Value];
+        var currentlySelectedParameter = model.Parameters.ParameterReferences[model.ActiveAxis.Value];
         if (currentlySelectedParameter == null)
         {
-            model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
+            model.Parameters.ParameterReferences[model.ActiveAxis.Value] = availableParameters[0];
             return;
         }
 
@@ -119,12 +93,17 @@ public static class KeyboardInput
         selectedIndex %= availableParameters.Count;
 
 
-        model.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
+        model.Parameters.ParameterReferences[model.ActiveAxis.Value] = availableParameters[selectedIndex];
     }
 
     private static void SetNextAxis(Model model)
     {
-        model.SetNextAxis();
+        if (!model.ActiveAxis.HasValue)
+            model.ActiveAxis = AxisID.X;
+        else if (model.ActiveAxis.Value == AxisID.X)
+            model.ActiveAxis = AxisID.Z;
+        else // if ==Z
+            model.ActiveAxis = AxisID.X;
     }
 
     private static void InvertDirection(Model model)
@@ -132,41 +111,42 @@ public static class KeyboardInput
         if (model.ActiveAxis == null)
             return;
 
-        model.IsDirectionNegative[model.ActiveAxis.Value] = !model.IsDirectionNegative[model.ActiveAxis.Value];
+        model.Parameters.IsDirectionNegative[model.ActiveAxis.Value] =
+            !model.Parameters.IsDirectionNegative[model.ActiveAxis.Value];
     }
 
     private static void RemoveInputStep(Model model)
     {
-        if(!model.ActiveAxis.HasValue)
+        if (!model.ActiveAxis.HasValue)
             return;
 
-        if (model.ParameterReferences[model.ActiveAxis.Value] != null)
+        if (model.Parameters.ParameterReferences[model.ActiveAxis.Value] != null)
         {
-            model.ParameterReferences[model.ActiveAxis.Value] = null;
-            return;
-        }
-        
-        if (!model.ActiveInputInMM.HasValue)
-            return;
-
-        if (model.ActiveInputInMM.Value < 10)
-        {
-            model.ActiveInputInMM = null;
+            model.Parameters.ParameterReferences[model.ActiveAxis.Value] = null;
             return;
         }
 
-        model.ActiveInputInMM = model.ActiveInputInMM.Value / 10;
+        if (model.ActiveDimensionInput == null)
+            return;
+
+        if (model.ActiveDimensionInput.InMM < 10)
+        {
+            model.ActiveDimensionInput = null;
+            return;
+        }
+
+        model.ActiveDimensionInput.InMM /= 10;
     }
 
     private static void AddDigit(Model model, int digit)
     {
-        if (!model.ActiveInputInMM.HasValue)
+        if (model.ActiveDimensionInput == null)
         {
-            model.ActiveInputInMM = digit;
+            model.ActiveDimensionInput = new DimensionInput() {InMM = digit};
             return;
         }
 
-        var currentValue = model.ActiveInputInMM.Value;
-        model.ActiveInputInMM = currentValue * 10 + digit;
+        var currentValue = model.ActiveDimensionInput.InMM;
+        model.ActiveDimensionInput.InMM = currentValue * 10 + digit;
     }
 }

@@ -124,12 +124,10 @@ public class Sketch : MonoBehaviour
                     _model.coordinateSystem.GetAllParameters()
                 );
 
-                _model.focusPosition = CoordinateCreation.UpdateFocusPosition(
+                _model.focusPosition = CoordinateCreation.UpdateCursorPosition(
                     _model.focusPosition,
                     _model.coordinateSystem,
-                    _model.keyboardInputModel.InputInM,
-                    _model.keyboardInputModel.ParameterReferences,
-                    _model.keyboardInputModel.IsDirectionNegative
+                    _model.keyboardInputModel.Parameters
                 );
 
                 if (_model.focusPosition == null)
@@ -170,7 +168,7 @@ public class Sketch : MonoBehaviour
                     }
 
                     // reset input
-                    _model.keyboardInputModel.Reset();
+                    _model.keyboardInputModel = new KeyboardInput.Model();
                 }
 
                 //update rectangle while drawing

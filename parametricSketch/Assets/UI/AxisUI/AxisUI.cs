@@ -20,7 +20,7 @@ namespace UI
         }
 
         public void UpdateCoordinateUIs(Axis axis, Vector3 orthogonalDirection, float orthogonalAnchor,
-            CoordinateUIStyle coordinateUIStyle,  Parameter referencesParameter, bool hasKeyboardInputSelection)
+            CoordinateUIStyle coordinateUIStyle,  Parameter referencedParameter, bool hasKeyboardInputSelection)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -59,7 +59,7 @@ namespace UI
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue, hasKeyboardInputSelection, referencesParameter == c.Parameter);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue, hasKeyboardInputSelection, referencedParameter == c.Parameter);
                         nextMueUI++;
                         break;
                     case Origin origin:

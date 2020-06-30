@@ -33,20 +33,22 @@ namespace Model
         }
 
         public Vec<Coordinate> GetParametricPosition(Vec<float> position, Vec<float> distancesToAnchor, bool asPreview,
-            Vec<float?> keyboardInputValues, Vec<Parameter> keyboardInputParameters, Vec<bool> keyboardInputNegativeDirection)
+            KeyboardInput.Parameters keyboardInput)
         {
             var output = new Vec<Coordinate>();
             foreach (var a in new[] {AxisID.X, AxisID.Y, AxisID.Z})
             {
-                if (keyboardInputParameters[a] != null)
+                if ( keyboardInput?.ParameterReferences[a] != null)
                 {
                     output[a] = Axes[a]
-                        .AddNewMueCoordinateWithParameterReference(keyboardInputParameters[a],keyboardInputNegativeDirection[a], asPreview);
+                        .AddNewMueCoordinateWithParameterReference(keyboardInput.ParameterReferences[a],
+                            keyboardInput.IsDirectionNegative[a], asPreview);
                 }
-                else if (keyboardInputValues[a].HasValue)
-                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInputValues[a].Value,keyboardInputNegativeDirection[a], asPreview);
+                else if (keyboardInput?.InputInMM[a] != null)
+                    output[a] = Axes[a].AddNewMueCoordinateWithParameterValue(keyboardInput.InputInMM[a].InM,
+                        keyboardInput.IsDirectionNegative[a], asPreview);
                 else
-                    output[a] = Axes[a].GetCoordinate(position[a],distancesToAnchor[a],GetAllParameters(),  asPreview);
+                    output[a] = Axes[a].GetCoordinate(position[a], distancesToAnchor[a], GetAllParameters(), asPreview);
             }
 
             return output;
@@ -84,17 +86,17 @@ namespace Model
                         .Where(c => c.GetType() != typeof(Origin))
                         .Where(c => !c.IsPreview)
                         .Select(c => c.Parameter)
-                        );
+                );
             }
 
             var distinctList = new List<Parameter>();
             foreach (var parameter in output)
             {
-                if(distinctList.Any(p=>p.ID == parameter.ID))
+                if (distinctList.Any(p => p.ID == parameter.ID))
                     continue;
                 distinctList.Add(parameter);
             }
-            
+
             return distinctList.OrderBy(p => p.Value).ToList();
         }
     }
