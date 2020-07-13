@@ -19,6 +19,11 @@ namespace UI
             {
                 var ui = Instantiate(_axisUIPrefab, transform);
                 ui.Initialize(_embedding[a], $"{a} - AxisUI");
+                
+                //quick fix: disable y axis ui
+                if(a==Vec.AxisID.Y)
+                    ui.gameObject.SetActive(false);
+                
                 return ui;
             });
 

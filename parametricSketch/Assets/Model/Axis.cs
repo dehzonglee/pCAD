@@ -14,9 +14,9 @@ namespace Model
         public AnchorCoordinates Anchor { get; }
         public float SmallestValue => Coordinates.Select(c => c.Value).Min();
 
-        public Axis(Action axisChangedCallback, Vector3 direction)
+        public Axis(Action axisChangedCallback, Vector3 direction, float originPosition)
         {
-            _origin = new Origin();
+            _origin = new Origin(originPosition);
             Direction = direction;
             Coordinates.Add(_origin);
             Anchor = new AnchorCoordinates(_origin);

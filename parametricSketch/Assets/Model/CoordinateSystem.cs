@@ -14,13 +14,13 @@ namespace Model
         public Vec<Axis> Axes { get; }
         public Anchor Anchor { get; }
 
-        public CoordinateSystem()
+        public CoordinateSystem(Vec<float> mousePositionAsOrigin)
         {
             Axes = new Vec<Axis>
             {
-                X = new Axis(OnAxisChanged, Vector3.right),
-                Y = new Axis(OnAxisChanged, Vector3.up),
-                Z = new Axis(OnAxisChanged, Vector3.forward)
+                X = new Axis(OnAxisChanged, Vector3.right, mousePositionAsOrigin.X),
+                Y = new Axis(OnAxisChanged, Vector3.up,mousePositionAsOrigin.Y),
+                Z = new Axis(OnAxisChanged, Vector3.forward,mousePositionAsOrigin.Z)
             };
 
 
