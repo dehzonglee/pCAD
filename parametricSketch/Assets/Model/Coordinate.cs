@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -13,6 +14,7 @@ public abstract class Coordinate
 
     protected event Action ChangedEvent;
     protected event Action<Coordinate> DeletedEvent;
+    public List<Coordinate> Parents;
 
     protected Action FireValueChangedEvent => () => ChangedEvent?.Invoke();
 
@@ -91,7 +93,30 @@ public abstract class Coordinate
         _attachedGeometry.Add(rectangle);
     }
 
-    protected List<Coordinate> Parents;
+    public static List<Coordinate> GetPathToOrigin(Coordinate coordinate)
+    {
+        var pathWithDuplicates = GetPathRecursion(coordinate);
+        var cleanPath = new List<Coordinate>();
+        foreach (var c in pathWithDuplicates)
+        {
+            if (!cleanPath.Contains(c))
+                cleanPath.Add(c);
+        }
+
+        return cleanPath;
+        
+        List<Coordinate> GetPathRecursion(Coordinate c)
+        {
+            var path = new List<Coordinate>(){c};
+            foreach (var parent in c.Parents)
+            {
+                path.AddRange(GetPathToOrigin(parent));
+            }
+
+            return path;
+        }
+    }
+
     
     private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
     private List<Sketch.RectangleModel> _attachedGeometry = new List<Sketch.RectangleModel>();

@@ -56,7 +56,7 @@ public class MueUI2D : MonoBehaviour
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)
     {
         var distance = _gridLineUI.GetScreenDistanceToLine(screenPos);
-        Debug.Log($"distance to {_coordinate.Parameter} is {distance}");
+        Debug.Log($"frame:{Time.frameCount}, distance to {_coordinate.Parameter} is {distance}");
         return new CoordinateManipulation.ScreenDistance()
             {Coordinate = _coordinate, ScreenDistanceToCoordinate = distance};
     }

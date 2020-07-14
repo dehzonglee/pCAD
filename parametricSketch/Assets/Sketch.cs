@@ -41,7 +41,7 @@ public class Sketch : MonoBehaviour
         _model.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
-        
+
         //start drawing first rectangle
         _state = State.DrawRectangle;
         _model.focusPosition = CoordinateCreation.UpdateCursorPosition(
@@ -95,7 +95,7 @@ public class Sketch : MonoBehaviour
 
         if (_model.draggedCoordinate != null)
         {
-            Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
+//            Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
         }
 
         // switch input state
@@ -116,7 +116,8 @@ public class Sketch : MonoBehaviour
                 // update drag
                 if (Input.GetKey(PrimaryMouse) && _model.draggedCoordinate != null)
                 {
-                    var (value, pointsInNegativeDirection) = CoordinateManipulation.UpdateDrag(_model.draggedCoordinate,
+                    var (value, pointsInNegativeDirection) = CoordinateManipulation.NewUpdateDrag(
+                        _model.draggedCoordinate,
                         _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
 
                     _model.draggedCoordinate.Parameter.Value = value;

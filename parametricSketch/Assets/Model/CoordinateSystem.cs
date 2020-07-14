@@ -19,8 +19,8 @@ namespace Model
             Axes = new Vec<Axis>
             {
                 X = new Axis(OnAxisChanged, Vector3.right, mousePositionAsOrigin.X),
-                Y = new Axis(OnAxisChanged, Vector3.up,mousePositionAsOrigin.Y),
-                Z = new Axis(OnAxisChanged, Vector3.forward,mousePositionAsOrigin.Z)
+                Y = new Axis(OnAxisChanged, Vector3.up, mousePositionAsOrigin.Y),
+                Z = new Axis(OnAxisChanged, Vector3.forward, mousePositionAsOrigin.Z)
             };
 
 
@@ -126,6 +126,22 @@ namespace Model
         private void OnAxisChanged()
         {
             CoordinateSystemChangedEvent?.Invoke();
+        }
+
+        public List<Mue> GetAllMuesThatUseParameter(Parameter parameter)
+        {
+            var output = new List<Mue>();
+            foreach (var a in Vec.XYZ)
+            {
+                output.AddRange(
+                    Axes[a].Coordinates
+                        .Where(c => c.GetType() == typeof(Mue))
+                        .Select(c => c as Mue)
+                        .Where(c => c.Parameter == parameter)
+                );
+            }
+
+            return output;
         }
 
         public List<Parameter> GetAllParameters()
