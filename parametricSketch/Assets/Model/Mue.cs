@@ -25,8 +25,8 @@ public class Mue : Coordinate
         bool pointsInNegativeDirection,
         Action<Coordinate> onDeleted,
         Action onChanged,
-        bool isPreview)
-        : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
+        bool isCurrentlyDrawn)
+        : base(isCurrentlyDrawn, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
         PointsInNegativeDirection = pointsInNegativeDirection;
         var id = GUID.Generate().ToString();
@@ -43,8 +43,8 @@ public class Mue : Coordinate
         bool pointsInNegativeDirection,
         Action<Coordinate> onDeleted,
         Action onChanged,
-        bool isPreview)
-        : base(isPreview, onDeleted, onChanged, new List<Coordinate>() {parent})
+        bool isCurrentlyDrawn)
+        : base(isCurrentlyDrawn, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
 //        Debug.Log($"create paramter with refrence {parameterReference.ID}");
 

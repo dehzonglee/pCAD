@@ -63,9 +63,9 @@ namespace Model
 
         public void DeleteIfPreview()
         {
-            if (_x.IsPreview) _x.Delete();
-            if (_y.IsPreview) _y.Delete();
-            if (_z.IsPreview) _z.Delete();
+            if (_x.IsCurrentlyDrawn) _x.Delete();
+            if (_y.IsCurrentlyDrawn) _y.Delete();
+            if (_z.IsCurrentlyDrawn) _z.Delete();
         }
 
         public void Remove()

@@ -7,7 +7,7 @@ public static class CoordinateCreation
     {
         oldFocusPosition?.ForEach(c =>
         {
-            if (c.IsPreview) c.Delete();
+            if (c.IsCurrentlyDrawn) c.Delete();
         });
 
         return GetOrCreatePositionAtMousePosition(cs, cs.Anchor, true, keyboardInput);

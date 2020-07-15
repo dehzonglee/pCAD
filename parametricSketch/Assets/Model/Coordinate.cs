@@ -9,7 +9,7 @@ public abstract class Coordinate
     public abstract string Name { get; }
     public abstract float Value { get; }
 
-    public bool IsPreview { get; private set; }
+    public bool IsCurrentlyDrawn { get; private set; }
     public float ParentValue => Parents[0].Value;
 
     protected event Action ChangedEvent;
@@ -18,10 +18,10 @@ public abstract class Coordinate
 
     protected Action FireValueChangedEvent => () => ChangedEvent?.Invoke();
 
-    protected Coordinate(bool isPreview, Action<Coordinate> onDeleted, Action onChanged, List<Coordinate> parents)
+    protected Coordinate(bool isCurrentlyDrawn, Action<Coordinate> onDeleted, Action onChanged, List<Coordinate> parents)
     {
         Parents = parents;
-        IsPreview = isPreview;
+        IsCurrentlyDrawn = isCurrentlyDrawn;
         DeletedEvent += onDeleted;
         ChangedEvent += onChanged;
         foreach (var p in parents)
@@ -85,7 +85,7 @@ public abstract class Coordinate
 
     public void Bake()
     {
-        IsPreview = false;
+        IsCurrentlyDrawn = false;
     }
 
     public void AddAttachedGeometry(Sketch.RectangleModel rectangle)

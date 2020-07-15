@@ -152,7 +152,7 @@ namespace Model
                 output.AddRange(
                     Axes[a].Coordinates
                         .Where(c => c.GetType() != typeof(Origin))
-                        .Where(c => !c.IsPreview)
+                        .Where(c => !c.IsCurrentlyDrawn)
                         .Select(c => c.Parameter)
                 );
             }

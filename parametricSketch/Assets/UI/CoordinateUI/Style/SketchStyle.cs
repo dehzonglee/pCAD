@@ -11,6 +11,7 @@ public class SketchStyle
         public T DefaultStyle;
         public T SelectedStyle;
         public T FocusStyle;
+        public T DimmedStyle;
         public T ReferencedStyle;
 
         public T GetForState(State state)
@@ -23,6 +24,8 @@ public class SketchStyle
                     return SelectedStyle;
                 case State.Focus:
                     return FocusStyle;
+                case State.Dimmed:
+                    return DimmedStyle;
                 case State.Referenced:
                     return ReferencedStyle;
                 default:
@@ -37,6 +40,7 @@ public class SketchStyle
             Default,
             Selected,
             Focus,
+            Dimmed,
             Referenced
         }
     

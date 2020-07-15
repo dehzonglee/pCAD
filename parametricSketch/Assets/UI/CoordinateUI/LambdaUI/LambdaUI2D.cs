@@ -12,7 +12,7 @@ public class LambdaUI2D : MonoBehaviour
     public void UpdateUI(Lambda coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
         CoordinateUIStyle.LambdaUIStyle style)
     {
-        var state = coordinate.IsPreview ? SketchStyle.State.Focus : SketchStyle.State.Default;
+        var state = coordinate.IsCurrentlyDrawn ? SketchStyle.State.Focus : SketchStyle.State.Default;
         //todo: set style in initialize method
         _coordinate = coordinate;
         var labelString = "1 / 2"; // coordinate.Parameter.ToString("F");

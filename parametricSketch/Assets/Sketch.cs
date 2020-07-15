@@ -62,7 +62,7 @@ public class Sketch : MonoBehaviour
                 {
                     _model.focusPosition.ForEach(c =>
                     {
-                        if (c.IsPreview) c.Delete();
+                        if (c.IsCurrentlyDrawn) c.Delete();
                     });
                     _model.focusPosition = null;
                 }

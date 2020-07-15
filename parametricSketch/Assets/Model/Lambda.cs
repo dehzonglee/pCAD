@@ -18,9 +18,9 @@ public class Lambda : Coordinate
         float lambda,
         Action<Coordinate> onDeleted,
         Action onChanged,
-        bool isPreview
+        bool isCurrentlyDrawn
     )
-        : base(isPreview, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
+        : base(isCurrentlyDrawn, onDeleted, onChanged, new List<Coordinate> {parent0, parent1})
     {
         Parameter = new Parameter(GUID.Generate().ToString(), lambda);
     }
