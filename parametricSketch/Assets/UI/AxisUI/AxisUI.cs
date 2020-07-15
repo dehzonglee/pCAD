@@ -25,7 +25,9 @@ namespace UI
             float orthogonalAnchor,
             CoordinateUIStyle coordinateUIStyle,
             List<Parameter> referencedParameter,
-            bool hasKeyboardInputSelection)
+            bool hasKeyboardInputSelection,
+            Coordinate draggedCoordinate
+            )
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -64,7 +66,7 @@ namespace UI
                         break;
                     case Mue mue:
                         _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue,
-                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter));
+                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter),draggedCoordinate);
                         nextMueUI++;
                         break;
                     case Origin origin:

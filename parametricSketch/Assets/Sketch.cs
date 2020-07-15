@@ -207,7 +207,8 @@ public class Sketch : MonoBehaviour
         _ui.coordinateSystemUI.UpdateUI(
             _model.coordinateSystem,
             _sketchStyle.CoordinateUIStyle,
-            _model.keyboardInputModel);
+            _model.keyboardInputModel,
+            _model.draggedCoordinate);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
 

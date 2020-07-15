@@ -15,14 +15,15 @@ public class MueUI2D : MonoBehaviour
         float padding,
         CoordinateUIStyle.MueUIStyle style,
         bool hasKeyboardInputSelection,
-        bool isReferencesByOtherParameter
+        bool isReferencesByOtherParameter,
+        Coordinate draggedCoordinate
     )
     {
         SketchStyle.State state;
 
         if (isReferencesByOtherParameter)
             state = SketchStyle.State.Referenced;
-        else if (coordinate.IsPreview && hasKeyboardInputSelection)
+        else if (coordinate.IsPreview && hasKeyboardInputSelection || draggedCoordinate == coordinate)
             state = SketchStyle.State.Selected;
         else if (coordinate.IsPreview && !hasKeyboardInputSelection)
             state = SketchStyle.State.Focus;
