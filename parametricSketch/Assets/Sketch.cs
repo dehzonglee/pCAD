@@ -211,8 +211,7 @@ public class Sketch : MonoBehaviour
             _model.draggedCoordinate);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
     }
-
-
+    
     private enum State
     {
         ManipulateCoordinates,

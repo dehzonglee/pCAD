@@ -21,10 +21,10 @@ public class MueUI2D : MonoBehaviour
     {
         SketchStyle.State state;
 
-        if (isReferencesByOtherParameter || draggedCoordinate?.Parameter == coordinate.Parameter)
-            state = SketchStyle.State.Referenced;
-        else if (coordinate.IsCurrentlyDrawn && hasKeyboardInputSelection || draggedCoordinate == coordinate)
+        if (coordinate.IsCurrentlyDrawn && hasKeyboardInputSelection || draggedCoordinate == coordinate)
             state = SketchStyle.State.Selected;
+        else if (isReferencesByOtherParameter || draggedCoordinate?.Parameter == coordinate.Parameter)
+            state = SketchStyle.State.Referenced;
         else if (coordinate.IsCurrentlyDrawn && !hasKeyboardInputSelection)
             state = SketchStyle.State.Focus;
         else if (draggedCoordinate != null)
