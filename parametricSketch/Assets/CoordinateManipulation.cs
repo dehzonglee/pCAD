@@ -69,18 +69,15 @@ public class CoordinateManipulation : MonoBehaviour
             }
 
 //            if (currentNode.GetType() == typeof(Mue))
-            else
-            {
-                var mueCoordinate = currentNode as Mue;
-                Debug.Assert(mueCoordinate != null, nameof(mueCoordinate) + " != null");
+            var mueCoordinate = currentNode as Mue;
+            Debug.Assert(mueCoordinate != null, nameof(mueCoordinate) + " != null");
 
-                if (mueCoordinate.Parameter != parameter)
-                    return CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
+            if (mueCoordinate.Parameter != parameter)
+                return CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
 
-                var weightForThisCoordinate = mueCoordinate.PointsInNegativeDirection ? -1f : 1f;
-                return weightForThisCoordinate +
-                       CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
-            }
+            var weightForThisCoordinate = mueCoordinate.PointsInNegativeDirection ? -1f : 1f;
+            return weightForThisCoordinate +
+                   CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
         }
 
 
@@ -105,7 +102,7 @@ public class CoordinateManipulation : MonoBehaviour
     }
 
     private const float Epsilon = 0.001f;
-    
+
     private static float MousePositionToParameter(Vec<float> mouseWorldPosition, Coordinate coordinate,
         Axis axis)
     {
