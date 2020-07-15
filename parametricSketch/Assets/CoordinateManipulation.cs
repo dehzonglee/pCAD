@@ -48,7 +48,8 @@ public class CoordinateManipulation : MonoBehaviour
 
         //todo take lambdas into consideration!!!
 
-        var multiplier = CalculateMultiplierAlongPathRecursive(draggedCoordinate,draggedCoordinate.Parameter);
+        var multiplier = CalculateMultiplierAlongPathRecursive(draggedCoordinate, draggedCoordinate.Parameter);
+
         float CalculateMultiplierAlongPathRecursive(Coordinate currentNode, Parameter parameter)
         {
             if (currentNode.GetType() == typeof(Origin))
@@ -75,7 +76,7 @@ public class CoordinateManipulation : MonoBehaviour
 
                 if (mueCoordinate.Parameter != parameter)
                     return CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
-                
+
                 var weightForThisCoordinate = mueCoordinate.PointsInNegativeDirection ? -1f : 1f;
                 return weightForThisCoordinate +
                        CalculateMultiplierAlongPathRecursive(mueCoordinate.Parents[0], parameter);
@@ -91,11 +92,20 @@ public class CoordinateManipulation : MonoBehaviour
             return (draggedCoordinate.Parameter.Value, mue.PointsInNegativeDirection);
 
         var deltaThatTakesOtherCoordinatesIntoConsideration = deltaToOldValue / multiplier;
-        return mue.PointsInNegativeDirection
-            ? (draggedCoordinate.Parameter.Value - deltaThatTakesOtherCoordinatesIntoConsideration, true)
-            : (draggedCoordinate.Parameter.Value + deltaThatTakesOtherCoordinatesIntoConsideration, false);
+        var output = mue.PointsInNegativeDirection
+            ? (value: draggedCoordinate.Parameter.Value - deltaThatTakesOtherCoordinatesIntoConsideration,
+                inoppositeDirection: true)
+            : (value: draggedCoordinate.Parameter.Value + deltaThatTakesOtherCoordinatesIntoConsideration,
+                inoppositeDirection: false);
+
+        if (output.value < Epsilon)
+            output.value = Epsilon;
+
+        return output;
     }
 
+    private const float Epsilon = 0.001f;
+    
     private static float MousePositionToParameter(Vec<float> mouseWorldPosition, Coordinate coordinate,
         Axis axis)
     {
