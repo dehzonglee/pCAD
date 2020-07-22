@@ -100,7 +100,6 @@ namespace Model
         }
 
         public Vec<Parameter> SnappedParameter = new Vec<Parameter>();
-
         public Vec<Coordinate> SnappedCoordinate = new Vec<Coordinate>();
 
         public Axis AxisThatContainsCoordinate(Coordinate c)

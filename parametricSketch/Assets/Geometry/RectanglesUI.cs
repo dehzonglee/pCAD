@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class RectanglesUI : MonoBehaviour
     {
-        [SerializeField] private RectangleFillingUI rectangleFillingUIPrefab;
-        [SerializeField] private RectangleOutlineUI rectangleOutlineUIPrefab;
+        [SerializeField] private RectangleFillingUI _rectangleFillingUIPrefab;
+        [SerializeField] private RectangleOutlineUI _rectangleOutlineUIPrefab;
 
         public void UpdateUI(List<Sketch.RectangleModel> rectangleModels, GeometryStyle.RectangleStyleSet styleSet)
         {
-            var validRectangles = rectangleModels.Where(rm => rm.P1!=null).ToList();
+            var validRectangles = rectangleModels.Where(rm => rm.P1 != null).ToList();
             while (_uiPool.Count > validRectangles.Count)
             {
                 var rectangleToDestroy = _uiPool[0];
@@ -22,8 +23,8 @@ namespace UI
 
             while (_uiPool.Count < validRectangles.Count)
             {
-                var newFillingUI = Instantiate(rectangleFillingUIPrefab, transform);
-                var newOutlineUI = Instantiate(rectangleOutlineUIPrefab, transform);
+                var newFillingUI = Instantiate(_rectangleFillingUIPrefab, transform);
+                var newOutlineUI = Instantiate(_rectangleOutlineUIPrefab, transform);
                 _uiPool.Add(new UIComponents() {filling = newFillingUI, outline = newOutlineUI});
             }
 

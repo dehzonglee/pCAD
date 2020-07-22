@@ -14,6 +14,7 @@ public class Sketch : MonoBehaviour
     {
         public CoordinateSystemUI coordinateSystemUI;
         public RectanglesUI rectanglesUI;
+        public PointsUI pointsUI;
     }
 
     [Serializable]
@@ -24,13 +25,22 @@ public class Sketch : MonoBehaviour
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
         public List<RectangleModel> rectangles;
+        public List<PointModel> points;
         public KeyboardInput.Model keyboardInputModel;
     }
 
-    public class RectangleModel
+    public class RectangleModel : GeometryModel
+    {
+        public Vec<Coordinate> P1;
+    }
+
+    public class PointModel : GeometryModel
+    {
+    }
+
+    public class GeometryModel
     {
         public Vec<Coordinate> P0;
-        public Vec<Coordinate> P1;
         public bool IsBaked;
     }
 
@@ -38,6 +48,7 @@ public class Sketch : MonoBehaviour
     {
         _model.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
         _model.rectangles = new List<RectangleModel>();
+        _model.points = new List<PointModel>();
         _model.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
@@ -49,7 +60,7 @@ public class Sketch : MonoBehaviour
             _model.coordinateSystem,
             _model.keyboardInputModel
         );
-        StartDrawing();
+        Draw();
     }
 
     private void SetState(State newState)
@@ -104,6 +115,24 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(DrawRectanglesStateKey))
             SetState(State.DrawRectangle);
+
+        if (Input.GetKeyDown(SwitchGeometry))
+        {
+            switch (_currentGeometryType)
+            {
+                case GeometryType.Point:
+                    _currentGeometryType = GeometryType.Line;
+                    break;
+                case GeometryType.Line:
+                    _currentGeometryType = GeometryType.Rectangle;
+                    break;
+                case GeometryType.Rectangle:
+                    _currentGeometryType = GeometryType.Point;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         switch (_state)
         {
@@ -165,7 +194,7 @@ public class Sketch : MonoBehaviour
                 // draw
                 if (Input.GetKeyDown(PrimaryMouse) || Input.GetKeyDown(KeyCode.Return))
                 {
-                    StartDrawing();
+                    Draw();
                 }
 
                 //update rectangle while drawing
@@ -181,21 +210,34 @@ public class Sketch : MonoBehaviour
         UpdateUI();
     }
 
-    private void StartDrawing()
+    private void Draw()
     {
         CoordinateCreation.BakePosition(_model.focusPosition);
 
         _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
 
-        if (_model.nextRectangle == null)
+        switch (_currentGeometryType)
         {
-            _model.nextRectangle = RectangleCreation.StartNewRectangle(_model.focusPosition);
-            _model.rectangles.Add(_model.nextRectangle);
-        }
-        else
-        {
-            RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition);
-            _model.nextRectangle = null;
+            case GeometryType.Point:
+                _model.points.Add(PointCreation.NewPoint(_model.focusPosition));
+                break;
+            case GeometryType.Line:
+                break;
+            case GeometryType.Rectangle:
+                if (_model.nextRectangle == null)
+                {
+                    _model.nextRectangle = RectangleCreation.StartNewRectangle(_model.focusPosition);
+                    _model.rectangles.Add(_model.nextRectangle);
+                }
+                else
+                {
+                    RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition);
+                    _model.nextRectangle = null;
+                }
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         // reset input
@@ -210,8 +252,9 @@ public class Sketch : MonoBehaviour
             _model.keyboardInputModel,
             _model.draggedCoordinate);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
+        _ui.pointsUI.UpdateUI(_model.points,_sketchStyle.GeometryStyle.Points);
     }
-    
+
     private enum State
     {
         ManipulateCoordinates,
@@ -219,12 +262,20 @@ public class Sketch : MonoBehaviour
     }
 
     private Model _model;
-
     private State _state = State.ManipulateCoordinates;
+    private GeometryType _currentGeometryType;
+
+    private enum GeometryType
+    {
+        Point,
+        Line,
+        Rectangle
+    }
 
     private const KeyCode ManipulateCoordinatesStateKey = KeyCode.Alpha1;
     private const KeyCode DrawRectanglesStateKey = KeyCode.Alpha2;
     private const KeyCode PrimaryMouse = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;
+    private const KeyCode SwitchGeometry = KeyCode.Alpha3;
 }

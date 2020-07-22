@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -88,7 +87,7 @@ public abstract class Coordinate
         IsCurrentlyDrawn = false;
     }
 
-    public void AddAttachedGeometry(Sketch.RectangleModel rectangle)
+    public void AddAttachedGeometry(Sketch.GeometryModel rectangle)
     {
         _attachedGeometry.Add(rectangle);
     }
@@ -119,6 +118,6 @@ public abstract class Coordinate
 
     
     private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
-    private List<Sketch.RectangleModel> _attachedGeometry = new List<Sketch.RectangleModel>();
+    private readonly List<Sketch.GeometryModel> _attachedGeometry = new List<Sketch.GeometryModel>();
     private Parameter _parameter;
 }

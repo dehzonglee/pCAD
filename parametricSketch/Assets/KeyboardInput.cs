@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class KeyboardInput
 {
+    [Serializable]
     public class Model
     {
         public readonly Vec<bool> IsDirectionNegative = new Vec<bool>(false);
