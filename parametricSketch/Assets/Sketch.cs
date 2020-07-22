@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Model;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Sketch : MonoBehaviour
 {
@@ -14,9 +13,7 @@ public class Sketch : MonoBehaviour
     public struct UI
     {
         public CoordinateSystemUI coordinateSystemUI;
-        public RectanglesUI rectanglesUI;
-        public PointsUI pointsUI;
-        public LinesUI linesUI;
+        public GeometryUIManager geometryUI;
     }
 
     [Serializable]
@@ -25,11 +22,8 @@ public class Sketch : MonoBehaviour
         public CoordinateSystem coordinateSystem;
         public Vec<Coordinate> focusPosition;
         public Coordinate draggedCoordinate;
-        public RectangleModel nextRectangle;
-        public LineModel nextLine;
-        public List<RectangleModel> rectangles;
-        public List<PointModel> points;
-        public List<LineModel> lines;
+        public GeometryModel incompleteGeometry;
+        public List<GeometryModel> geometries;
         public KeyboardInput.Model keyboardInputModel;
     }
 
@@ -56,9 +50,7 @@ public class Sketch : MonoBehaviour
     private void Initialize(Vec<float> mousePositionAsOrigin)
     {
         _model.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
-        _model.rectangles = new List<RectangleModel>();
-        _model.points = new List<PointModel>();
-        _model.lines = new List<LineModel>();
+        _model.geometries = new List<GeometryModel>();
         _model.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
@@ -89,17 +81,11 @@ public class Sketch : MonoBehaviour
                 }
 
                 // delete next rectangle
-                if (_model.nextRectangle != null)
+                if (_model.incompleteGeometry != null)
                 {
-                    RectangleCreation.AbortRectangle(_model.nextRectangle);
-                    _model.nextRectangle = null;
-                }
-
-                // delete next rectangle
-                if (_model.nextLine != null)
-                {
-                    LineCreation.AbortLine(_model.nextLine);
-                    _model.nextLine = null;
+                    _model.incompleteGeometry.P0.ForEach(c =>
+                        c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
+                    _model.incompleteGeometry = null;
                 }
 
                 break;
@@ -211,12 +197,16 @@ public class Sketch : MonoBehaviour
                     Draw();
                 }
 
-                //update rectangle while drawing
-                if (_model.nextRectangle != null)
-                    RectangleCreation.UpdateRectangle(_model.nextRectangle, _model.focusPosition);
-                //update rectangle while drawing
-                if (_model.nextLine != null)
-                    LineCreation.UpdateLine(_model.nextLine, _model.focusPosition);
+                // update geometry while drawing
+                switch (_model.incompleteGeometry)
+                {
+                    case RectangleModel rectangleModel:
+                        RectangleCreation.UpdateRectangle(rectangleModel, _model.focusPosition);
+                        break;
+                    case LineModel lineModel:
+                        LineCreation.UpdateLine(lineModel, _model.focusPosition);
+                        break;
+                }
 
                 break;
 
@@ -236,34 +226,37 @@ public class Sketch : MonoBehaviour
         switch (_currentGeometryType)
         {
             case GeometryType.Point:
-                _model.points.Add(PointCreation.NewPoint(_model.focusPosition));
+                _model.geometries.Add(PointCreation.NewPoint(_model.focusPosition));
                 break;
             case GeometryType.Line:
-                if (_model.nextLine == null)
+                if (!(_model.incompleteGeometry is LineModel))
                 {
-                    _model.nextLine = LineCreation.StartNewLine(_model.focusPosition);
-                    _model.lines.Add(_model.nextLine);
+                    _model.incompleteGeometry = LineCreation.StartNewLine(_model.focusPosition);
+                    _model.geometries.Add(_model.incompleteGeometry);
                 }
                 else
                 {
-                    LineCreation.CompleteLine(_model.nextLine, _model.focusPosition);
-                    _model.nextLine = null;
+                    LineCreation.CompleteLine(_model.incompleteGeometry as LineModel, _model.focusPosition);
+                    _model.incompleteGeometry = null;
                 }
 
                 break;
+
             case GeometryType.Rectangle:
-                if (_model.nextRectangle == null)
+                if (!(_model.incompleteGeometry is RectangleModel))
                 {
-                    _model.nextRectangle = RectangleCreation.StartNewRectangle(_model.focusPosition);
-                    _model.rectangles.Add(_model.nextRectangle);
+                    _model.incompleteGeometry = RectangleCreation.StartNewRectangle(_model.focusPosition);
+                    _model.geometries.Add(_model.incompleteGeometry);
                 }
                 else
                 {
-                    RectangleCreation.CompleteRectangle(_model.nextRectangle, _model.focusPosition);
-                    _model.nextRectangle = null;
+                    RectangleCreation.CompleteRectangle(_model.incompleteGeometry as RectangleModel,
+                        _model.focusPosition);
+                    _model.incompleteGeometry = null;
                 }
 
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -279,9 +272,8 @@ public class Sketch : MonoBehaviour
             _sketchStyle.CoordinateUIStyle,
             _model.keyboardInputModel,
             _model.draggedCoordinate);
-        _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
-        _ui.pointsUI.UpdateUI(_model.points, _sketchStyle.GeometryStyle.Points);
-        _ui.linesUI.UpdateUI(_model.lines, _sketchStyle.GeometryStyle.Lines);
+
+        _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle.GeometryStyle);
     }
 
     private enum State

@@ -13,8 +13,13 @@ public class PointUI : MaskableGraphic
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         vh.Clear();
+        
+        
+        
         UIMeshGenerationHelper.AddLine(vh, _positionWorld, Vector3.zero, _style.OutlineWidth, _style.OutlineColor,
             UIMeshGenerationHelper.CapsType.Round);
+        
+        
     }
 
     private Vector3 _positionWorld;
