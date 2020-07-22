@@ -16,7 +16,7 @@ public class Sketch : MonoBehaviour
         public CoordinateSystemUI coordinateSystemUI;
         public RectanglesUI rectanglesUI;
         public PointsUI pointsUI;
-        [FormerlySerializedAs("LinesUI")] public LinesUI linesUI;
+        public LinesUI linesUI;
     }
 
     [Serializable]
@@ -121,11 +121,6 @@ public class Sketch : MonoBehaviour
             return;
         }
 
-        if (_model.draggedCoordinate != null)
-        {
-//            Debug.Log($"dragging: {_model.draggedCoordinate.Parameter}");
-        }
-
         // switch input state
         if (Input.GetKeyDown(ManipulateCoordinatesStateKey))
             SetState(State.ManipulateCoordinates);
@@ -149,6 +144,7 @@ public class Sketch : MonoBehaviour
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             Debug.Log($"Set draw mode to {_currentGeometryType}");
         }
 
