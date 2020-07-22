@@ -64,7 +64,7 @@ public abstract class Coordinate
         Debug.Log(_dependentCoordinates.Count);
     }
 
-    public void UnregisterGeometryAndTryToDelete(Sketch.RectangleModel rectangleToUnregister)
+    public void UnregisterGeometryAndTryToDelete(Sketch.GeometryModel rectangleToUnregister)
     {
         _attachedGeometry.Remove(rectangleToUnregister);
         if(_attachedGeometry.Count==0)

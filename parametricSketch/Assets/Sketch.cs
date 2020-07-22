@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Model;
 using UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Sketch : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class Sketch : MonoBehaviour
         public CoordinateSystemUI coordinateSystemUI;
         public RectanglesUI rectanglesUI;
         public PointsUI pointsUI;
+        [FormerlySerializedAs("LinesUI")] public LinesUI linesUI;
     }
 
     [Serializable]
@@ -24,8 +26,10 @@ public class Sketch : MonoBehaviour
         public Vec<Coordinate> focusPosition;
         public Coordinate draggedCoordinate;
         public RectangleModel nextRectangle;
+        public LineModel nextLine;
         public List<RectangleModel> rectangles;
         public List<PointModel> points;
+        public List<LineModel> lines;
         public KeyboardInput.Model keyboardInputModel;
     }
 
@@ -36,6 +40,11 @@ public class Sketch : MonoBehaviour
 
     public class PointModel : GeometryModel
     {
+    }
+
+    public class LineModel : GeometryModel
+    {
+        public Vec<Coordinate> P1;
     }
 
     public class GeometryModel
@@ -49,6 +58,7 @@ public class Sketch : MonoBehaviour
         _model.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
         _model.rectangles = new List<RectangleModel>();
         _model.points = new List<PointModel>();
+        _model.lines = new List<LineModel>();
         _model.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
@@ -83,6 +93,13 @@ public class Sketch : MonoBehaviour
                 {
                     RectangleCreation.AbortRectangle(_model.nextRectangle);
                     _model.nextRectangle = null;
+                }
+
+                // delete next rectangle
+                if (_model.nextLine != null)
+                {
+                    LineCreation.AbortLine(_model.nextLine);
+                    _model.nextLine = null;
                 }
 
                 break;
@@ -132,6 +149,7 @@ public class Sketch : MonoBehaviour
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            Debug.Log($"Set draw mode to {_currentGeometryType}");
         }
 
         switch (_state)
@@ -200,6 +218,9 @@ public class Sketch : MonoBehaviour
                 //update rectangle while drawing
                 if (_model.nextRectangle != null)
                     RectangleCreation.UpdateRectangle(_model.nextRectangle, _model.focusPosition);
+                //update rectangle while drawing
+                if (_model.nextLine != null)
+                    LineCreation.UpdateLine(_model.nextLine, _model.focusPosition);
 
                 break;
 
@@ -222,6 +243,17 @@ public class Sketch : MonoBehaviour
                 _model.points.Add(PointCreation.NewPoint(_model.focusPosition));
                 break;
             case GeometryType.Line:
+                if (_model.nextLine == null)
+                {
+                    _model.nextLine = LineCreation.StartNewLine(_model.focusPosition);
+                    _model.lines.Add(_model.nextLine);
+                }
+                else
+                {
+                    LineCreation.CompleteLine(_model.nextLine, _model.focusPosition);
+                    _model.nextLine = null;
+                }
+
                 break;
             case GeometryType.Rectangle:
                 if (_model.nextRectangle == null)
@@ -252,7 +284,8 @@ public class Sketch : MonoBehaviour
             _model.keyboardInputModel,
             _model.draggedCoordinate);
         _ui.rectanglesUI.UpdateUI(_model.rectangles, _sketchStyle.GeometryStyle.Rectangle);
-        _ui.pointsUI.UpdateUI(_model.points,_sketchStyle.GeometryStyle.Points);
+        _ui.pointsUI.UpdateUI(_model.points, _sketchStyle.GeometryStyle.Points);
+        _ui.linesUI.UpdateUI(_model.lines, _sketchStyle.GeometryStyle.Lines);
     }
 
     private enum State

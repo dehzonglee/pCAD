@@ -33,3 +33,45 @@ MonoBehaviour:
       OutlineColor: {r: 0, g: 0, b: 0, a: 1}
       FillColor: {r: 1, g: 1, b: 1, a: 1}
       OutlineWidth: 0.5
+  Points:
+    DefaultStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    SelectedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    FocusStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    DimmedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    ReferencedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+  Lines:
+    DefaultStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    SelectedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 0, b: 0, a: 1}
+      OutlineWidth: 0.5
+    FocusStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    DimmedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
+    ReferencedStyle:
+      OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+      FillColor: {r: 1, g: 1, b: 1, a: 1}
+      OutlineWidth: 0.5
