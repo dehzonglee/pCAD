@@ -14,6 +14,7 @@ public class Sketch : MonoBehaviour
     {
         public CoordinateSystemUI coordinateSystemUI;
         public GeometryUIManager geometryUI;
+        public ParameterUI paramterUI;
     }
 
     [Serializable]
@@ -63,37 +64,6 @@ public class Sketch : MonoBehaviour
             _model.keyboardInputModel
         );
         Draw();
-    }
-
-    private void SetState(State newState)
-    {
-        switch (newState)
-        {
-            case State.ManipulateCoordinates:
-                // delete next position preview
-                if (_model.focusPosition != null)
-                {
-                    _model.focusPosition.ForEach(c =>
-                    {
-                        if (c.IsCurrentlyDrawn) c.Delete();
-                    });
-                    _model.focusPosition = null;
-                }
-
-                // delete next rectangle
-                if (_model.incompleteGeometry != null)
-                {
-                    _model.incompleteGeometry.P0.ForEach(c =>
-                        c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
-                    _model.incompleteGeometry = null;
-                }
-
-                break;
-            case State.DrawRectangle:
-                break;
-        }
-
-        _state = newState;
     }
 
     private void Update()
@@ -217,6 +187,37 @@ public class Sketch : MonoBehaviour
         UpdateUI();
     }
 
+    private void SetState(State newState)
+    {
+        switch (newState)
+        {
+            case State.ManipulateCoordinates:
+                // delete next position preview
+                if (_model.focusPosition != null)
+                {
+                    _model.focusPosition.ForEach(c =>
+                    {
+                        if (c.IsCurrentlyDrawn) c.Delete();
+                    });
+                    _model.focusPosition = null;
+                }
+
+                // delete next rectangle
+                if (_model.incompleteGeometry != null)
+                {
+                    _model.incompleteGeometry.P0.ForEach(c =>
+                        c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
+                    _model.incompleteGeometry = null;
+                }
+
+                break;
+            case State.DrawRectangle:
+                break;
+        }
+
+        _state = newState;
+    }
+
     private void Draw()
     {
         CoordinateCreation.BakePosition(_model.focusPosition);
@@ -274,6 +275,7 @@ public class Sketch : MonoBehaviour
             _model.draggedCoordinate);
 
         _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle.GeometryStyle);
+        _ui.paramterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
     }
 
     private enum State

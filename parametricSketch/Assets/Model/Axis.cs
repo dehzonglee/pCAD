@@ -9,7 +9,7 @@ namespace Model
     public class Axis
     {
         private event Action _axisChangedEvent;
-        public List<Coordinate> Coordinates { get; private set; } = new List<Coordinate>();
+        public List<Coordinate> Coordinates  = new List<Coordinate>();
         public Vector3 Direction;
         public AnchorCoordinates Anchor { get; }
         public float SmallestValue => Coordinates.Select(c => c.Value).Min();
@@ -27,7 +27,7 @@ namespace Model
         {
             Anchor.SetPrimaryCoordinate(FindClosestCoordinate(position));
         }
-        
+
         public Coordinate AddNewMueCoordinateWithParameterValue(float parameterValue, bool pointsInNegativeDirection,
             bool asPreview)
         {
@@ -43,7 +43,7 @@ namespace Model
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
-        
+
         public Coordinate AddNewMueCoordinateWithParameterReference(Parameter parameterReference,
             bool pointsInNegativeDirection, bool asPreview)
         {
@@ -72,7 +72,7 @@ namespace Model
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
-        
+
         public Coordinate AddNewMueCoordinate(Parameter parameter, bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate = new Mue(
@@ -103,16 +103,17 @@ namespace Model
         {
             var closestCoordinate = FindClosestCoordinate(position);
             var distanceToClosestCoordinate = Mathf.Abs(position - closestCoordinate.Value);
-            var distanceToLambdaCoordinate = DistanceToLambdaCoordinate(position);
+            var distanceToPotentialLambdaCoordinate = DistancePotentialToLambdaCoordinate(position);
 
-            if (distanceToClosestCoordinate > SNAP_RADIUS && distanceToLambdaCoordinate > SNAP_RADIUS)
+            if (distanceToClosestCoordinate > SnapRadius && distanceToPotentialLambdaCoordinate > SnapRadius)
                 return null;
 
-            if (distanceToClosestCoordinate < distanceToLambdaCoordinate)
+            if (distanceToClosestCoordinate < distanceToPotentialLambdaCoordinate + Epsilon)
                 return closestCoordinate;
 
             return AddLambdaCoordinateBetweenAnchors(isPreview);
         }
+
 
         public (Parameter parameter, bool pointsInNegativeDirection)? TryToSnapToExistingParameter(
             float parameterValue, List<Parameter> allParameters)
@@ -135,7 +136,7 @@ namespace Model
                     candidate = p;
             }
 
-            if (!candidate.HasValue || candidate.Value.distance > SNAP_RADIUS)
+            if (!candidate.HasValue || candidate.Value.distance > SnapRadius)
                 return null;
 
             return (candidate.Value.p, candidate.Value.pointsInNegativeDirection);
@@ -166,7 +167,7 @@ namespace Model
             return newLambda;
         }
 
-        private float DistanceToLambdaCoordinate(float position)
+        private float DistancePotentialToLambdaCoordinate(float position)
         {
             //todo: quick fix to catch undefined lambda if anchors match
             if (Anchor.AnchorsMatch) return float.PositiveInfinity;
@@ -192,7 +193,8 @@ namespace Model
             return closestCoordinate;
         }
 
-        private const float SNAP_RADIUS = 0.01f;
+        private const float SnapRadius = 0.01f;
         private readonly Origin _origin;
+        private const float Epsilon = 0.0001f;
     }
 }
