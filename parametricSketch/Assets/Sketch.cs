@@ -21,11 +21,17 @@ public class Sketch : MonoBehaviour
     private struct Model
     {
         public CoordinateSystem coordinateSystem;
-        public Vec<Coordinate> focusPosition;
-        public Coordinate draggedCoordinate;
-        public GeometryModel incompleteGeometry;
         public List<GeometryModel> geometries;
+    }
+
+    [Serializable]
+    private struct InteractionState
+    {
+        public Coordinate draggedCoordinate;
+        public Vec<Coordinate> focusPosition;
         public KeyboardInput.Model keyboardInputModel;
+        public GeometryModel incompleteGeometry;
+        
     }
 
     public class RectangleModel : GeometryModel
@@ -52,16 +58,16 @@ public class Sketch : MonoBehaviour
     {
         _model.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
         _model.geometries = new List<GeometryModel>();
-        _model.keyboardInputModel = new KeyboardInput.Model();
+        _interactionState.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
 
         //start drawing first rectangle
         _state = State.DrawRectangle;
-        _model.focusPosition = CoordinateCreation.UpdateCursorPosition(
-            _model.focusPosition,
+        _interactionState.focusPosition = CoordinateCreation.UpdateCursorPosition(
+            _interactionState.focusPosition,
             _model.coordinateSystem,
-            _model.keyboardInputModel
+            _interactionState.keyboardInputModel
         );
         Draw();
     }
@@ -111,39 +117,39 @@ public class Sketch : MonoBehaviour
 
                 // start drag
                 if (Input.GetKeyDown(PrimaryMouse))
-                    _model.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
+                    _interactionState.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
 
                 // update drag
-                if (Input.GetKey(PrimaryMouse) && _model.draggedCoordinate != null)
+                if (Input.GetKey(PrimaryMouse) && _interactionState.draggedCoordinate != null)
                 {
                     var (value, pointsInNegativeDirection) = CoordinateManipulation.NewUpdateDrag(
-                        _model.draggedCoordinate,
-                        _model.coordinateSystem.AxisThatContainsCoordinate(_model.draggedCoordinate));
+                        _interactionState.draggedCoordinate,
+                        _model.coordinateSystem.AxisThatContainsCoordinate(_interactionState.draggedCoordinate));
 
-                    _model.draggedCoordinate.Parameter.Value = value;
+                    _interactionState.draggedCoordinate.Parameter.Value = value;
                     //quick fix: for now, only mue coordinates can be dragged
-                    ((Mue) _model.draggedCoordinate).PointsInNegativeDirection = pointsInNegativeDirection;
+                    ((Mue) _interactionState.draggedCoordinate).PointsInNegativeDirection = pointsInNegativeDirection;
                 }
 
                 // stop drag
-                if (Input.GetKeyUp(PrimaryMouse) && _model.draggedCoordinate != null)
-                    _model.draggedCoordinate = null;
+                if (Input.GetKeyUp(PrimaryMouse) && _interactionState.draggedCoordinate != null)
+                    _interactionState.draggedCoordinate = null;
 
                 break;
 
             case State.DrawRectangle:
 
-                KeyboardInput.UpdateKeyboardInput(ref _model.keyboardInputModel,
+                KeyboardInput.UpdateKeyboardInput(ref _interactionState.keyboardInputModel,
                     _model.coordinateSystem.GetAllParameters()
                 );
 
-                _model.focusPosition = CoordinateCreation.UpdateCursorPosition(
-                    _model.focusPosition,
+                _interactionState.focusPosition = CoordinateCreation.UpdateCursorPosition(
+                    _interactionState.focusPosition,
                     _model.coordinateSystem,
-                    _model.keyboardInputModel
+                    _interactionState.keyboardInputModel
                 );
 
-                if (_model.focusPosition == null)
+                if (_interactionState.focusPosition == null)
                 {
                     Debug.LogError($"Focus Position should always be != null if state == DrawRectangles");
                     return;
@@ -169,13 +175,13 @@ public class Sketch : MonoBehaviour
                 }
 
                 // update geometry while drawing
-                switch (_model.incompleteGeometry)
+                switch (_interactionState.incompleteGeometry)
                 {
                     case RectangleModel rectangleModel:
-                        RectangleCreation.UpdateRectangle(rectangleModel, _model.focusPosition);
+                        RectangleCreation.UpdateRectangle(rectangleModel, _interactionState.focusPosition);
                         break;
                     case LineModel lineModel:
-                        LineCreation.UpdateLine(lineModel, _model.focusPosition);
+                        LineCreation.UpdateLine(lineModel, _interactionState.focusPosition);
                         break;
                 }
 
@@ -207,39 +213,39 @@ public class Sketch : MonoBehaviour
 
     private void Draw()
     {
-        CoordinateCreation.BakePosition(_model.focusPosition);
+        CoordinateCreation.BakePosition(_interactionState.focusPosition);
         _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
 
         switch (_currentGeometryType)
         {
             case GeometryType.Point:
-                _model.geometries.Add(PointCreation.NewPoint(_model.focusPosition));
+                _model.geometries.Add(PointCreation.NewPoint(_interactionState.focusPosition));
                 break;
             case GeometryType.Line:
-                if (!(_model.incompleteGeometry is LineModel))
+                if (!(_interactionState.incompleteGeometry is LineModel))
                 {
-                    _model.incompleteGeometry = LineCreation.StartNewLine(_model.focusPosition);
-                    _model.geometries.Add(_model.incompleteGeometry);
+                    _interactionState.incompleteGeometry = LineCreation.StartNewLine(_interactionState.focusPosition);
+                    _model.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else
                 {
-                    LineCreation.CompleteLine(_model.incompleteGeometry as LineModel, _model.focusPosition);
-                    _model.incompleteGeometry = null;
+                    LineCreation.CompleteLine(_interactionState.incompleteGeometry as LineModel, _interactionState.focusPosition);
+                    _interactionState.incompleteGeometry = null;
                 }
 
                 break;
 
             case GeometryType.Rectangle:
-                if (!(_model.incompleteGeometry is RectangleModel))
+                if (!(_interactionState.incompleteGeometry is RectangleModel))
                 {
-                    _model.incompleteGeometry = RectangleCreation.StartNewRectangle(_model.focusPosition);
-                    _model.geometries.Add(_model.incompleteGeometry);
+                    _interactionState.incompleteGeometry = RectangleCreation.StartNewRectangle(_interactionState.focusPosition);
+                    _model.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else
                 {
-                    RectangleCreation.CompleteRectangle(_model.incompleteGeometry as RectangleModel,
-                        _model.focusPosition);
-                    _model.incompleteGeometry = null;
+                    RectangleCreation.CompleteRectangle(_interactionState.incompleteGeometry as RectangleModel,
+                        _interactionState.focusPosition);
+                    _interactionState.incompleteGeometry = null;
                 }
 
                 break;
@@ -249,7 +255,7 @@ public class Sketch : MonoBehaviour
         }
 
         // reset input
-        _model.keyboardInputModel = new KeyboardInput.Model();
+        _interactionState.keyboardInputModel = new KeyboardInput.Model();
     }
 
     private void UpdateUI()
@@ -257,8 +263,8 @@ public class Sketch : MonoBehaviour
         _ui.coordinateSystemUI.UpdateUI(
             _model.coordinateSystem,
             _sketchStyle.CoordinateUIStyle,
-            _model.keyboardInputModel,
-            _model.draggedCoordinate);
+            _interactionState.keyboardInputModel,
+            _interactionState.draggedCoordinate);
 
         _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle._geometryStyleAsset.Set);
         _ui.paramterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
@@ -266,25 +272,25 @@ public class Sketch : MonoBehaviour
 
     private void CleanUpIncompleteGeometry()
     {
-        if (_model.incompleteGeometry == null)
+        if (_interactionState.incompleteGeometry == null)
             return;
 
-        _model.incompleteGeometry.P0.ForEach(c =>
-            c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
-        _model.geometries.Remove(_model.incompleteGeometry);
-        _model.incompleteGeometry = null;
+        _interactionState.incompleteGeometry.P0.ForEach(c =>
+            c.UnregisterGeometryAndTryToDelete(_interactionState.incompleteGeometry));
+        _model.geometries.Remove(_interactionState.incompleteGeometry);
+        _interactionState.incompleteGeometry = null;
     }
 
     private void CleanUpFocusPosition()
     {
-        if (_model.focusPosition == null)
+        if (_interactionState.focusPosition == null)
             return;
 
-        _model.focusPosition.ForEach(c =>
+        _interactionState.focusPosition.ForEach(c =>
         {
             if (c.IsCurrentlyDrawn) c.Delete();
         });
-        _model.focusPosition = null;
+        _interactionState.focusPosition = null;
     }
 
     private enum State
@@ -294,6 +300,7 @@ public class Sketch : MonoBehaviour
     }
 
     private Model _model;
+    private InteractionState _interactionState;
     private State _state = State.ManipulateCoordinates;
     private GeometryType _currentGeometryType;
 
