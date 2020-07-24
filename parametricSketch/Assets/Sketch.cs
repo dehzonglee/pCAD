@@ -101,6 +101,7 @@ public class Sketch : MonoBehaviour
                     throw new ArgumentOutOfRangeException();
             }
 
+            CleanUpIncompleteGeometry();
             Debug.Log($"Set draw mode to {_currentGeometryType}");
         }
 
@@ -192,27 +193,13 @@ public class Sketch : MonoBehaviour
         switch (newState)
         {
             case State.ManipulateCoordinates:
-                // delete next position preview
-                if (_model.focusPosition != null)
-                {
-                    _model.focusPosition.ForEach(c =>
-                    {
-                        if (c.IsCurrentlyDrawn) c.Delete();
-                    });
-                    _model.focusPosition = null;
-                }
-
-                // delete next rectangle
-                if (_model.incompleteGeometry != null)
-                {
-                    _model.incompleteGeometry.P0.ForEach(c =>
-                        c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
-                    _model.incompleteGeometry = null;
-                }
-
+                CleanUpFocusPosition();
+                CleanUpIncompleteGeometry();
                 break;
             case State.DrawRectangle:
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
 
         _state = newState;
@@ -221,7 +208,6 @@ public class Sketch : MonoBehaviour
     private void Draw()
     {
         CoordinateCreation.BakePosition(_model.focusPosition);
-
         _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
 
         switch (_currentGeometryType)
@@ -274,8 +260,31 @@ public class Sketch : MonoBehaviour
             _model.keyboardInputModel,
             _model.draggedCoordinate);
 
-        _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle.GeometryStyle);
+        _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle._geometryStyleAsset.Set);
         _ui.paramterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
+    }
+
+    private void CleanUpIncompleteGeometry()
+    {
+        if (_model.incompleteGeometry == null)
+            return;
+
+        _model.incompleteGeometry.P0.ForEach(c =>
+            c.UnregisterGeometryAndTryToDelete(_model.incompleteGeometry));
+        _model.geometries.Remove(_model.incompleteGeometry);
+        _model.incompleteGeometry = null;
+    }
+
+    private void CleanUpFocusPosition()
+    {
+        if (_model.focusPosition == null)
+            return;
+
+        _model.focusPosition.ForEach(c =>
+        {
+            if (c.IsCurrentlyDrawn) c.Delete();
+        });
+        _model.focusPosition = null;
     }
 
     private enum State
