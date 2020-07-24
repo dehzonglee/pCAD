@@ -1,10 +1,11 @@
 ﻿using System;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class SketchStyle
 {
     public CoordinateUIStyle CoordinateUIStyle;
-    public GeometryStyle GeometryStyle;
+    [FormerlySerializedAs("GeometryStyle")] public GeometryStyleAsset _geometryStyleAsset;
     
     public class StyleSet<T>
     {

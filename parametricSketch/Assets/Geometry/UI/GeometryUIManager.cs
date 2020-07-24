@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -9,12 +7,12 @@ namespace UI
     {
         [SerializeField] private GeometryUI _rectangleFillingUIPrefab;
 
-        public void UpdateUI(List<Sketch.GeometryModel> geometryModel, GeometryStyle styles)
+        public void UpdateUI(List<Sketch.GeometryModel> geometryModel, GeometryStyleAsset.GeometryStyleSet styleSet)
         {
             UpdatePoolSize(geometryModel.Count);
             for (var i = 0; i < geometryModel.Count; i++)
             {
-                _uiPool[i].UpdateUI(geometryModel[i], styles);
+                _uiPool[i].UpdateUI(geometryModel[i], styleSet);
             }
         }
 

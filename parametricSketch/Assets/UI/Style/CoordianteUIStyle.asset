@@ -15,11 +15,11 @@ MonoBehaviour:
   Lambda:
     GridLineStyle:
       Color:
-        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.050980393}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 0.101960786}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
+        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
+        SelectedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
+        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
+        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
+        ReferencedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 30
@@ -50,11 +50,11 @@ MonoBehaviour:
   Mue:
     GridLineStyle:
       Color:
-        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
-        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
-        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
-        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.101960786}
+        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 100
@@ -85,11 +85,11 @@ MonoBehaviour:
   Origin:
     GridLineStyle:
       Color:
-        DefaultStyle: {r: 0.5943396, g: 0.48246393, b: 0, a: 0.050980393}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0.4433962, g: 0.35450387, b: 0, a: 0.101960786}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
+        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 30
