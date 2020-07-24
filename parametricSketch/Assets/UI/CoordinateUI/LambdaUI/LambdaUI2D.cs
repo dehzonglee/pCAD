@@ -12,7 +12,7 @@ public class LambdaUI2D : MonoBehaviour
     public void UpdateUI(Lambda coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
         CoordinateUIStyle.LambdaUIStyle style)
     {
-        var state = coordinate.IsCurrentlyDrawn ? SketchStyle.State.Focus : SketchStyle.State.Default;
+        var state = coordinate.IsCurrentlyDrawn ? SketchStyle.State.Drawing : SketchStyle.State.Default;
         //todo: set style in initialize method
         _coordinate = coordinate;
         var labelString = "1 / 2"; // coordinate.Parameter.ToString("F");
@@ -23,15 +23,18 @@ public class LambdaUI2D : MonoBehaviour
 
         var parent0CoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
         var parent1CoordinateUIPositionWorld = direction * coordinate.SecondaryParentValue + offset;
-        var labelPosition = coordinateUIPositionWorld; 
+        var labelPosition = coordinateUIPositionWorld;
         _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
         var directionWorld = parent1CoordinateUIPositionWorld - parent0CoordinateUIPositionWorld;
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state, CoordinateGizmoUI.Type.Mark);
-        _parent0GizmoUI.UpdateUI(parent0CoordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state ,CoordinateGizmoUI.Type.Circle);
-        _parent1GizmoUI.UpdateUI(parent1CoordinateUIPositionWorld,directionWorld, style.CoordinateGizmoStyle, state ,CoordinateGizmoUI.Type.Circle);
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, style.Colors,
+            state, CoordinateGizmoUI.Type.Mark);
+        _parent0GizmoUI.UpdateUI(parent0CoordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle,
+            style.Colors, state, CoordinateGizmoUI.Type.Circle);
+        _parent1GizmoUI.UpdateUI(parent1CoordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle,
+            style.Colors, state, CoordinateGizmoUI.Type.Circle);
         _coordinateDimensionLineUI.UpdateUI(parent0CoordinateUIPositionWorld, parent1CoordinateUIPositionWorld,
-            style.DimensionLineStyle, state);
-        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle, state);
+            style.DimensionLineStyle, style.Colors, state);
+        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle,style.Colors, state);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

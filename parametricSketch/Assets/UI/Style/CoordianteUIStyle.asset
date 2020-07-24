@@ -13,101 +13,100 @@ MonoBehaviour:
   m_Name: CoordianteUIStyle
   m_EditorClassIdentifier: 
   Lambda:
+    Colors:
+      DefaultStyle: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1, type: 2}
+      DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+        type: 2}
+      Drawing: {fileID: 11400000, guid: 326a925d1e4635a43aefc1d4ebffdf1a, type: 2}
+      OtherIsDragged: {fileID: 11400000, guid: 85c4332eaa0a89c40bd4835521832a78, type: 2}
+      HasParameterReference: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1,
+        type: 2}
     GridLineStyle:
-      Color:
-        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
-        SelectedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
-        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
-        DimmedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
-        ReferencedStyle: {r: 0.94708157, g: 0, b: 1, a: 0.14901961}
+      Color: {fileID: 11400000, guid: 70a26bff1694ecb4aaa627e93350a27f, type: 2}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 30
       MarkDimensions: {x: 1, y: 2}
-      Color:
-        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.5176471}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
       Width: 0.5
     DimensionLineStyle:
       Color:
-        DefaultStyle: {r: 0.94708157, g: 0, b: 1, a: 0.2}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0.94708157, g: 0, b: 1, a: 1}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
+        DefaultStyle: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1, type: 2}
+        DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+          type: 2}
+        Drawing: {fileID: 11400000, guid: 326a925d1e4635a43aefc1d4ebffdf1a, type: 2}
+        OtherIsDragged: {fileID: 11400000, guid: 85c4332eaa0a89c40bd4835521832a78,
+          type: 2}
+        HasParameterReference: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1,
+          type: 2}
       Width: 0.5
     LabelStyle:
       Color:
-        DefaultStyle: {r: 0.47166267, g: 0, b: 0.497, a: 0.49803922}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0.47166267, g: 0, b: 0.497, a: 1}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
+        DefaultStyle: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1, type: 2}
+        DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+          type: 2}
+        Drawing: {fileID: 11400000, guid: 326a925d1e4635a43aefc1d4ebffdf1a, type: 2}
+        OtherIsDragged: {fileID: 11400000, guid: 85c4332eaa0a89c40bd4835521832a78,
+          type: 2}
+        HasParameterReference: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1,
+          type: 2}
       FontSize: 10
   Mue:
+    Colors:
+      DefaultStyle: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88, type: 2}
+      DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+        type: 2}
+      Drawing: {fileID: 11400000, guid: ed2ecd74ef205f34d91e43acd8d60fc3, type: 2}
+      OtherIsDragged: {fileID: 11400000, guid: bfed0812703e44e4696cca956939c043, type: 2}
+      HasParameterReference: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88,
+        type: 2}
     GridLineStyle:
-      Color:
-        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+      Color: {fileID: 11400000, guid: 70a26bff1694ecb4aaa627e93350a27f, type: 2}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 100
       MarkDimensions: {x: 0.5, y: 4}
-      Color:
-        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.49803922}
-        SelectedStyle: {r: 0, g: 0, b: 0, a: 1}
-        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0.7490196}
       Width: 5
     DimensionLineStyle:
       Color:
-        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.5019608}
-        SelectedStyle: {r: 0, g: 0, b: 0, a: 1}
-        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.050980393}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0.7490196}
+        DefaultStyle: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88, type: 2}
+        DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+          type: 2}
+        Drawing: {fileID: 11400000, guid: ed2ecd74ef205f34d91e43acd8d60fc3, type: 2}
+        OtherIsDragged: {fileID: 11400000, guid: bfed0812703e44e4696cca956939c043,
+          type: 2}
+        HasParameterReference: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88,
+          type: 2}
       Width: 0.5
     LabelStyle:
       Color:
-        DefaultStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.49803922}
-        SelectedStyle: {r: 0, g: 0, b: 0, a: 1}
-        FocusStyle: {r: 0, g: 0.28996474, b: 0.503, a: 0.62352943}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0.050980393}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0.7490196}
+        DefaultStyle: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88, type: 2}
+        DraggedOrExplicitInput: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6,
+          type: 2}
+        Drawing: {fileID: 11400000, guid: ed2ecd74ef205f34d91e43acd8d60fc3, type: 2}
+        OtherIsDragged: {fileID: 11400000, guid: bfed0812703e44e4696cca956939c043,
+          type: 2}
+        HasParameterReference: {fileID: 11400000, guid: 204df41a0394c7842b7fad4aba0adb88,
+          type: 2}
       FontSize: 10
   Origin:
     GridLineStyle:
-      Color:
-        DefaultStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        SelectedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        FocusStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        DimmedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
-        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 0.14901961}
+      Color: {fileID: 11400000, guid: 70a26bff1694ecb4aaa627e93350a27f, type: 2}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 30
       MarkDimensions: {x: 1, y: 2}
-      Color:
-        DefaultStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 1, g: 0.8098252, b: 0, a: 1}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0, b: 0, a: 0}
       Width: 0.5
+    Colors:
+      DefaultStyle: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399, type: 2}
+      DraggedOrExplicitInput: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399,
+        type: 2}
+      Drawing: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399, type: 2}
+      OtherIsDragged: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399, type: 2}
+      HasParameterReference: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399,
+        type: 2}
   Anchor:
     CircleStyle:
-      Color:
-        DefaultStyle: {r: 1, g: 0.36400002, b: 0.42635322, a: 1}
-        SelectedStyle: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-        FocusStyle: {r: 0, g: 0, b: 1, a: 1}
-        DimmedStyle: {r: 0, g: 0, b: 0, a: 0}
-        ReferencedStyle: {r: 0, g: 0.57686806, b: 1, a: 1}
+      PrimaryColor: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6, type: 2}
+      SecondaryColor: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399, type: 2}
       Radius: 2.79
       Width: 1.12

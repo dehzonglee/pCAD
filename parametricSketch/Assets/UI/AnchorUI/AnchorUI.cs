@@ -7,9 +7,16 @@ public class AnchorUI : MonoBehaviour
 
     public void UpdateUI(Anchor anchor, CoordinateUIStyle.AnchorStyle anchorStyle)
     {
-        _primaryAnchorUI.UpdateUI(anchor.PrimaryPosition, anchorStyle.CircleStyle.Radius, anchorStyle.CircleStyle.Width,
-            anchorStyle.CircleStyle.Color.DefaultStyle);
-        _secondaryAnchorUI.UpdateUI(anchor.SecondaryPosition, anchorStyle.CircleStyle.Radius,
-            anchorStyle.CircleStyle.Width, anchorStyle.CircleStyle.Color.SelectedStyle);
+        _primaryAnchorUI.UpdateUI(
+            anchor.PrimaryPosition,
+            anchorStyle.CircleStyle.Radius,
+            anchorStyle.CircleStyle.Width,
+            anchorStyle.CircleStyle.PrimaryColor.Value);
+
+        _secondaryAnchorUI.UpdateUI(
+            anchor.SecondaryPosition,
+            anchorStyle.CircleStyle.Radius,
+            anchorStyle.CircleStyle.Width,
+            anchorStyle.CircleStyle.SecondaryColor.Value);
     }
 }

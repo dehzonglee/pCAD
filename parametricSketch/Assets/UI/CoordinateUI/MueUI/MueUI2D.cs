@@ -22,13 +22,13 @@ public class MueUI2D : MonoBehaviour
         SketchStyle.State state;
 
         if (coordinate.IsCurrentlyDrawn && hasKeyboardInputSelection || draggedCoordinate == coordinate)
-            state = SketchStyle.State.Selected;
+            state = SketchStyle.State.DraggedOrExplicitInput;
         else if (isReferencesByOtherParameter || draggedCoordinate?.Parameter == coordinate.Parameter)
-            state = SketchStyle.State.Referenced;
+            state = SketchStyle.State.HasParameterReference;
         else if (coordinate.IsCurrentlyDrawn && !hasKeyboardInputSelection)
-            state = SketchStyle.State.Focus;
+            state = SketchStyle.State.Drawing;
         else if (draggedCoordinate != null)
-            state = SketchStyle.State.Dimmed;
+            state = SketchStyle.State.OtherIsDragged;
         else
             state = SketchStyle.State.Default;
 
@@ -44,16 +44,18 @@ public class MueUI2D : MonoBehaviour
 
         _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
 
-        _targetGizmo.UpdateUI(coordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, state,
+        _targetGizmo.UpdateUI(coordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, style.Colors,
+            state,
             CoordinateGizmoUI.Type.Arrow);
 
-        _parentGizmo.UpdateUI(parentCoordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, state,
+        _parentGizmo.UpdateUI(parentCoordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, style.Colors,
+            state,
             CoordinateGizmoUI.Type.Mark);
 
         _coordinateDimensionLineUI.UpdateUI(coordinateUIPositionWorld, parentCoordinateUIPositionWorld,
-            style.DimensionLineStyle, state);
+            style.DimensionLineStyle, style.Colors, state);
 
-        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle, state);
+        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle,style.Colors, state);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

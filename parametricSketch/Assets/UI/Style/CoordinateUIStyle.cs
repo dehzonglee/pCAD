@@ -5,21 +5,23 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "paraSketch/CoordinateUIStyle")]
 public class CoordinateUIStyle : ScriptableObject
 {
-    [FormerlySerializedAs("LambdaStyle")] public LambdaUIStyle Lambda;
-    [FormerlySerializedAs("MueStyle")] public MueUIStyle Mue;
-    [FormerlySerializedAs("OriginStyle")] public OriginUIStyle Origin;
-    [FormerlySerializedAs("AnchorStyle")] public AnchorStyle Anchor;
+    public LambdaUIStyle Lambda;
+    public MueUIStyle Mue;
+    public OriginUIStyle Origin;
+    public AnchorStyle Anchor;
 
     [Serializable]
     public class OriginUIStyle
     {
         public GridLineStyle GridLineStyle;
         public CoordinateGizmoStyle CoordinateGizmoStyle;
+        public ColorSet Colors ;
     }
 
     [Serializable]
     public class MueUIStyle
     {
+        public ColorSet Colors;
         public GridLineStyle GridLineStyle;
         public CoordinateGizmoStyle CoordinateGizmoStyle;
         public DimensionLineStyle DimensionLineStyle;
@@ -29,6 +31,7 @@ public class CoordinateUIStyle : ScriptableObject
     [Serializable]
     public class LambdaUIStyle
     {
+        public ColorSet Colors;
         public GridLineStyle GridLineStyle;
         public CoordinateGizmoStyle CoordinateGizmoStyle;
         public DimensionLineStyle DimensionLineStyle;
@@ -45,42 +48,40 @@ public class CoordinateUIStyle : ScriptableObject
     public class CoordinateGizmoStyle
     {
         public float ArrowAngle = 30f;
-        public Vector2 MarkDimensions = new Vector2(1f,2f);
-        public ColorSet Color = ColorSet.DefaultSet;
+        public Vector2 MarkDimensions = new Vector2(1f, 2f);
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class GridLineStyle
     {
-        public ColorSet Color = ColorSet.DefaultSet;
+        public ColorAsset Color;
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class DimensionLineStyle
     {
-        public ColorSet Color = ColorSet.DefaultSet;
         public float Width = 0.5f;
     }
 
     [Serializable]
     public class LabelStyle
     {
-        public ColorSet Color = ColorSet.DefaultSet;
         public float FontSize = 10f;
     }
+
     [Serializable]
     public class CircleStyle
     {
-        public ColorSet Color = ColorSet.DefaultSet;
+        public ColorAsset PrimaryColor;
+        public ColorAsset SecondaryColor;
         public float Radius = 10f;
         public float Width = 2f;
     }
 
     [Serializable]
-    public class ColorSet : SketchStyle.StyleSet<Color>
+    public class ColorSet : SketchStyle.StyleSet<ColorAsset>
     {
-        public static ColorSet DefaultSet => new ColorSet() {DefaultStyle = Color.black, SelectedStyle = Color.grey, FocusStyle = Color.blue, ReferencedStyle = Color.magenta};
     }
 }

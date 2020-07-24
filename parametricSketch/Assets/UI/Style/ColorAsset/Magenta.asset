@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e325cdff6b20042806e4053c16376a, type: 3}
   m_Name: Magenta
   m_EditorClassIdentifier: 
-  Value: {r: 0.94708157, g: 0, b: 1, a: 1}
+  Value: {r: 0.94708157, g: 0, b: 1, a: 0.69803923}

@@ -16,7 +16,7 @@ public class GridLineUI : MaskableGraphic
     {
         // quick fix: assume that rectangle is projected on the xz plane
         vh.Clear();
-        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color.GetForState(_state));
+        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color.Value);
     }
 
     public float GetScreenDistanceToLine(Vector2 screenPosition)
