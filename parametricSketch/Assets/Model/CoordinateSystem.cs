@@ -1,19 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Model
 {
     [Serializable]
-    public class CoordinateSystem
+    public class CoordinateSystem 
     {
         //todo subscribe and update only on change
         public event Action CoordinateSystemChangedEvent;
-
-        public Vec<Axis> Axes { get; }
+        public Vec<Axis> Axes { get; private set; }
         public Anchor Anchor { get; }
+        public Vec<Parameter> SnappedParameter = new Vec<Parameter>();
+        public Vec<Coordinate> SnappedCoordinate = new Vec<Coordinate>();
 
+        [Serializable]
+        public class SerializableCoordinateSystem
+        {
+            public List<Axis.SerializableAxis> Axes;
+            public List<Parameter> Parameters;
+        }
+
+        public  SerializableCoordinateSystem GetSerializableType()
+        {
+            return new SerializableCoordinateSystem
+            {
+                Axes = Axes.Select(a => a.ToSerializableType()).ToList(), Parameters = GetAllParameters()
+            };
+        }
+
+        public  void SetSerialization(SerializableCoordinateSystem serialCS)
+        {
+            SnappedCoordinate = null;
+            SnappedParameter = null;
+            Axes.X.SetSerializableType(serialCS.Axes[0],serialCS.Parameters);
+            Axes.Y.SetSerializableType(serialCS.Axes[1],serialCS.Parameters);
+            Axes.Z.SetSerializableType(serialCS.Axes[2],serialCS.Parameters);
+        }
+        
         public CoordinateSystem(Vec<float> mousePositionAsOrigin)
         {
             Axes = new Vec<Axis>
@@ -99,9 +125,6 @@ namespace Model
             return output;
         }
 
-        public Vec<Parameter> SnappedParameter = new Vec<Parameter>();
-        public Vec<Coordinate> SnappedCoordinate = new Vec<Coordinate>();
-
         public Axis AxisThatContainsCoordinate(Coordinate c)
         {
             foreach (Axis a in Axes)
@@ -127,22 +150,6 @@ namespace Model
             CoordinateSystemChangedEvent?.Invoke();
         }
 
-        public List<Mue> GetAllMuesThatUseParameter(Parameter parameter)
-        {
-            var output = new List<Mue>();
-            foreach (var a in Vec.XYZ)
-            {
-                output.AddRange(
-                    Axes[a].Coordinates
-                        .Where(c => c.GetType() == typeof(Mue))
-                        .Select(c => c as Mue)
-                        .Where(c => c.Parameter == parameter)
-                );
-            }
-
-            return output;
-        }
-
         public List<Parameter> GetAllParameters()
         {
             var output = new List<Parameter>();
@@ -166,5 +173,6 @@ namespace Model
 
             return distinctList.OrderBy(p => p.Value).ToList();
         }
+
     }
 }

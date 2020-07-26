@@ -8,18 +8,127 @@ namespace Model
     [Serializable]
     public class Axis
     {
-        private event Action _axisChangedEvent;
-        public List<Coordinate> Coordinates  = new List<Coordinate>();
-        public Vector3 Direction;
-        public AnchorCoordinates Anchor { get; }
         public float SmallestValue => Coordinates.Select(c => c.Value).Min();
+
+        public AnchorCoordinates Anchor { get; }
+        public Vector3 Direction;
+        public List<Coordinate> Coordinates;
+        public Origin Origin;
+
+        [Serializable]
+        public class SerializableAxis
+        {
+            public List<Mue.Serialization> Mues = new List<Mue.Serialization>();
+            public List<Lambda.Serialization> Lambdas = new List<Lambda.Serialization>();
+            public Origin.Serialization Origin;
+        }
+
+        public SerializableAxis ToSerializableType()
+        {
+            var serializableAxis = new SerializableAxis();
+            for (var i = 0; i < Coordinates.Count; i++)
+            {
+                var c = Coordinates[i];
+
+                if (c.IsCurrentlyDrawn)
+                    continue;
+
+                if (c is Mue mue)
+                    serializableAxis.Mues.Add(mue.ToSerializableType(i));
+                else if (c is Lambda lambda)
+                    serializableAxis.Lambdas.Add(lambda.ToSerializableType(i));
+                else if (c is Origin origin)
+                    serializableAxis.Origin = origin.ToSerializableType(i);
+                else
+                    Debug.LogError($"Could not serialize {c}");
+            }
+
+            return serializableAxis;
+        }
+
+        public void SetSerializableType(SerializableAxis serializableAxis, List<Parameter> parameters)
+        {
+            // Generate all coordinates
+            // The origin is always the coordinate with index = 0;
+            var coordinates = new List<Coordinate>();
+
+            var o = serializableAxis.Origin;
+            var origin = new Origin(
+                o.ID,
+//                parameters.First(p => p.ID == serializableAxis.Origin.ParameterID),
+                o.OriginPosition
+            );
+            Anchor.ResetPrimaryCoordinate();
+            Anchor.ResetSecondaryCoordinate();
+
+            coordinates.Add(origin);
+
+            var mues = serializableAxis.Mues;
+            var lambdas = serializableAxis.Lambdas;
+
+            var coordinateCount = mues.Count + lambdas.Count + 1;
+            for (var i = 1; i < coordinateCount; i++)
+            {
+                if (mues.Any(c => c.Index == i))
+                {
+                    var mue = mues.First(m => m.Index == i);
+                    var newCoordinate = new Mue(
+                        mue.ID,
+                        parameters.First(p => p.ID == mue.ParameterID),
+                        mue.PointsInNegativeDirection,
+                        OnCoordinateDeleted,
+                        OnCoordinateChanged,
+                        false);
+                    coordinates.Add(newCoordinate);
+                    continue;
+                }
+
+                if (lambdas.Any(l => l.Index == i))
+                {
+                    var lambda = lambdas.First(l => l.Index == i);
+                    var newCoordinate = new Lambda(
+                        lambda.ID,
+                        0.5f, // todo: make lambdas have parameter references; parameters.First(p=>p.ID == lambda.ParameterID),
+                        OnCoordinateDeleted,
+                        OnCoordinateChanged,
+                        false
+                    );
+                    coordinates.Add(newCoordinate);
+                    continue;
+                }
+                Debug.LogError($"Could not find any serialized Coordinate with index {i}.");
+            }
+
+            //set parents
+            foreach (var mSerial in mues)
+            {
+                var mue = coordinates[mSerial.Index];
+
+
+                if (!coordinates.Any(c => c.ID == mSerial.ParentID))
+                    Debug.Log($"Search for {mSerial.ParentID} in {coordinates.Count} coordinates");
+
+//                var parent = 
+                mue.SetParents(new List<Coordinate>() {coordinates.First(c => c.ID == mSerial.ParentID)});
+            }
+
+            foreach (var lSerial in lambdas)
+            {
+                var lambda = coordinates[lSerial.Index];
+                var p0 = coordinates.First(c => c.ID == lSerial.ParentIDs[0]);
+                var p1 = coordinates.First(c => c.ID == lSerial.ParentIDs[1]);
+                lambda.SetParents(new List<Coordinate>() {p0, p1});
+            }
+
+            Coordinates = coordinates;
+        }
 
         public Axis(Action axisChangedCallback, Vector3 direction, float originPosition)
         {
-            _origin = new Origin(originPosition);
+            Origin = new Origin(originPosition);
             Direction = direction;
-            Coordinates.Add(_origin);
-            Anchor = new AnchorCoordinates(_origin);
+            Coordinates = new List<Coordinate> {Origin};
+            Anchor = new AnchorCoordinates(Origin);
             _axisChangedEvent += axisChangedCallback;
         }
 
@@ -33,12 +142,12 @@ namespace Model
         {
             Debug.Log($"{parameterValue} , {pointsInNegativeDirection}");
             var newCoordinate = new Mue(
-                Anchor.PrimaryCoordinate,
                 parameterValue,
                 pointsInNegativeDirection,
                 OnCoordinateDeleted,
                 OnCoordinateChanged,
-                asPreview
+                asPreview,
+                Anchor.PrimaryCoordinate
             );
             Coordinates.Add(newCoordinate);
             return newCoordinate;
@@ -48,8 +157,8 @@ namespace Model
             bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate =
-                new Mue(Anchor.PrimaryCoordinate, parameterReference, pointsInNegativeDirection, OnCoordinateDeleted,
-                    OnCoordinateChanged, asPreview);
+                new Mue(parameterReference, pointsInNegativeDirection, OnCoordinateDeleted,
+                    OnCoordinateChanged, asPreview, Anchor.PrimaryCoordinate);
             Coordinates.Add(newCoordinate);
             return newCoordinate;
         }
@@ -62,12 +171,12 @@ namespace Model
                 delta *= -1f;
 
             var newCoordinate = new Mue(
-                Anchor.PrimaryCoordinate,
                 delta,
                 pointsInNegativeDirection,
                 OnCoordinateDeleted,
                 OnCoordinateChanged,
-                asPreview
+                asPreview,
+                Anchor.PrimaryCoordinate
             );
             Coordinates.Add(newCoordinate);
             return newCoordinate;
@@ -76,27 +185,15 @@ namespace Model
         public Coordinate AddNewMueCoordinate(Parameter parameter, bool pointsInNegativeDirection, bool asPreview)
         {
             var newCoordinate = new Mue(
-                Anchor.PrimaryCoordinate,
                 parameter,
                 pointsInNegativeDirection,
                 OnCoordinateDeleted,
                 OnCoordinateChanged,
-                asPreview
+                asPreview,
+                Anchor.PrimaryCoordinate
             );
             Coordinates.Add(newCoordinate);
             return newCoordinate;
-        }
-
-        private void OnCoordinateChanged()
-        {
-            _axisChangedEvent?.Invoke();
-        }
-
-        private void OnCoordinateDeleted(Coordinate deletedCoordinate)
-        {
-            Coordinates.Remove(deletedCoordinate);
-            if (Anchor.PrimaryCoordinate == deletedCoordinate) Anchor.ResetPrimaryCoordinate();
-            if (Anchor.SecondaryCoordinate == deletedCoordinate) Anchor.ResetSecondaryCoordinate();
         }
 
         public Coordinate TryToSnapToExistingCoordinate(float position, bool isPreview)
@@ -153,15 +250,26 @@ namespace Model
             }
         }
 
+        private void OnCoordinateChanged()
+        {
+            _axisChangedEvent?.Invoke();
+        }
+
+        private void OnCoordinateDeleted(Coordinate deletedCoordinate)
+        {
+            Coordinates.Remove(deletedCoordinate);
+            if (Anchor.PrimaryCoordinate == deletedCoordinate) Anchor.ResetPrimaryCoordinate();
+            if (Anchor.SecondaryCoordinate == deletedCoordinate) Anchor.ResetSecondaryCoordinate();
+        }
+
         private Lambda AddLambdaCoordinateBetweenAnchors(bool isPreview)
         {
             var newLambda = new Lambda(
-                Anchor.PrimaryCoordinate,
-                Anchor.SecondaryCoordinate,
                 0.5f,
                 OnCoordinateDeleted,
                 OnCoordinateChanged,
-                isPreview
+                isPreview,
+                (Anchor.PrimaryCoordinate, Anchor.SecondaryCoordinate)
             );
             Coordinates.Add(newLambda);
             return newLambda;
@@ -178,8 +286,8 @@ namespace Model
 
         private Coordinate FindClosestCoordinate(float position)
         {
-            Coordinate closestCoordinate = _origin;
-            var closestDistance = Mathf.Abs(_origin.Value - position);
+            Coordinate closestCoordinate = Origin;
+            var closestDistance = Mathf.Abs(Origin.Value - position);
             foreach (var c in Coordinates)
             {
                 var distance = Mathf.Abs(c.Value - position);
@@ -194,7 +302,7 @@ namespace Model
         }
 
         private const float SnapRadius = 0.01f;
-        private readonly Origin _origin;
         private const float Epsilon = 0.0001f;
+        private event Action _axisChangedEvent;
     }
 }

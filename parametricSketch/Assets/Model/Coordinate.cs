@@ -1,28 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
 public abstract class Coordinate
 {
     public abstract string Name { get; }
+    public string ID;
     public abstract float Value { get; }
-
     public bool IsCurrentlyDrawn { get; private set; }
-    public float ParentValue => Parents[0].Value;
+    public List<Coordinate> Parents;
 
     protected event Action ChangedEvent;
     protected event Action<Coordinate> DeletedEvent;
-    public List<Coordinate> Parents;
-
     protected Action FireValueChangedEvent => () => ChangedEvent?.Invoke();
 
-    protected Coordinate(bool isCurrentlyDrawn, Action<Coordinate> onDeleted, Action onChanged, List<Coordinate> parents)
+    public float ParentValue => Parents[0].Value;
+
+    [Serializable]
+    public class Serialization
+    {
+        public int Index;
+
+        public string ID;
+
+        public string ParameterID;
+    }
+
+    protected Coordinate(bool isCurrentlyDrawn, Action<Coordinate> onDeleted, Action onChanged,
+        List<Coordinate> parents)
     {
         Parents = parents;
         IsCurrentlyDrawn = isCurrentlyDrawn;
+        ID = GUID.Generate().ToString();
         DeletedEvent += onDeleted;
         ChangedEvent += onChanged;
+        SetParents(parents);
+    }
+
+    // Used during deserialization
+    protected Coordinate(string id, bool isCurrentlyDrawn, Action<Coordinate> onDeleted, Action onChanged) 
+    {
+        IsCurrentlyDrawn = isCurrentlyDrawn;
+        ID = id;
+        DeletedEvent += onDeleted;
+        ChangedEvent += onChanged;
+    }
+
+    public void SetParents(List<Coordinate> parents)
+    {
+        Parents = parents;
         foreach (var p in parents)
         {
             p.RegisterCoordinate(this, FireValueChangedEvent);
@@ -40,7 +69,7 @@ public abstract class Coordinate
     }
 
     public abstract (float min, float max) GetBounds();
-    
+
     public void RegisterCoordinate(Coordinate child, Action onValueChanged)
     {
         _dependentCoordinates.Add(child);
@@ -67,10 +96,10 @@ public abstract class Coordinate
     public void UnregisterGeometryAndTryToDelete(Sketch.GeometryModel geometryToUnregister)
     {
         _attachedGeometry.Remove(geometryToUnregister);
-        if(_attachedGeometry.Count==0)
+        if (_attachedGeometry.Count == 0)
             Delete();
     }
-    
+
     public void Delete()
     {
         if (_dependentCoordinates.Count != 0) return;
@@ -103,10 +132,10 @@ public abstract class Coordinate
         }
 
         return cleanPath;
-        
+
         List<Coordinate> GetPathRecursion(Coordinate c)
         {
-            var path = new List<Coordinate>(){c};
+            var path = new List<Coordinate>() {c};
             foreach (var parent in c.Parents)
             {
                 path.AddRange(GetPathToOrigin(parent));
@@ -116,7 +145,6 @@ public abstract class Coordinate
         }
     }
 
-    
     private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
     private readonly List<Sketch.GeometryModel> _attachedGeometry = new List<Sketch.GeometryModel>();
     private Parameter _parameter;

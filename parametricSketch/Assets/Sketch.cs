@@ -18,10 +18,29 @@ public class Sketch : MonoBehaviour
     }
 
     [Serializable]
-    private struct Model
+    public struct Model
     {
         public CoordinateSystem coordinateSystem;
         public List<GeometryModel> geometries;
+
+        public Serialization GetSerialization()
+        {
+            return new Serialization()
+            {
+                cs = coordinateSystem.GetSerializableType(),
+            };
+        }
+
+        public void SetSerialization(Serialization serialization)
+        {
+            coordinateSystem.SetSerialization(serialization.cs);
+        }
+
+        [Serializable]
+        public class Serialization
+        {
+            public CoordinateSystem.SerializableCoordinateSystem cs;
+        }
     }
 
     [Serializable]
@@ -31,23 +50,27 @@ public class Sketch : MonoBehaviour
         public Vec<Coordinate> focusPosition;
         public KeyboardInput.Model keyboardInputModel;
         public GeometryModel incompleteGeometry;
-        
     }
+    
 
+    [Serializable]
     public class RectangleModel : GeometryModel
     {
         public Vec<Coordinate> P1;
     }
 
+    [Serializable]
     public class PointModel : GeometryModel
     {
     }
 
+    [Serializable]
     public class LineModel : GeometryModel
     {
         public Vec<Coordinate> P1;
     }
 
+    [Serializable]
     public class GeometryModel
     {
         public Vec<Coordinate> P0;
@@ -72,6 +95,8 @@ public class Sketch : MonoBehaviour
         Draw();
     }
 
+    private string _json;
+
     private void Update()
     {
         var hasBeenInitialized = _model.coordinateSystem != null;
@@ -81,6 +106,25 @@ public class Sketch : MonoBehaviour
                 Initialize(MouseInput.RaycastPosition);
 
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            var json =JsonUtility.ToJson(_model.GetSerialization());
+            System.IO.File.WriteAllText(Application.persistentDataPath + "/Serial.json", json);
+            Debug.Log(Application.persistentDataPath);
+            Debug.Log(json);
+            _json = json;
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            _model.SetSerialization(JsonUtility.FromJson<Model.Serialization>(_json));
+            _interactionState.draggedCoordinate = null;
+            _interactionState.keyboardInputModel = new KeyboardInput.Model();
+            _interactionState.incompleteGeometry = null;
+            _interactionState.focusPosition = null;
+            Debug.Log($"Deserialized {_model}");
         }
 
         // switch input state
@@ -229,7 +273,8 @@ public class Sketch : MonoBehaviour
                 }
                 else
                 {
-                    LineCreation.CompleteLine(_interactionState.incompleteGeometry as LineModel, _interactionState.focusPosition);
+                    LineCreation.CompleteLine(_interactionState.incompleteGeometry as LineModel,
+                        _interactionState.focusPosition);
                     _interactionState.incompleteGeometry = null;
                 }
 
@@ -238,7 +283,8 @@ public class Sketch : MonoBehaviour
             case GeometryType.Rectangle:
                 if (!(_interactionState.incompleteGeometry is RectangleModel))
                 {
-                    _interactionState.incompleteGeometry = RectangleCreation.StartNewRectangle(_interactionState.focusPosition);
+                    _interactionState.incompleteGeometry =
+                        RectangleCreation.StartNewRectangle(_interactionState.focusPosition);
                     _model.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Vec
 {
@@ -28,6 +29,7 @@ public abstract class Vec
     }
 }
 
+[Serializable]
 public class Vec<T> : Vec, IEnumerable<T>
 {
     public T X;
@@ -119,4 +121,5 @@ public class Vec<T> : Vec, IEnumerable<T>
         yield return Y;
         yield return Z;
     }
+
 }

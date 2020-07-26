@@ -1,6 +1,9 @@
-﻿public class Parameter
+﻿using System;
+
+[Serializable]
+public class Parameter
 {
-    public readonly string ID;
+    public  string ID;
     public float Value;
 
     public Parameter(string id, float value)
