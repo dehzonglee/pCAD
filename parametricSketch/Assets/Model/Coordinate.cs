@@ -93,7 +93,7 @@ public abstract class Coordinate
         Debug.Log(_dependentCoordinates.Count);
     }
 
-    public void UnregisterGeometryAndTryToDelete(Sketch.GeometryModel geometryToUnregister)
+    public void UnregisterGeometryAndTryToDelete(GeometryModel geometryToUnregister)
     {
         _attachedGeometry.Remove(geometryToUnregister);
         if (_attachedGeometry.Count == 0)
@@ -116,7 +116,7 @@ public abstract class Coordinate
         IsCurrentlyDrawn = false;
     }
 
-    public void AddAttachedGeometry(Sketch.GeometryModel rectangle)
+    public void AddAttachedGeometry(GeometryModel rectangle)
     {
         _attachedGeometry.Add(rectangle);
     }
@@ -146,6 +146,6 @@ public abstract class Coordinate
     }
 
     private readonly List<Coordinate> _dependentCoordinates = new List<Coordinate>();
-    private readonly List<Sketch.GeometryModel> _attachedGeometry = new List<Sketch.GeometryModel>();
+    private readonly List<GeometryModel> _attachedGeometry = new List<GeometryModel>();
     private Parameter _parameter;
 }

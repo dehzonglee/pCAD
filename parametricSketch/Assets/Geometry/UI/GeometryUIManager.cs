@@ -7,7 +7,7 @@ namespace UI
     {
         [SerializeField] private GeometryUI _rectangleFillingUIPrefab;
 
-        public void UpdateUI(List<Sketch.GeometryModel> geometryModel, GeometryStyleAsset.GeometryStyleSet styleSet)
+        public void UpdateUI(List<GeometryModel> geometryModel, GeometryStyleAsset.GeometryStyleSet styleSet)
         {
             UpdatePoolSize(geometryModel.Count);
             for (var i = 0; i < geometryModel.Count; i++)

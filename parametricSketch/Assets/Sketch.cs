@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Model;
 using UI;
@@ -76,140 +75,14 @@ public class Sketch : MonoBehaviour
         public Vec<Coordinate> focusPosition;
         public KeyboardInput.Model keyboardInputModel;
         public GeometryModel incompleteGeometry;
-    }
 
-
-    [Serializable]
-    public class RectangleModel : GeometryModel
-    {
-        public Vec<Coordinate> P1;
-
-        [Serializable]
-        public class Serialization
+        public void Reset()
         {
-            public string P0XID;
-            public string P0YID;
-            public string P0ZID;
-            public string P1XID;
-            public string P1YID;
-            public string P1ZID;
+            draggedCoordinate = null;
+            keyboardInputModel = new KeyboardInput.Model();
+            incompleteGeometry = null;
+            focusPosition = null;
         }
-
-        public Serialization ToSerialization()
-        {
-            return new Serialization()
-            {
-                P0XID = P0.X.ID,
-                P0YID = P0.Y.ID,
-                P0ZID = P0.Z.ID,
-                P1XID = P1.X.ID,
-                P1YID = P1.Y.ID,
-                P1ZID = P1.Z.ID,
-            };
-        }
-
-        public static RectangleModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
-        {
-            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
-            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
-
-            var p1Serialized = new Vec<string>(serialization.P1XID, serialization.P1YID, serialization.P1ZID);
-            var p1 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p1Serialized[axis]));
-
-            return new RectangleModel()
-            {
-                P0 = p0,
-                P1 = p1,
-                IsBaked = true
-            };
-        }
-    }
-
-    [Serializable]
-    public class PointModel : GeometryModel
-    {
-        [Serializable]
-        public class Serialization
-        {
-            public string P0XID;
-            public string P0YID;
-            public string P0ZID;
-        }
-
-        public Serialization ToSerialization()
-        {
-            return new Serialization()
-            {
-                P0XID = P0.X.ID,
-                P0YID = P0.Y.ID,
-                P0ZID = P0.Z.ID,
-            };
-        }
-
-        public static PointModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
-        {
-            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
-            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
-
-            return new PointModel()
-            {
-                P0 = p0,
-                IsBaked = true
-            };
-        }
-    }
-
-    [Serializable]
-    public class LineModel : GeometryModel
-    {
-        public Vec<Coordinate> P1;
-
-        [Serializable]
-        public class Serialization
-        {
-            public string P0XID;
-            public string P0YID;
-            public string P0ZID;
-            public string P1XID;
-            public string P1YID;
-            public string P1ZID;
-        }
-
-        public Serialization ToSerialization()
-        {
-            return new Serialization()
-            {
-                P0XID = P0.X.ID,
-                P0YID = P0.Y.ID,
-                P0ZID = P0.Z.ID,
-                P1XID = P1.X.ID,
-                P1YID = P1.Y.ID,
-                P1ZID = P1.Z.ID,
-            };
-        }
-
-        public static LineModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
-        {
-            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
-            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
-
-            var p1Serialized = new Vec<string>(serialization.P1XID, serialization.P1YID, serialization.P1ZID);
-            var p1 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p1Serialized[axis]));
-
-            return new LineModel()
-            {
-                P0 = p0,
-                P1 = p1,
-                IsBaked = true
-            };
-        }
-    }
-
-    [Serializable]
-    public class GeometryModel
-    {
-        public Vec<Coordinate> P0;
-        public bool IsBaked;
     }
 
     private void Initialize(Vec<float> mousePositionAsOrigin)
@@ -227,10 +100,21 @@ public class Sketch : MonoBehaviour
             _model.coordinateSystem,
             _interactionState.keyboardInputModel
         );
-        Draw();
+        _history = new History(HistoryPositionChangedHandler);
+        AddPointToDrawing();
     }
 
-    private string _json;
+
+    private void HistoryPositionChangedHandler(Model.Serialization serializationToSet)
+    {
+        _model.SetSerialization(serializationToSet);
+        _interactionState.Reset();
+    }
+
+    private void SaveToHistory()
+    {
+        _history.AddToHistory(_model.GetSerialization());
+    }
 
     private void Update()
     {
@@ -245,23 +129,8 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            var json = JsonUtility.ToJson(_model.GetSerialization());
-            System.IO.File.WriteAllText(Application.persistentDataPath + "/Serial.json", json);
-            Debug.Log(Application.persistentDataPath);
-            Debug.Log(json);
-            _json = json;
-        }
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            _model.SetSerialization(JsonUtility.FromJson<Model.Serialization>(_json));
-            _interactionState.draggedCoordinate = null;
-            _interactionState.keyboardInputModel = new KeyboardInput.Model();
-            _interactionState.incompleteGeometry = null;
-            _interactionState.focusPosition = null;
-
-
-            Debug.Log($"Deserialized {_model}");
+            _model.SetSerialization(_history.Redo());
+            _interactionState.Reset();
         }
 
         // switch input state
@@ -314,7 +183,10 @@ public class Sketch : MonoBehaviour
 
                 // stop drag
                 if (Input.GetKeyUp(PrimaryMouse) && _interactionState.draggedCoordinate != null)
+                {
+                    SaveToHistory();
                     _interactionState.draggedCoordinate = null;
+                }
 
                 break;
 
@@ -352,7 +224,7 @@ public class Sketch : MonoBehaviour
                 // draw
                 if (Input.GetKeyDown(PrimaryMouse) || Input.GetKeyDown(KeyCode.Return))
                 {
-                    Draw();
+                    AddPointToDrawing();
                 }
 
                 // update geometry while drawing
@@ -392,7 +264,7 @@ public class Sketch : MonoBehaviour
         _state = newState;
     }
 
-    private void Draw()
+    private void AddPointToDrawing()
     {
         CoordinateCreation.BakePosition(_interactionState.focusPosition);
         _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
@@ -401,6 +273,7 @@ public class Sketch : MonoBehaviour
         {
             case GeometryType.Point:
                 _model.geometries.Add(PointCreation.NewPoint(_interactionState.focusPosition));
+                SaveToHistory();
                 break;
             case GeometryType.Line:
                 if (!(_interactionState.incompleteGeometry is LineModel))
@@ -413,6 +286,7 @@ public class Sketch : MonoBehaviour
                     LineCreation.CompleteLine(_interactionState.incompleteGeometry as LineModel,
                         _interactionState.focusPosition);
                     _interactionState.incompleteGeometry = null;
+                    SaveToHistory();
                 }
 
                 break;
@@ -429,6 +303,7 @@ public class Sketch : MonoBehaviour
                     RectangleCreation.CompleteRectangle(_interactionState.incompleteGeometry as RectangleModel,
                         _interactionState.focusPosition);
                     _interactionState.incompleteGeometry = null;
+                    SaveToHistory();
                 }
 
                 break;
@@ -486,6 +361,7 @@ public class Sketch : MonoBehaviour
     private InteractionState _interactionState;
     private State _state = State.ManipulateCoordinates;
     private GeometryType _currentGeometryType;
+    private History _history;
 
     private enum GeometryType
     {

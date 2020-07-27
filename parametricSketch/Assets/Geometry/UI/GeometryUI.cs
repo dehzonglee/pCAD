@@ -7,21 +7,21 @@ public class GeometryUI : MonoBehaviour
     [SerializeField] private GeometryUILayer _fillingLayer;
     [SerializeField] private GeometryUILayer _outlineLayer;
 
-    public void UpdateUI(Sketch.GeometryModel geometryModel, GeometryStyleAsset.GeometryStyleSet styleSet)
+    public void UpdateUI(GeometryModel geometryModel, GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         switch (geometryModel)
         {
-            case Sketch.PointModel pointModel:
+            case PointModel pointModel:
                 _fillingLayer.gameObject.SetActive(false);
                 _outlineLayer.gameObject.SetActive(true);
                 _outlineLayer.Draw(vh => DrawPoint(vh, pointModel, styleSet));
                 break;
-            case Sketch.LineModel lineModel:
+            case LineModel lineModel:
                 _fillingLayer.gameObject.SetActive(false);
                 _outlineLayer.gameObject.SetActive(true);
                 _outlineLayer.Draw(vh => DrawLine(vh, lineModel, styleSet));
                 break;
-            case Sketch.RectangleModel rectangleModel:
+            case RectangleModel rectangleModel:
             {
                 var style = styleSet;
                 _fillingLayer.gameObject.SetActive(true);
@@ -33,7 +33,7 @@ public class GeometryUI : MonoBehaviour
         }
     }
 
-    private static void DrawRectangleFilling(VertexHelper vh, Sketch.RectangleModel model,
+    private static void DrawRectangleFilling(VertexHelper vh, RectangleModel model,
         GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         var p0 = CoordinateTupleToVector3(model.P0);
@@ -47,7 +47,7 @@ public class GeometryUI : MonoBehaviour
         UIMeshGenerationHelper.AddQuadrilateral(vh, (p0World, p1World, p2World, p3World), color.Value);
     }
 
-    private static void DrawRectangleOutline(VertexHelper vh, Sketch.RectangleModel model,
+    private static void DrawRectangleOutline(VertexHelper vh, RectangleModel model,
         GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         var p0 = CoordinateTupleToVector3(model.P0);
@@ -69,7 +69,7 @@ public class GeometryUI : MonoBehaviour
             UIMeshGenerationHelper.CapsType.Round);
     }
 
-    private static void DrawLine(VertexHelper vh, Sketch.LineModel model, GeometryStyleAsset.GeometryStyleSet styleSet)
+    private static void DrawLine(VertexHelper vh, LineModel model, GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         var style = model.IsBaked ? styleSet.DefaultStyle : styleSet.DrawingStyle;
         var p0 = CoordinateTupleToVector3(model.P0);
@@ -78,7 +78,7 @@ public class GeometryUI : MonoBehaviour
             UIMeshGenerationHelper.CapsType.Round);
     }
 
-    private static void DrawPoint(VertexHelper vh, Sketch.PointModel model, GeometryStyleAsset.GeometryStyleSet styleSet)
+    private static void DrawPoint(VertexHelper vh, PointModel model, GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         var p0 = CoordinateTupleToVector3(model.P0);
         var style = model.IsBaked ? styleSet.DefaultStyle : styleSet.DrawingStyle;
@@ -91,6 +91,6 @@ public class GeometryUI : MonoBehaviour
         return new Vector3(tuple.X.Value, tuple.Y.Value, tuple.Z.Value);
     }
 
-    private Sketch.GeometryModel _geometryModel;
+    private GeometryModel _geometryModel;
     private GeometryStyleAsset _stylesAsset;
 }
