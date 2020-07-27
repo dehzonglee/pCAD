@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using Model;
 using UI;
 using UnityEngine;
@@ -28,18 +30,42 @@ public class Sketch : MonoBehaviour
             return new Serialization()
             {
                 cs = coordinateSystem.GetSerializableType(),
+                points = geometries
+                    .Where(g => g is PointModel)
+                    .Select(p => (p as PointModel).ToSerialization())
+                    .ToList(),
+                lines = geometries
+                    .Where(g => g is LineModel)
+                    .Select(p => (p as LineModel).ToSerialization())
+                    .ToList(),
+
+                rectangles = geometries
+                    .Where(g => g is RectangleModel)
+                    .Select(p => (p as RectangleModel).ToSerialization())
+                    .ToList(),
             };
         }
 
         public void SetSerialization(Serialization serialization)
         {
             coordinateSystem.SetSerialization(serialization.cs);
+
+            var axes = coordinateSystem.Axes;
+            var coordinates = new Vec<List<Coordinate>>(axis => axes[axis].Coordinates);
+
+            geometries = new List<GeometryModel>();
+            geometries.AddRange(serialization.points.Select(p => PointModel.FromSerialization(p, coordinates)));
+            geometries.AddRange(serialization.lines.Select(l => LineModel.FromSerialization(l, coordinates)));
+            geometries.AddRange(serialization.rectangles.Select(r => RectangleModel.FromSerialization(r, coordinates)));
         }
 
         [Serializable]
         public class Serialization
         {
             public CoordinateSystem.SerializableCoordinateSystem cs;
+            public List<PointModel.Serialization> points;
+            public List<LineModel.Serialization> lines;
+            public List<RectangleModel.Serialization> rectangles;
         }
     }
 
@@ -51,23 +77,132 @@ public class Sketch : MonoBehaviour
         public KeyboardInput.Model keyboardInputModel;
         public GeometryModel incompleteGeometry;
     }
-    
+
 
     [Serializable]
     public class RectangleModel : GeometryModel
     {
         public Vec<Coordinate> P1;
+
+        [Serializable]
+        public class Serialization
+        {
+            public string P0XID;
+            public string P0YID;
+            public string P0ZID;
+            public string P1XID;
+            public string P1YID;
+            public string P1ZID;
+        }
+
+        public Serialization ToSerialization()
+        {
+            return new Serialization()
+            {
+                P0XID = P0.X.ID,
+                P0YID = P0.Y.ID,
+                P0ZID = P0.Z.ID,
+                P1XID = P1.X.ID,
+                P1YID = P1.Y.ID,
+                P1ZID = P1.Z.ID,
+            };
+        }
+
+        public static RectangleModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
+        {
+            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
+            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
+
+            var p1Serialized = new Vec<string>(serialization.P1XID, serialization.P1YID, serialization.P1ZID);
+            var p1 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p1Serialized[axis]));
+
+            return new RectangleModel()
+            {
+                P0 = p0,
+                P1 = p1,
+                IsBaked = true
+            };
+        }
     }
 
     [Serializable]
     public class PointModel : GeometryModel
     {
+        [Serializable]
+        public class Serialization
+        {
+            public string P0XID;
+            public string P0YID;
+            public string P0ZID;
+        }
+
+        public Serialization ToSerialization()
+        {
+            return new Serialization()
+            {
+                P0XID = P0.X.ID,
+                P0YID = P0.Y.ID,
+                P0ZID = P0.Z.ID,
+            };
+        }
+
+        public static PointModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
+        {
+            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
+            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
+
+            return new PointModel()
+            {
+                P0 = p0,
+                IsBaked = true
+            };
+        }
     }
 
     [Serializable]
     public class LineModel : GeometryModel
     {
         public Vec<Coordinate> P1;
+
+        [Serializable]
+        public class Serialization
+        {
+            public string P0XID;
+            public string P0YID;
+            public string P0ZID;
+            public string P1XID;
+            public string P1YID;
+            public string P1ZID;
+        }
+
+        public Serialization ToSerialization()
+        {
+            return new Serialization()
+            {
+                P0XID = P0.X.ID,
+                P0YID = P0.Y.ID,
+                P0ZID = P0.Z.ID,
+                P1XID = P1.X.ID,
+                P1YID = P1.Y.ID,
+                P1ZID = P1.Z.ID,
+            };
+        }
+
+        public static LineModel FromSerialization(Serialization serialization, Vec<List<Coordinate>> coordinates)
+        {
+            var p0Serialized = new Vec<string>(serialization.P0XID, serialization.P0YID, serialization.P0ZID);
+            var p0 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p0Serialized[axis]));
+
+            var p1Serialized = new Vec<string>(serialization.P1XID, serialization.P1YID, serialization.P1ZID);
+            var p1 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p1Serialized[axis]));
+
+            return new LineModel()
+            {
+                P0 = p0,
+                P1 = p1,
+                IsBaked = true
+            };
+        }
     }
 
     [Serializable]
@@ -110,7 +245,7 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            var json =JsonUtility.ToJson(_model.GetSerialization());
+            var json = JsonUtility.ToJson(_model.GetSerialization());
             System.IO.File.WriteAllText(Application.persistentDataPath + "/Serial.json", json);
             Debug.Log(Application.persistentDataPath);
             Debug.Log(json);
@@ -124,6 +259,8 @@ public class Sketch : MonoBehaviour
             _interactionState.keyboardInputModel = new KeyboardInput.Model();
             _interactionState.incompleteGeometry = null;
             _interactionState.focusPosition = null;
+
+
             Debug.Log($"Deserialized {_model}");
         }
 
