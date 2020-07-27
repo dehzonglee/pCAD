@@ -33,8 +33,8 @@ namespace Model
 
         public  void SetSerialization(SerializableCoordinateSystem serialCS)
         {
-            SnappedCoordinate = null;
-            SnappedParameter = null;
+            SnappedCoordinate = new Vec<Coordinate>();
+            SnappedParameter = new Vec<Parameter>();
             Axes.X.SetSerializableType(serialCS.Axes[0],serialCS.Parameters);
             Axes.Y.SetSerializableType(serialCS.Axes[1],serialCS.Parameters);
             Axes.Z.SetSerializableType(serialCS.Axes[2],serialCS.Parameters);
