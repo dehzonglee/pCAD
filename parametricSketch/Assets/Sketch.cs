@@ -129,10 +129,17 @@ public class Sketch : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            _model.SetSerialization(_history.Undo());
+            _interactionState.Reset();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
             _model.SetSerialization(_history.Redo());
             _interactionState.Reset();
         }
 
+        
         // switch input state
         if (Input.GetKeyDown(ManipulateCoordinatesStateKey))
             SetState(State.ManipulateCoordinates);
