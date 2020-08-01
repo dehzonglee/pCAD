@@ -116,6 +116,13 @@ public class Sketch : MonoBehaviour
         _history.AddToHistory(_model.GetSerialization());
     }
 
+    public Texture2D DefaultCursor;
+    public Texture2D VerticalManipulationCursor;
+    public Texture2D HorizontalManipulationCursor;
+
+    public CursorMode cursorMode = CursorMode.Auto;
+    public Vector2 hotSpot = Vector2.zero;
+
     private void Update()
     {
         var hasBeenInitialized = _model.coordinateSystem != null;
@@ -139,7 +146,7 @@ public class Sketch : MonoBehaviour
             _interactionState.Reset();
         }
 
-        
+
         // switch input state
         if (Input.GetKeyDown(ManipulateCoordinatesStateKey))
             SetState(State.ManipulateCoordinates);
@@ -172,20 +179,38 @@ public class Sketch : MonoBehaviour
         {
             case State.ManipulateCoordinates:
 
+                var hitResult = CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
+
+                var cursor = DefaultCursor;
+                if (hitResult.HasValue)
+                {
+                    cursor = hitResult.Value.axis == Vec.AxisID.X
+                        ? HorizontalManipulationCursor
+                        : VerticalManipulationCursor;
+                }
+
+                Cursor.SetCursor(cursor, hotSpot, cursorMode);
+
+                Debug.Log(hitResult);
+
                 // start drag
-                if (Input.GetKeyDown(PrimaryMouse))
-                    _interactionState.draggedCoordinate = CoordinateManipulation.TryStartDrag(_ui.coordinateSystemUI);
+                if (Input.GetKeyDown(PrimaryMouse) && hitResult.HasValue)
+                {
+                    _interactionState.draggedCoordinate = hitResult.Value.coordinate;
+                    CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
+                }
 
                 // update drag
                 if (Input.GetKey(PrimaryMouse) && _interactionState.draggedCoordinate != null)
                 {
-                    var (value, pointsInNegativeDirection) = CoordinateManipulation.NewUpdateDrag(
+                    var (value, pointsInNegativeDirection) = CoordinateManipulation.UpdateDrag(
                         _interactionState.draggedCoordinate,
                         _model.coordinateSystem.AxisThatContainsCoordinate(_interactionState.draggedCoordinate));
 
                     _interactionState.draggedCoordinate.Parameter.Value = value;
                     //quick fix: for now, only mue coordinates can be dragged
-                    ((Mue) _interactionState.draggedCoordinate).PointsInNegativeDirection = pointsInNegativeDirection;
+                    ((Mue) _interactionState.draggedCoordinate).PointsInNegativeDirection =
+                        pointsInNegativeDirection;
                 }
 
                 // stop drag
@@ -285,7 +310,8 @@ public class Sketch : MonoBehaviour
             case GeometryType.Line:
                 if (!(_interactionState.incompleteGeometry is LineModel))
                 {
-                    _interactionState.incompleteGeometry = LineCreation.StartNewLine(_interactionState.focusPosition);
+                    _interactionState.incompleteGeometry =
+                        LineCreation.StartNewLine(_interactionState.focusPosition);
                     _model.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else

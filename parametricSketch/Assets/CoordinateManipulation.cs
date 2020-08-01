@@ -1,41 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using JetBrains.Annotations;
 using Model;
 using UI;
 using UnityEngine;
-using UnityEngine.AI;
-using Debug = System.Diagnostics.Debug;
 
 public class CoordinateManipulation : MonoBehaviour
 {
-    public static Coordinate TryStartDrag(CoordinateSystemUI coordinateSystemUI)
+    public static (Coordinate coordinate, Vec.AxisID axis)? TryGetCoordinateAtPosition(CoordinateSystemUI coordinateSystemUI)
     {
-        var dragged = TryToHitCoordinate(coordinateSystemUI,
+        var dragged = TryToHitCoordinate(
+            coordinateSystemUI,
             new Vector2(Input.mousePosition.x, Input.mousePosition.y)
-            - 0.5f * new Vector2(Screen.width, Screen.height));
+            - 0.5f * new Vector2(Screen.width, Screen.height)
+        );
 
         return dragged;
     }
 
     public static (float value, bool inOppositeDirection) UpdateDrag(Coordinate draggedCoordinate,
-        Axis axisOfDraggedCoordinate)
-    {
-        // mouse position to parameter
-        var pos = MouseInput.RaycastPosition;
-        var worldPositionAsUnityVector = new Vector3(pos.X, pos.Y, pos.Z);
-
-        var delta = Vector3.Dot(worldPositionAsUnityVector, axisOfDraggedCoordinate.Direction) -
-                    draggedCoordinate.ParentValue;
-
-        var isInOppositeDirection = delta < 0f;
-        var value = isInOppositeDirection ? -delta : delta;
-        return (value, isInOppositeDirection);
-    }
-
-    public static (float value, bool inOppositeDirection) NewUpdateDrag(Coordinate draggedCoordinate,
         Axis axisOfDraggedCoordinate)
     {
         // mouse position to parameter
@@ -111,11 +94,10 @@ public class CoordinateManipulation : MonoBehaviour
     }
 
     [CanBeNull]
-    private static Coordinate TryToHitCoordinate(
-        IScreenDistanceCalculatorProvider screenDistanceProviders, Vector2 screenPos)
+    private static (Coordinate,Vec.AxisID)? TryToHitCoordinate(IScreenDistanceCalculatorProvider screenDistanceProviders, Vector2 screenPos)
     {
         var providers = screenDistanceProviders.GetProvidersForAxis();
-        Coordinate hitCoordinate = null;
+        (Coordinate hitCoordinate, Vec.AxisID axis)? hitResult = null;
         var radius = SnapRadius;
 
         foreach (var a in Vec.XYZ)
@@ -123,11 +105,11 @@ public class CoordinateManipulation : MonoBehaviour
             var closestOnAxis = GetClosestCoordinateOnAxisWithinSnapRadius(providers[a], screenPos, radius);
             if (closestOnAxis == null)
                 continue;
-            hitCoordinate = closestOnAxis.Value.Coordinate;
+            hitResult = (closestOnAxis.Value.Coordinate, a);
             radius = closestOnAxis.Value.ScreenDistanceToCoordinate;
         }
 
-        return hitCoordinate;
+        return hitResult;
     }
 
 
@@ -164,5 +146,5 @@ public class CoordinateManipulation : MonoBehaviour
         public float ScreenDistanceToCoordinate;
     }
 
-    private const float SnapRadius = 10000f;
+    private const float SnapRadius = 10f;
 }

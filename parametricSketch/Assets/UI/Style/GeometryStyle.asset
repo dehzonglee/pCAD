@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Set:
     DefaultStyle:
-      OutlineColor: {fileID: 11400000, guid: aad5b4179e9620c4a9cec06c191b6399, type: 2}
-      FillColor: {fileID: 11400000, guid: 70a26bff1694ecb4aaa627e93350a27f, type: 2}
+      OutlineColor: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6, type: 2}
+      FillColor: {fileID: 11400000, guid: 909efbcb5a9c5c64aba37dbc96cf568a, type: 2}
       OutlineWidth: 0.5
     DrawingStyle:
       OutlineColor: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6, type: 2}
