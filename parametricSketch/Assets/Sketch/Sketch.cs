@@ -19,56 +19,6 @@ public class Sketch : MonoBehaviour
     }
 
     [Serializable]
-    public struct Model
-    {
-        public CoordinateSystem coordinateSystem;
-        public List<GeometryModel> geometries;
-
-        public Serialization GetSerialization()
-        {
-            return new Serialization()
-            {
-                cs = coordinateSystem.GetSerializableType(),
-                points = geometries
-                    .Where(g => g is PointModel)
-                    .Select(p => (p as PointModel).ToSerialization())
-                    .ToList(),
-                lines = geometries
-                    .Where(g => g is LineModel)
-                    .Select(p => (p as LineModel).ToSerialization())
-                    .ToList(),
-
-                rectangles = geometries
-                    .Where(g => g is RectangleModel)
-                    .Select(p => (p as RectangleModel).ToSerialization())
-                    .ToList(),
-            };
-        }
-
-        public void SetSerialization(Serialization serialization)
-        {
-            coordinateSystem.SetSerialization(serialization.cs);
-
-            var axes = coordinateSystem.Axes;
-            var coordinates = new Vec<List<Coordinate>>(axis => axes[axis].Coordinates);
-
-            geometries = new List<GeometryModel>();
-            geometries.AddRange(serialization.points.Select(p => PointModel.FromSerialization(p, coordinates)));
-            geometries.AddRange(serialization.lines.Select(l => LineModel.FromSerialization(l, coordinates)));
-            geometries.AddRange(serialization.rectangles.Select(r => RectangleModel.FromSerialization(r, coordinates)));
-        }
-
-        [Serializable]
-        public class Serialization
-        {
-            public CoordinateSystem.SerializableCoordinateSystem cs;
-            public List<PointModel.Serialization> points;
-            public List<LineModel.Serialization> lines;
-            public List<RectangleModel.Serialization> rectangles;
-        }
-    }
-
-    [Serializable]
     private struct InteractionState
     {
         public Coordinate draggedCoordinate;
@@ -105,7 +55,7 @@ public class Sketch : MonoBehaviour
     }
 
 
-    private void HistoryPositionChangedHandler(Model.Serialization serializationToSet)
+    private void HistoryPositionChangedHandler(SketchModel.Serialization serializationToSet)
     {
         _model.SetSerialization(serializationToSet);
         _interactionState.Reset();
@@ -113,7 +63,7 @@ public class Sketch : MonoBehaviour
 
     private void SaveToHistory()
     {
-        _history.AddToHistory(_model.GetSerialization());
+        _history.AddToHistory(_model.Serialize());
     }
 
     public Texture2D DefaultCursor;
@@ -390,19 +340,13 @@ public class Sketch : MonoBehaviour
         DrawRectangle,
     }
 
-    private Model _model;
+    private SketchModel _model;
     private InteractionState _interactionState;
     private State _state = State.ManipulateCoordinates;
     private GeometryType _currentGeometryType;
     private History _history;
 
-    private enum GeometryType
-    {
-        Point,
-        Line,
-        Rectangle
-    }
-
+    
     private const KeyCode ManipulateCoordinatesStateKey = KeyCode.Alpha1;
     private const KeyCode DrawRectanglesStateKey = KeyCode.Alpha2;
     private const KeyCode PrimaryMouse = KeyCode.Mouse0;

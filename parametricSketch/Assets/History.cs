@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class History
 {
-    public History(Action<Sketch.Model.Serialization> historyPositionChangedHandler)
+    public History(Action<SketchModel.Serialization> historyPositionChangedHandler)
     {
         _historyPositionChangedHandler = historyPositionChangedHandler;
     }
 
-    public void AddToHistory(Sketch.Model.Serialization currentModel)
+    public void AddToHistory(SketchModel.Serialization currentModel)
     {
         //remove steps that lie ahead of current position
         _history = _history.Take(_historyPosition + 1).ToList();
@@ -21,22 +21,22 @@ public class History
         _history.Add(json);
     }
 
-    public Sketch.Model.Serialization Undo()
+    public SketchModel.Serialization Undo()
     {
         if (_historyPosition > 0)
             _historyPosition--;
-        return JsonUtility.FromJson<Sketch.Model.Serialization>(_history[_historyPosition]);
+        return JsonUtility.FromJson<SketchModel.Serialization>(_history[_historyPosition]);
     }
 
     
-    public Sketch.Model.Serialization Redo()
+    public SketchModel.Serialization Redo()
     {
         if (_historyPosition < _history.Count -1)
             _historyPosition++;
-        return JsonUtility.FromJson<Sketch.Model.Serialization>(_history[_historyPosition]);
+        return JsonUtility.FromJson<SketchModel.Serialization>(_history[_historyPosition]);
     }
     
     private List<string> _history = new List<string>();
     private int _historyPosition;
-    private Action<Sketch.Model.Serialization> _historyPositionChangedHandler;
+    private Action<SketchModel.Serialization> _historyPositionChangedHandler;
 }
