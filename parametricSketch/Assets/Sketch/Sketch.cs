@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Model;
 using UI;
 using UnityEngine;
@@ -16,6 +15,7 @@ public class Sketch : MonoBehaviour
         public CoordinateSystemUI coordinateSystemUI;
         public GeometryUIManager geometryUI;
         public ParameterUI paramterUI;
+        public CursorUI cursorUI;
     }
 
     [Serializable]
@@ -65,13 +65,6 @@ public class Sketch : MonoBehaviour
     {
         _history.AddToHistory(_model.Serialize());
     }
-
-    public Texture2D DefaultCursor;
-    public Texture2D VerticalManipulationCursor;
-    public Texture2D HorizontalManipulationCursor;
-
-    public CursorMode cursorMode = CursorMode.Auto;
-    public Vector2 hotSpot = Vector2.zero;
 
     private void Update()
     {
@@ -131,18 +124,8 @@ public class Sketch : MonoBehaviour
 
                 var hitResult = CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
 
-                var cursor = DefaultCursor;
-                if (hitResult.HasValue)
-                {
-                    cursor = hitResult.Value.axis == Vec.AxisID.X
-                        ? HorizontalManipulationCursor
-                        : VerticalManipulationCursor;
-                }
-
-                Cursor.SetCursor(cursor, hotSpot, cursorMode);
-
-                Debug.Log(hitResult);
-
+                _ui.cursorUI.UpdateCursor(hitResult);
+          
                 // start drag
                 if (Input.GetKeyDown(PrimaryMouse) && hitResult.HasValue)
                 {

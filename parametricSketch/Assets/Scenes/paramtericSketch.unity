@@ -810,5 +810,11 @@ PrefabInstance:
       propertyPath: _ui.paramterUI
       value: 
       objectReference: {fileID: 156642833}
+    - target: {fileID: 114889048767961610, guid: 975e4bde83414e598c237bc75540cd91,
+        type: 3}
+      propertyPath: _ui.cursorUI
+      value: 
+      objectReference: {fileID: 11400000, guid: d06e9d7aa11f6534a81e2cfa1aabe998,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 975e4bde83414e598c237bc75540cd91, type: 3}
