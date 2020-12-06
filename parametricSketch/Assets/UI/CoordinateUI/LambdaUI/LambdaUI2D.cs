@@ -10,6 +10,7 @@ public class LambdaUI2D : MonoBehaviour
     [SerializeField] protected CoordinateLabelUI _coordinateLabelUI = null;
 
     public void UpdateUI(Lambda coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
+        float gap,
         CoordinateUIStyle.LambdaUIStyle style)
     {
         var state = coordinate.IsCurrentlyDrawn ? SketchStyle.State.Drawing : SketchStyle.State.Default;
@@ -18,7 +19,7 @@ public class LambdaUI2D : MonoBehaviour
         var labelString = "1 / 2"; // coordinate.Parameter.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
 
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * gap - padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
 
         var parent0CoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
@@ -34,7 +35,7 @@ public class LambdaUI2D : MonoBehaviour
             style.Colors, state, CoordinateGizmoUI.Type.Circle);
         _coordinateDimensionLineUI.UpdateUI(parent0CoordinateUIPositionWorld, parent1CoordinateUIPositionWorld,
             style.DimensionLineStyle, style.Colors, state);
-        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle,style.Colors, state);
+        _coordinateLabelUI.UpdateUI(labelString, labelPosition, style.LabelStyle, style.Colors, state);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

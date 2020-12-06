@@ -6,6 +6,7 @@ public class OriginUI : MonoBehaviour
     [SerializeField] protected CoordinateGizmoUI _coordinateGizmoUI = null;
 
     public void UpdateUI(Origin coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
+        float gap,
         CoordinateUIStyle.OriginUIStyle style)
     {
         var state = SketchStyle.State.Default;
@@ -13,11 +14,12 @@ public class OriginUI : MonoBehaviour
         var labelString = coordinate.Parameter.Value.ToString("F");
         gameObject.name = $"Origin:{labelString}";
 
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * gap - padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
-        
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection,style.GridLineStyle,state);
-        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, direction,style.CoordinateGizmoStyle,style.Colors,state,CoordinateGizmoUI.Type.Mark);
+
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
+        _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, direction, style.CoordinateGizmoStyle, style.Colors,
+            state, CoordinateGizmoUI.Type.Mark);
     }
 
     public CoordinateManipulation.ScreenDistance GetScreenDistanceToCoordinate(Vector2 screenPos)

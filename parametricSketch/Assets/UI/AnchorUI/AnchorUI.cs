@@ -10,12 +10,14 @@ public class AnchorUI : MonoBehaviour
         _primaryAnchorUI.UpdateUI(
             anchor.PrimaryPosition,
             anchorStyle.CircleStyle.Radius,
+            anchorStyle.CircleStyle.InnerRadius,
             anchorStyle.CircleStyle.Width,
             anchorStyle.CircleStyle.PrimaryColor.Value);
 
         _secondaryAnchorUI.UpdateUI(
             anchor.SecondaryPosition,
             anchorStyle.CircleStyle.Radius,
+            anchorStyle.CircleStyle.InnerRadius,
             anchorStyle.CircleStyle.Width,
             anchorStyle.CircleStyle.SecondaryColor.Value);
     }

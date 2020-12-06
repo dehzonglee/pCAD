@@ -77,6 +77,7 @@ public class CoordinateUIStyle : ScriptableObject
         public ColorAsset PrimaryColor;
         public ColorAsset SecondaryColor;
         public float Radius = 10f;
+        public float InnerRadius = 10f;
         public float Width = 2f;
     }
 

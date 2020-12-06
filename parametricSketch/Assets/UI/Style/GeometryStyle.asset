@@ -15,9 +15,9 @@ MonoBehaviour:
   Set:
     DefaultStyle:
       OutlineColor: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6, type: 2}
-      FillColor: {fileID: 11400000, guid: 909efbcb5a9c5c64aba37dbc96cf568a, type: 2}
+      FillColor: {fileID: 11400000, guid: 4b1f99113298f1d498e7b079e4c5cd43, type: 2}
       OutlineWidth: 0.5
     DrawingStyle:
       OutlineColor: {fileID: 11400000, guid: 877a6a69bc02e284bacfe6e78a9695f6, type: 2}
-      FillColor: {fileID: 11400000, guid: bfed0812703e44e4696cca956939c043, type: 2}
-      OutlineWidth: 0.5
+      FillColor: {fileID: 11400000, guid: 4b1f99113298f1d498e7b079e4c5cd43, type: 2}
+      OutlineWidth: 1

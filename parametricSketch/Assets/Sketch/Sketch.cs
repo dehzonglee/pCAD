@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Model;
 using UI;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Sketch : MonoBehaviour
 {
@@ -14,8 +16,18 @@ public class Sketch : MonoBehaviour
     {
         public CoordinateSystemUI coordinateSystemUI;
         public GeometryUIManager geometryUI;
-        public ParameterUI paramterUI;
+        [FormerlySerializedAs("paramterUI")] public ParameterUI parameterUI;
         public CursorUI cursorUI;
+        public ButtonsUI _buttonsUI;
+        public ControlPanel _controlPanel;
+    }
+
+    [Serializable]
+    public struct ButtonsUI
+    {
+        public Button DrawPointsButton;
+        public Button DrawLinesButton;
+        public Button DrawRectsButton;
     }
 
     [Serializable]
@@ -42,9 +54,28 @@ public class Sketch : MonoBehaviour
         _interactionState.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
+_ui._controlPanel.Initialize(HandleCommand);
+        _ui._buttonsUI.DrawPointsButton.onClick.AddListener(() =>
+        {
+            _currentGeometryType = GeometryType.Point;
+            CleanUpIncompleteGeometry();
+            UpdateUI();
+        });
+        _ui._buttonsUI.DrawLinesButton.onClick.AddListener(() =>
+        {
+            _currentGeometryType = GeometryType.Line;
+            CleanUpIncompleteGeometry();
+            UpdateUI();
+        });
+        _ui._buttonsUI.DrawRectsButton.onClick.AddListener(() =>
+        {
+            _currentGeometryType = GeometryType.Rectangle;
+            CleanUpIncompleteGeometry();
+            UpdateUI();
+        });
 
         //start drawing first rectangle
-        _state = State.DrawRectangle;
+        _state = State.Drawing;
         _interactionState.focusPosition = CoordinateCreation.UpdateCursorPosition(
             _interactionState.focusPosition,
             _model.coordinateSystem,
@@ -54,80 +85,73 @@ public class Sketch : MonoBehaviour
         AddPointToDrawing();
     }
 
-
-    private void HistoryPositionChangedHandler(SketchModel.Serialization serializationToSet)
+    private void HandleCommand(Command buttonType)
     {
-        _model.SetSerialization(serializationToSet);
-        _interactionState.Reset();
-    }
+        switch (buttonType)
+        {
+            case Command.Transform:
+                SetState(State.Manipulating);
 
-    private void SaveToHistory()
-    {
-        _history.AddToHistory(_model.Serialize());
+                break;
+            case Command.Undo:
+                _model.SetSerialization(_history.Undo());
+                _interactionState.Reset();
+                break;
+            case Command.Redo:
+                _model.SetSerialization(_history.Redo());
+                _interactionState.Reset();
+                break;
+            case Command.DrawPoint:
+                SetState(State.Drawing);
+                _currentGeometryType = GeometryType.Point;
+                CleanUpIncompleteGeometry();
+                break;
+            case Command.DrawLine:
+                SetState(State.Drawing);
+                _currentGeometryType = GeometryType.Line;
+                CleanUpIncompleteGeometry();
+                break;
+            case Command.DrawRect:
+                SetState(State.Drawing);
+                _currentGeometryType = GeometryType.Rectangle;
+                CleanUpIncompleteGeometry();
+                break;
+            case Command.ColorBlack:
+                break;
+            case Command.ColorGrey:
+                break;
+            case Command.ColorWhite:
+                break;
+            case Command.Help:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
+        }
     }
 
     private void Update()
     {
         var hasBeenInitialized = _model.coordinateSystem != null;
-        if (!hasBeenInitialized)
+        if (!hasBeenInitialized && Input.GetKeyDown(PrimaryMouse) && IsMouseOnDrawArea())
         {
-            if (Input.GetKeyDown(PrimaryMouse))
-                Initialize(MouseInput.RaycastPosition);
-
+            Initialize(MouseInput.RaycastPosition);
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            _model.SetSerialization(_history.Undo());
-            _interactionState.Reset();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            _model.SetSerialization(_history.Redo());
-            _interactionState.Reset();
-        }
-
-
-        // switch input state
-        if (Input.GetKeyDown(ManipulateCoordinatesStateKey))
-            SetState(State.ManipulateCoordinates);
-
-        if (Input.GetKeyDown(DrawRectanglesStateKey))
-            SetState(State.DrawRectangle);
-
-        if (Input.GetKeyDown(SwitchGeometry))
-        {
-            switch (_currentGeometryType)
-            {
-                case GeometryType.Point:
-                    _currentGeometryType = GeometryType.Line;
-                    break;
-                case GeometryType.Line:
-                    _currentGeometryType = GeometryType.Rectangle;
-                    break;
-                case GeometryType.Rectangle:
-                    _currentGeometryType = GeometryType.Point;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            CleanUpIncompleteGeometry();
-            Debug.Log($"Set draw mode to {_currentGeometryType}");
-        }
+        var hotKeyCommand = HotKeyInput.Update();
+        if(hotKeyCommand.HasValue)
+            HandleCommand(hotKeyCommand.Value);
 
         switch (_state)
         {
-            case State.ManipulateCoordinates:
+            case State.Manipulating:
 
                 var hitResult = CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
 
                 _ui.cursorUI.UpdateCursor(hitResult);
-          
+
                 // start drag
-                if (Input.GetKeyDown(PrimaryMouse) && hitResult.HasValue)
+                if (Input.GetKeyDown(PrimaryMouse) && hitResult.HasValue && IsMouseOnDrawArea())
                 {
                     _interactionState.draggedCoordinate = hitResult.Value.coordinate;
                     CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
@@ -155,7 +179,7 @@ public class Sketch : MonoBehaviour
 
                 break;
 
-            case State.DrawRectangle:
+            case State.Drawing:
 
                 KeyboardInput.UpdateKeyboardInput(ref _interactionState.keyboardInputModel,
                     _model.coordinateSystem.GetAllParameters()
@@ -187,7 +211,7 @@ public class Sketch : MonoBehaviour
                 }
 
                 // draw
-                if (Input.GetKeyDown(PrimaryMouse) || Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetKeyDown(PrimaryMouse) && IsMouseOnDrawArea() || Input.GetKeyDown(KeyCode.Return))
                 {
                     AddPointToDrawing();
                 }
@@ -212,15 +236,27 @@ public class Sketch : MonoBehaviour
         UpdateUI();
     }
 
+    private void HistoryPositionChangedHandler(SketchModel.Serialization serializationToSet)
+
+    {
+        _model.SetSerialization(serializationToSet);
+        _interactionState.Reset();
+    }
+
+    private void SaveToHistory()
+    {
+        _history.AddToHistory(_model.Serialize());
+    }
+
     private void SetState(State newState)
     {
         switch (newState)
         {
-            case State.ManipulateCoordinates:
+            case State.Manipulating:
                 CleanUpFocusPosition();
                 CleanUpIncompleteGeometry();
                 break;
-            case State.DrawRectangle:
+            case State.Drawing:
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -291,8 +327,10 @@ public class Sketch : MonoBehaviour
             _interactionState.draggedCoordinate);
 
         _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle._geometryStyleAsset.Set);
-        _ui.paramterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
+        _ui.parameterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
     }
+
+    private bool IsMouseOnDrawArea() => Input.mousePosition.x > 30;
 
     private void CleanUpIncompleteGeometry()
     {
@@ -319,21 +357,19 @@ public class Sketch : MonoBehaviour
 
     private enum State
     {
-        ManipulateCoordinates,
-        DrawRectangle,
+        Manipulating,
+        Drawing,
     }
 
     private SketchModel _model;
     private InteractionState _interactionState;
-    private State _state = State.ManipulateCoordinates;
+    private State _state = State.Manipulating;
     private GeometryType _currentGeometryType;
     private History _history;
 
+
     
-    private const KeyCode ManipulateCoordinatesStateKey = KeyCode.Alpha1;
-    private const KeyCode DrawRectanglesStateKey = KeyCode.Alpha2;
     private const KeyCode PrimaryMouse = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;
-    private const KeyCode SwitchGeometry = KeyCode.Alpha3;
 }

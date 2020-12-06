@@ -13,6 +13,7 @@ public class MueUI2D : MonoBehaviour
         CoordinateUI.LayoutInfo layoutInfo,
         Vector3 direction,
         float padding,
+        float gap,
         CoordinateUIStyle.MueUIStyle style,
         bool hasKeyboardInputSelection,
         bool isReferencesByOtherParameter,
@@ -36,7 +37,7 @@ public class MueUI2D : MonoBehaviour
         var labelString = coordinate.Parameter.Value.ToString("F");
         gameObject.name = $"Mue2D:{labelString}";
 
-        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * padding);
+        var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index *gap- padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
         var parentCoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
         var directionWorld = coordinateUIPositionWorld - parentCoordinateUIPositionWorld;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b7404c553172f47bef89a274722ec7, type: 3}
   m_Name: cursorUI
   m_EditorClassIdentifier: 
-  DefaultCursor: {fileID: 10900, guid: 0000000000000000f000000000000000, type: 0}
+  DefaultCursor: {fileID: 2800000, guid: b4c2a71157ab8794387d6f0b4bca6752, type: 3}
   VerticalManipulationCursor: {fileID: 2800000, guid: ac18ebb4a2779e64fa8c26544b6c72f3,
     type: 3}
   HorizontalManipulationCursor: {fileID: 2800000, guid: eec2a06df1e30fe4ba384ddda9d3d876,

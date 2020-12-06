@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace UI
@@ -11,6 +12,7 @@ namespace UI
         [SerializeField] LambdaUI2D _lambdaUiPrefab = null;
         [SerializeField] OriginUI _originUiPrefab = null;
         [SerializeField] protected float _padding = default;
+        [SerializeField] protected float _gap = default;
 
 
         internal void Initialize(Vector3 direction, string label)
@@ -27,7 +29,7 @@ namespace UI
             List<Parameter> referencedParameter,
             bool hasKeyboardInputSelection,
             Coordinate draggedCoordinate
-            )
+        )
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -60,17 +62,18 @@ namespace UI
                 switch (c)
                 {
                     case Lambda lambda:
-                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding,
+                        _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding, _gap,
                             coordinateUIStyle.Lambda);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
-                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, coordinateUIStyle.Mue,
-                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter),draggedCoordinate);
+                        _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, _gap,
+                            coordinateUIStyle.Mue,
+                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter), draggedCoordinate);
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding, coordinateUIStyle.Origin);
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding, _gap, coordinateUIStyle.Origin);
                         break;
                 }
             }
