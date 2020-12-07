@@ -1,9 +1,9 @@
 ﻿public static class RectangleCreation
 {
-    public static RectangleModel StartNewRectangle(
-        Vec<Coordinate> focusPosition)
+    public static RectangleModel StartNewRectangle(Vec<Coordinate> focusPosition,
+        GeometryStyleAsset.GeometryColor color)
     {
-        var nextRectangle = new RectangleModel {P0 = focusPosition};
+        var nextRectangle = new RectangleModel {P0 = focusPosition, Color = color};
         focusPosition.ForEach(c => c.AddAttachedGeometry(nextRectangle));
         return nextRectangle;
     }
@@ -23,6 +23,6 @@
 
     public static void AbortRectangle(RectangleModel nextRectangle)
     {
-        nextRectangle.P0.ForEach(c=>c.UnregisterGeometryAndTryToDelete(nextRectangle));
+        nextRectangle.P0.ForEach(c => c.UnregisterGeometryAndTryToDelete(nextRectangle));
     }
 }

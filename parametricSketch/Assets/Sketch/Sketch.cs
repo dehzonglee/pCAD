@@ -18,16 +18,7 @@ public class Sketch : MonoBehaviour
         public GeometryUIManager geometryUI;
         [FormerlySerializedAs("paramterUI")] public ParameterUI parameterUI;
         public CursorUI cursorUI;
-        public ButtonsUI _buttonsUI;
         public ControlPanel _controlPanel;
-    }
-
-    [Serializable]
-    public struct ButtonsUI
-    {
-        public Button DrawPointsButton;
-        public Button DrawLinesButton;
-        public Button DrawRectsButton;
     }
 
     [Serializable]
@@ -37,6 +28,7 @@ public class Sketch : MonoBehaviour
         public Vec<Coordinate> focusPosition;
         public KeyboardInput.Model keyboardInputModel;
         public GeometryModel incompleteGeometry;
+        public ColorAsset currentGeometryColor;
 
         public void Reset()
         {
@@ -44,43 +36,33 @@ public class Sketch : MonoBehaviour
             keyboardInputModel = new KeyboardInput.Model();
             incompleteGeometry = null;
             focusPosition = null;
+            currentGeometryColor = null;
         }
     }
 
     private void Initialize(Vec<float> mousePositionAsOrigin)
     {
-        _model.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
-        _model.geometries = new List<GeometryModel>();
+        _sketchModel.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
+        _sketchModel.geometries = new List<GeometryModel>();
         _interactionState.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
-_ui._controlPanel.Initialize(HandleCommand);
-        _ui._buttonsUI.DrawPointsButton.onClick.AddListener(() =>
+        _ui._controlPanel.Initialize(HandleCommand);
+
+        _appModel = new AppModel()
         {
-            _currentGeometryType = GeometryType.Point;
-            CleanUpIncompleteGeometry();
-            UpdateUI();
-        });
-        _ui._buttonsUI.DrawLinesButton.onClick.AddListener(() =>
-        {
-            _currentGeometryType = GeometryType.Line;
-            CleanUpIncompleteGeometry();
-            UpdateUI();
-        });
-        _ui._buttonsUI.DrawRectsButton.onClick.AddListener(() =>
-        {
-            _currentGeometryType = GeometryType.Rectangle;
-            CleanUpIncompleteGeometry();
-            UpdateUI();
-        });
+            Tool = Tool.Drawing,
+            CurrentGeometryType = GeometryType.Rectangle,
+            CurrentgeometryColor = GeometryStyleAsset.GeometryColor.White,
+        };
 
         //start drawing first rectangle
-        _state = State.Drawing;
         _interactionState.focusPosition = CoordinateCreation.UpdateCursorPosition(
             _interactionState.focusPosition,
-            _model.coordinateSystem,
+            _sketchModel.coordinateSystem,
             _interactionState.keyboardInputModel
         );
+
         _history = new History(HistoryPositionChangedHandler);
         AddPointToDrawing();
     }
@@ -90,37 +72,39 @@ _ui._controlPanel.Initialize(HandleCommand);
         switch (buttonType)
         {
             case Command.Transform:
-                SetState(State.Manipulating);
-
+                SetState(Tool.Transform);
                 break;
             case Command.Undo:
-                _model.SetSerialization(_history.Undo());
+                _sketchModel.SetSerialization(_history.Undo());
                 _interactionState.Reset();
                 break;
             case Command.Redo:
-                _model.SetSerialization(_history.Redo());
+                _sketchModel.SetSerialization(_history.Redo());
                 _interactionState.Reset();
                 break;
             case Command.DrawPoint:
-                SetState(State.Drawing);
-                _currentGeometryType = GeometryType.Point;
+                SetState(Tool.Drawing);
+                _appModel.CurrentGeometryType = GeometryType.Point;
                 CleanUpIncompleteGeometry();
                 break;
             case Command.DrawLine:
-                SetState(State.Drawing);
-                _currentGeometryType = GeometryType.Line;
+                SetState(Tool.Drawing);
+                _appModel.CurrentGeometryType = GeometryType.Line;
                 CleanUpIncompleteGeometry();
                 break;
             case Command.DrawRect:
-                SetState(State.Drawing);
-                _currentGeometryType = GeometryType.Rectangle;
+                SetState(Tool.Drawing);
+                _appModel.CurrentGeometryType = GeometryType.Rectangle;
                 CleanUpIncompleteGeometry();
                 break;
             case Command.ColorBlack:
+                _appModel.CurrentgeometryColor = GeometryStyleAsset.GeometryColor.Black;
                 break;
             case Command.ColorGrey:
+                _appModel.CurrentgeometryColor = GeometryStyleAsset.GeometryColor.Grey;
                 break;
             case Command.ColorWhite:
+                _appModel.CurrentgeometryColor = GeometryStyleAsset.GeometryColor.White;
                 break;
             case Command.Help:
                 break;
@@ -131,20 +115,21 @@ _ui._controlPanel.Initialize(HandleCommand);
 
     private void Update()
     {
-        var hasBeenInitialized = _model.coordinateSystem != null;
-        if (!hasBeenInitialized && Input.GetKeyDown(PrimaryMouse) && IsMouseOnDrawArea())
+        var hasBeenInitialized = _sketchModel.coordinateSystem != null;
+        if (!hasBeenInitialized)
         {
-            Initialize(MouseInput.RaycastPosition);
+            if (Input.GetKeyDown(PrimaryMouse) && IsMouseOnDrawArea())
+                Initialize(MouseInput.RaycastPosition);
             return;
         }
 
         var hotKeyCommand = HotKeyInput.Update();
-        if(hotKeyCommand.HasValue)
+        if (hotKeyCommand.HasValue)
             HandleCommand(hotKeyCommand.Value);
 
-        switch (_state)
+        switch (_appModel.Tool)
         {
-            case State.Manipulating:
+            case Tool.Transform:
 
                 var hitResult = CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
 
@@ -162,7 +147,7 @@ _ui._controlPanel.Initialize(HandleCommand);
                 {
                     var (value, pointsInNegativeDirection) = CoordinateManipulation.UpdateDrag(
                         _interactionState.draggedCoordinate,
-                        _model.coordinateSystem.AxisThatContainsCoordinate(_interactionState.draggedCoordinate));
+                        _sketchModel.coordinateSystem.AxisThatContainsCoordinate(_interactionState.draggedCoordinate));
 
                     _interactionState.draggedCoordinate.Parameter.Value = value;
                     //quick fix: for now, only mue coordinates can be dragged
@@ -179,15 +164,15 @@ _ui._controlPanel.Initialize(HandleCommand);
 
                 break;
 
-            case State.Drawing:
+            case Tool.Drawing:
 
                 KeyboardInput.UpdateKeyboardInput(ref _interactionState.keyboardInputModel,
-                    _model.coordinateSystem.GetAllParameters()
+                    _sketchModel.coordinateSystem.GetAllParameters()
                 );
 
                 _interactionState.focusPosition = CoordinateCreation.UpdateCursorPosition(
                     _interactionState.focusPosition,
-                    _model.coordinateSystem,
+                    _sketchModel.coordinateSystem,
                     _interactionState.keyboardInputModel
                 );
 
@@ -200,14 +185,14 @@ _ui._controlPanel.Initialize(HandleCommand);
                 // delete
                 if (Input.GetKeyDown(DeleteKey))
                 {
-                    CoordinateCreation.DeletePositionAtMousePosition(_model.coordinateSystem);
+                    CoordinateCreation.DeletePositionAtMousePosition(_sketchModel.coordinateSystem);
                 }
 
                 // set anchor
                 if (Input.GetKeyDown(SetAnchorKey))
                 {
                     var mousePosition = MouseInput.RaycastPosition;
-                    _model.coordinateSystem.SetAnchorPosition(mousePosition);
+                    _sketchModel.coordinateSystem.SetAnchorPosition(mousePosition);
                 }
 
                 // draw
@@ -239,41 +224,43 @@ _ui._controlPanel.Initialize(HandleCommand);
     private void HistoryPositionChangedHandler(SketchModel.Serialization serializationToSet)
 
     {
-        _model.SetSerialization(serializationToSet);
+        _sketchModel.SetSerialization(serializationToSet);
         _interactionState.Reset();
     }
 
     private void SaveToHistory()
     {
-        _history.AddToHistory(_model.Serialize());
+        _history.AddToHistory(_sketchModel.Serialize());
     }
 
-    private void SetState(State newState)
+    private void SetState(Tool newTool)
     {
-        switch (newState)
+        switch (newTool)
         {
-            case State.Manipulating:
+            case Tool.Transform:
                 CleanUpFocusPosition();
                 CleanUpIncompleteGeometry();
                 break;
-            case State.Drawing:
+            case Tool.Drawing:
+                _ui.cursorUI.ResetCursor();
+
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+                throw new ArgumentOutOfRangeException(nameof(newTool), newTool, null);
         }
 
-        _state = newState;
+        _appModel.Tool = newTool;
     }
 
     private void AddPointToDrawing()
     {
         CoordinateCreation.BakePosition(_interactionState.focusPosition);
-        _model.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
+        _sketchModel.coordinateSystem.SetAnchorPosition(MouseInput.RaycastPosition);
 
-        switch (_currentGeometryType)
+        switch (_appModel.CurrentGeometryType)
         {
             case GeometryType.Point:
-                _model.geometries.Add(PointCreation.NewPoint(_interactionState.focusPosition));
+                _sketchModel.geometries.Add(PointCreation.NewPoint(_interactionState.focusPosition));
                 SaveToHistory();
                 break;
             case GeometryType.Line:
@@ -281,7 +268,7 @@ _ui._controlPanel.Initialize(HandleCommand);
                 {
                     _interactionState.incompleteGeometry =
                         LineCreation.StartNewLine(_interactionState.focusPosition);
-                    _model.geometries.Add(_interactionState.incompleteGeometry);
+                    _sketchModel.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else
                 {
@@ -297,8 +284,9 @@ _ui._controlPanel.Initialize(HandleCommand);
                 if (!(_interactionState.incompleteGeometry is RectangleModel))
                 {
                     _interactionState.incompleteGeometry =
-                        RectangleCreation.StartNewRectangle(_interactionState.focusPosition);
-                    _model.geometries.Add(_interactionState.incompleteGeometry);
+                        RectangleCreation.StartNewRectangle(_interactionState.focusPosition,
+                            _appModel.CurrentgeometryColor);
+                    _sketchModel.geometries.Add(_interactionState.incompleteGeometry);
                 }
                 else
                 {
@@ -321,13 +309,14 @@ _ui._controlPanel.Initialize(HandleCommand);
     private void UpdateUI()
     {
         _ui.coordinateSystemUI.UpdateUI(
-            _model.coordinateSystem,
+            _sketchModel.coordinateSystem,
             _sketchStyle.CoordinateUIStyle,
             _interactionState.keyboardInputModel,
             _interactionState.draggedCoordinate);
 
-        _ui.geometryUI.UpdateUI(_model.geometries, _sketchStyle._geometryStyleAsset.Set);
-        _ui.parameterUI.UpdateUI(_model.coordinateSystem.GetAllParameters());
+        _ui.geometryUI.UpdateUI(_sketchModel.geometries, _sketchStyle._geometryStyleAsset.Set);
+        _ui.parameterUI.UpdateUI(_sketchModel.coordinateSystem.GetAllParameters());
+        _ui._controlPanel.UpdateUI(_appModel);
     }
 
     private bool IsMouseOnDrawArea() => Input.mousePosition.x > 30;
@@ -339,7 +328,7 @@ _ui._controlPanel.Initialize(HandleCommand);
 
         _interactionState.incompleteGeometry.P0.ForEach(c =>
             c.UnregisterGeometryAndTryToDelete(_interactionState.incompleteGeometry));
-        _model.geometries.Remove(_interactionState.incompleteGeometry);
+        _sketchModel.geometries.Remove(_interactionState.incompleteGeometry);
         _interactionState.incompleteGeometry = null;
     }
 
@@ -355,20 +344,24 @@ _ui._controlPanel.Initialize(HandleCommand);
         _interactionState.focusPosition = null;
     }
 
-    private enum State
+    public enum Tool
     {
-        Manipulating,
+        Transform,
         Drawing,
     }
 
-    private SketchModel _model;
+    private SketchModel _sketchModel;
+    private AppModel _appModel;
     private InteractionState _interactionState;
-    private State _state = State.Manipulating;
-    private GeometryType _currentGeometryType;
     private History _history;
 
+    public struct AppModel
+    {
+        public Tool Tool;
+        public GeometryType CurrentGeometryType;
+        public GeometryStyleAsset.GeometryColor CurrentgeometryColor;
+    }
 
-    
     private const KeyCode PrimaryMouse = KeyCode.Mouse0;
     private const KeyCode SetAnchorKey = KeyCode.Mouse1;
     private const KeyCode DeleteKey = KeyCode.Mouse2;

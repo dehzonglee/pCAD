@@ -1,6 +1,6 @@
 ﻿namespace Model
-{ 
-    enum GeometryType
+{
+    public enum GeometryType
     {
         Point,
         Line,

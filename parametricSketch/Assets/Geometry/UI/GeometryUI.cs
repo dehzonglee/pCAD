@@ -33,12 +33,24 @@ public class GeometryUI : MonoBehaviour
         }
     }
 
-    private static void DrawRectangleFilling(VertexHelper vh, RectangleModel model,
-        GeometryStyleAsset.GeometryStyleSet styleSet)
+    private static void DrawRectangleFilling(VertexHelper vh, RectangleModel model, GeometryStyleAsset.GeometryStyleSet styleSet)
     {
         var p0 = CoordinateTupleToVector3(model.P0);
         var p1 = CoordinateTupleToVector3(model.P1);
-        var color = model.IsBaked ? styleSet.DefaultStyle.FillColor : styleSet.DrawingStyle.FillColor;
+        ColorAsset color;
+        switch (model.Color)
+        {
+            case GeometryStyleAsset.GeometryColor.Black:
+                color = model.IsBaked ? styleSet.DefaultStyle.FillColorBlack : styleSet.DrawingStyle.FillColorBlack;
+                break;
+            case GeometryStyleAsset.GeometryColor.Grey:
+                color = model.IsBaked ? styleSet.DefaultStyle.FillColorGrey : styleSet.DrawingStyle.FillColorGrey;
+                break;
+            case GeometryStyleAsset.GeometryColor.White:
+            default:
+                color = model.IsBaked ? styleSet.DefaultStyle.FillColorWhite : styleSet.DrawingStyle.FillColorWhite;
+                break;
+        }
 
         var p0World = p0;
         var p1World = new Vector3(p1.x, 0f, p0.z);

@@ -8,6 +8,7 @@
     public class RectangleModel : GeometryModel
     {
         public Vec<Coordinate> P1;
+        public GeometryStyleAsset.GeometryColor Color;
 
         [Serializable]
         public class Serialization
@@ -18,6 +19,7 @@
             public string P1XID;
             public string P1YID;
             public string P1ZID;
+            public string Color;
         }
 
         public Serialization ToSerialization()
@@ -30,6 +32,7 @@
                 P1XID = P1.X.ID,
                 P1YID = P1.Y.ID,
                 P1ZID = P1.Z.ID,
+                Color = Color.ToString(),
             };
         }
 
@@ -41,11 +44,20 @@
             var p1Serialized = new Vec<string>(serialization.P1XID, serialization.P1YID, serialization.P1ZID);
             var p1 = new Vec<Coordinate>(axis => coordinates[axis].First(c => c.ID == p1Serialized[axis]));
 
+            GeometryStyleAsset.GeometryColor color;
+            if (serialization.Color == GeometryStyleAsset.GeometryColor.White.ToString())
+                color = GeometryStyleAsset.GeometryColor.White;
+           else if (serialization.Color == GeometryStyleAsset.GeometryColor.Black.ToString())
+                color = GeometryStyleAsset.GeometryColor.Black;
+            else // (serialization.Color == GeometryStyleAsset.GeometryColor.Grey.ToString())
+                color = GeometryStyleAsset.GeometryColor.Grey;            
+
             return new RectangleModel()
             {
                 P0 = p0,
                 P1 = p1,
-                IsBaked = true
+                IsBaked = true,
+                Color = color,
             };
         }
     }

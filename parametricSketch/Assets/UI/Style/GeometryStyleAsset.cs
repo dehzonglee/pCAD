@@ -16,8 +16,15 @@ public class GeometryStyleAsset : ScriptableObject
     public class GeometryStyle
     {
         public ColorAsset OutlineColor;
-        public ColorAsset FillColor;
+        public ColorAsset FillColorBlack;
+        public ColorAsset FillColorGrey;
+        public ColorAsset FillColorWhite;
         public float OutlineWidth = 0.5f;
+    }
+
+    public enum GeometryColor
+    {
+        Black,Grey,White
     }
 
     public class StyleSet<T>

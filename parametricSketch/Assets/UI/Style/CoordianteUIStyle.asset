@@ -54,7 +54,7 @@ MonoBehaviour:
       FontSize: 10
   Origin:
     GridLineStyle:
-      Color: {fileID: 11400000, guid: 67ad0af221a0c2142a3e97855ad34707, type: 2}
+      Color: {fileID: 11400000, guid: ff1ec0c9cf1279b42a6441e3a13665ce, type: 2}
       Width: 0.5
     CoordinateGizmoStyle:
       ArrowAngle: 30
