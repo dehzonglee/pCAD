@@ -71,7 +71,7 @@ MonoBehaviour:
   Anchor:
     CircleStyle:
       PrimaryColor: {fileID: 11400000, guid: 9c9e76b176fc6ad4f8a776da11a46bf1, type: 2}
-      SecondaryColor: {fileID: 11400000, guid: 16fdb903033521740b800aa937dcd5cd, type: 2}
-      Radius: 5
+      SecondaryColor: {fileID: 11400000, guid: 85c4332eaa0a89c40bd4835521832a78, type: 2}
+      Radius: 7
       InnerRadius: 2
       Width: 0.5
