@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Model;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace UI
@@ -21,15 +20,13 @@ namespace UI
             _direction = direction;
         }
 
-        public void UpdateCoordinateUIs(
-            Axis axis,
+        public void UpdateCoordinateUIs(Axis axis,
             Vector3 orthogonalDirection,
             float orthogonalAnchor,
             CoordinateUIStyle coordinateUIStyle,
             List<Parameter> referencedParameter,
             bool hasKeyboardInputSelection,
-            Coordinate draggedCoordinate
-        )
+            Coordinate draggedCoordinate, (Coordinate coordinate, Vec.AxisID axis)? hoveredCoordinate)
         {
             var lambdaCoordinates = axis.Coordinates.Where(coordinate => coordinate is Lambda).ToList();
             var mueCoordinates = axis.Coordinates.Where(coordinate => coordinate is Mue).ToList();
@@ -59,21 +56,25 @@ namespace UI
                     OrthogonalDirection = orthogonalDirection,
                 };
 
+                var showGridLine = hoveredCoordinate.HasValue && hoveredCoordinate.Value.coordinate == c;
+
                 switch (c)
                 {
                     case Lambda lambda:
                         _uiPoolLambda[nextLambdaUI].UpdateUI(lambda, layoutInfo, _direction, _padding, _gap,
-                            coordinateUIStyle.Lambda);
+                            coordinateUIStyle.Lambda, showGridLine);
                         nextLambdaUI++;
                         break;
                     case Mue mue:
                         _uiPoolMue[nextMueUI].UpdateUI(mue, layoutInfo, _direction, _padding, _gap,
                             coordinateUIStyle.Mue,
-                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter), draggedCoordinate);
+                            hasKeyboardInputSelection, referencedParameter.Contains(c.Parameter), draggedCoordinate,
+                            showGridLine);
                         nextMueUI++;
                         break;
                     case Origin origin:
-                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding, _gap, coordinateUIStyle.Origin);
+                        _originUI.UpdateUI(origin, layoutInfo, _direction, _padding, _gap, coordinateUIStyle.Origin,
+                            showGridLine);
                         break;
                 }
             }
@@ -149,7 +150,13 @@ namespace UI
         List<CoordinateManipulation.ScreenDistance> CoordinateManipulation.IScreenDistanceCalculator.
             GetAllDistancesToCoordinateUIs(Vector2 screenPos)
         {
-            return _uiPoolMue.Select(ui => ui.GetScreenDistanceToCoordinate(screenPos)).ToList();
+            if (_originUI == null)
+                return new List<CoordinateManipulation.ScreenDistance>();
+
+            var distances = _uiPoolMue.Select(ui => ui.GetScreenDistanceToCoordinate(screenPos)).ToList();
+            distances.AddRange(_uiPoolLambda.Select(ui => ui.GetScreenDistanceToCoordinate(screenPos)));
+            distances.Add(_originUI.GetScreenDistanceToCoordinate(screenPos));
+            return distances;
         }
 
         private readonly List<MueUI2D> _uiPoolMue = new List<MueUI2D>();

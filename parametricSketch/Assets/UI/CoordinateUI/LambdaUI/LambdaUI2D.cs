@@ -11,7 +11,7 @@ public class LambdaUI2D : MonoBehaviour
 
     public void UpdateUI(Lambda coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
         float gap,
-        CoordinateUIStyle.LambdaUIStyle style)
+        CoordinateUIStyle.LambdaUIStyle style, bool showGridLine)
     {
         var state = coordinate.IsCurrentlyDrawn ? SketchStyle.State.Drawing : SketchStyle.State.Default;
         //todo: set style in initialize method
@@ -25,7 +25,7 @@ public class LambdaUI2D : MonoBehaviour
         var parent0CoordinateUIPositionWorld = direction * coordinate.ParentValue + offset;
         var parent1CoordinateUIPositionWorld = direction * coordinate.SecondaryParentValue + offset;
         var labelPosition = coordinateUIPositionWorld;
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, showGridLine);
         var directionWorld = parent1CoordinateUIPositionWorld - parent0CoordinateUIPositionWorld;
         _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, style.Colors,
             state, CoordinateGizmoUI.Type.Mark);

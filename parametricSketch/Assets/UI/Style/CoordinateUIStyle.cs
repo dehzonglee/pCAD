@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "paraSketch/CoordinateUIStyle")]
 public class CoordinateUIStyle : ScriptableObject

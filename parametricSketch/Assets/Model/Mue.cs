@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [Serializable]
 public class Mue : Coordinate
@@ -49,7 +46,7 @@ public class Mue : Coordinate
         : base(isCurrentlyDrawn, onDeleted, onChanged, new List<Coordinate>() {parent})
     {
         PointsInNegativeDirection = pointsInNegativeDirection;
-        var id = GUID.Generate().ToString();
+        var id = Guid.NewGuid().ToString();
         if (Parameter == null)
             Parameter = new Parameter(id, mue);
         else

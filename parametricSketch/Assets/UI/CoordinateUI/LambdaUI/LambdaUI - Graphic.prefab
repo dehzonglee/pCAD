@@ -92,6 +92,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.6950895
       objectReference: {fileID: 0}
+    - target: {fileID: 5455655045989096671, guid: be326c889f16e6e41b9e4958e9e0d7d5,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8021704536294600439, guid: be326c889f16e6e41b9e4958e9e0d7d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -249,6 +254,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.6950895
       objectReference: {fileID: 0}
+    - target: {fileID: 5455655045989096671, guid: be326c889f16e6e41b9e4958e9e0d7d5,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8021704536294600439, guid: be326c889f16e6e41b9e4958e9e0d7d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -401,6 +411,11 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1012546113087095308, guid: b9c00088c7cbdd64eaf537528924c2af,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3495390738911059759, guid: b9c00088c7cbdd64eaf537528924c2af,
         type: 3}
       propertyPath: m_Name
@@ -541,6 +556,11 @@ PrefabInstance:
       propertyPath: m_textAlignment
       value: 65535
       objectReference: {fileID: 0}
+    - target: {fileID: 8852593373445984207, guid: b9c00088c7cbdd64eaf537528924c2af,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9c00088c7cbdd64eaf537528924c2af, type: 3}
 --- !u!224 &5512264885864288761 stripped
@@ -572,6 +592,11 @@ PrefabInstance:
         type: 3}
       propertyPath: width
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 995578904024236409, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4058093512723040004, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
         type: 3}
@@ -714,6 +739,11 @@ PrefabInstance:
         type: 3}
       propertyPath: width
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 586821459578414269, guid: 9628f5aea0a3ca64790d796bf16aa1e2,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4797069225423459858, guid: 9628f5aea0a3ca64790d796bf16aa1e2,
         type: 3}
@@ -876,6 +906,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.6950895
+      objectReference: {fileID: 0}
+    - target: {fileID: 5455655045989096671, guid: be326c889f16e6e41b9e4958e9e0d7d5,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8021704536294600439, guid: be326c889f16e6e41b9e4958e9e0d7d5,
         type: 3}

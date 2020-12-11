@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Model;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class Sketch : MonoBehaviour
 {
@@ -16,10 +14,13 @@ public class Sketch : MonoBehaviour
     {
         public CoordinateSystemUI coordinateSystemUI;
         public GeometryUIManager geometryUI;
-        [FormerlySerializedAs("paramterUI")] public ParameterUI parameterUI;
+        public ParameterUI parameterUI;
         public CursorUI cursorUI;
-        public ControlPanel _controlPanel;
+        public ControlPanel controlPanel;
+        public ClickableImage drawingCanvas;
     }
+
+    public bool hovered;
 
     [Serializable]
     private struct InteractionState
@@ -29,6 +30,7 @@ public class Sketch : MonoBehaviour
         public KeyboardInput.Model keyboardInputModel;
         public GeometryModel incompleteGeometry;
         public ColorAsset currentGeometryColor;
+        public (Coordinate coordinate, Vec.AxisID axis)? hoveredCoordinate;
 
         public void Reset()
         {
@@ -40,14 +42,26 @@ public class Sketch : MonoBehaviour
         }
     }
 
-    private void Initialize(Vec<float> mousePositionAsOrigin)
+    private void Start()
+    {
+        // initialize control panel on start. everything else is initialized when the first point is defined
+        InitializeUI();
+    }
+
+    private void InitializeUI()
+    {
+        _ui.controlPanel.Initialize(HandleCommand);
+        _ui.controlPanel.UpdateUI(_appModel);
+    }
+
+
+    private void InitializeDrawing(Vec<float> mousePositionAsOrigin)
     {
         _sketchModel.coordinateSystem = new CoordinateSystem(mousePositionAsOrigin);
         _sketchModel.geometries = new List<GeometryModel>();
         _interactionState.keyboardInputModel = new KeyboardInput.Model();
 //        _model.coordinateSystem.CoordinateSystemChangedEvent += UpdateUI;
         _ui.coordinateSystemUI.Initialize();
-        _ui._controlPanel.Initialize(HandleCommand);
 
         _appModel = new AppModel()
         {
@@ -116,10 +130,17 @@ public class Sketch : MonoBehaviour
     private void Update()
     {
         var hasBeenInitialized = _sketchModel.coordinateSystem != null;
+        if (!_ui.drawingCanvas.IsPointerOnCanvas)
+        {
+            if (hasBeenInitialized)
+                UpdateUI();
+            return;
+        }
+
         if (!hasBeenInitialized)
         {
             if (Input.GetKeyDown(PrimaryMouse) && IsMouseOnDrawArea())
-                Initialize(MouseInput.RaycastPosition);
+                InitializeDrawing(MouseInput.RaycastPosition);
             return;
         }
 
@@ -131,14 +152,24 @@ public class Sketch : MonoBehaviour
         {
             case Tool.Transform:
 
-                var hitResult = CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
+                _interactionState.hoveredCoordinate =
+                    CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
+                hovered = _interactionState.hoveredCoordinate.HasValue;
 
-                _ui.cursorUI.UpdateCursor(hitResult);
+                if (_interactionState.hoveredCoordinate.HasValue
+                    && !(_interactionState.hoveredCoordinate.Value.coordinate is Mue))
+                {
+                    // only mue coordinates can be transformed
+                    _interactionState.hoveredCoordinate = null;
+                }
+
+                _ui.cursorUI.UpdateCursor(_interactionState.hoveredCoordinate);
 
                 // start drag
-                if (Input.GetKeyDown(PrimaryMouse) && hitResult.HasValue && IsMouseOnDrawArea())
+                if (Input.GetKeyDown(PrimaryMouse) && _interactionState.hoveredCoordinate.HasValue &&
+                    IsMouseOnDrawArea())
                 {
-                    _interactionState.draggedCoordinate = hitResult.Value.coordinate;
+                    _interactionState.draggedCoordinate = _interactionState.hoveredCoordinate.Value.coordinate;
                     CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
                 }
 
@@ -165,6 +196,9 @@ public class Sketch : MonoBehaviour
                 break;
 
             case Tool.Drawing:
+                _interactionState.hoveredCoordinate =
+                    CoordinateManipulation.TryGetCoordinateAtPosition(_ui.coordinateSystemUI);
+                hovered = _interactionState.hoveredCoordinate.HasValue;
 
                 KeyboardInput.UpdateKeyboardInput(ref _interactionState.keyboardInputModel,
                     _sketchModel.coordinateSystem.GetAllParameters()
@@ -312,11 +346,12 @@ public class Sketch : MonoBehaviour
             _sketchModel.coordinateSystem,
             _sketchStyle.CoordinateUIStyle,
             _interactionState.keyboardInputModel,
-            _interactionState.draggedCoordinate);
+            _interactionState.draggedCoordinate,
+            _interactionState.hoveredCoordinate);
 
         _ui.geometryUI.UpdateUI(_sketchModel.geometries, _sketchStyle._geometryStyleAsset.Set);
         _ui.parameterUI.UpdateUI(_sketchModel.coordinateSystem.GetAllParameters());
-        _ui._controlPanel.UpdateUI(_appModel);
+        _ui.controlPanel.UpdateUI(_appModel);
     }
 
     private bool IsMouseOnDrawArea() => Input.mousePosition.x > 30;

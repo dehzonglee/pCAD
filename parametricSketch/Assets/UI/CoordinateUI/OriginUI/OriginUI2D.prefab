@@ -84,6 +84,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.6950895
       objectReference: {fileID: 0}
+    - target: {fileID: 5455655045989096671, guid: be326c889f16e6e41b9e4958e9e0d7d5,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8021704536294600439, guid: be326c889f16e6e41b9e4958e9e0d7d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -216,11 +221,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5026579306566173177}
     m_Modifications:
-    - target: {fileID: 6767341085850228098, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
-        type: 3}
-      propertyPath: m_Name
-      value: GridLineUI - Graphic
-      objectReference: {fileID: 0}
     - target: {fileID: 995578904024236409, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
         type: 3}
       propertyPath: width
@@ -240,6 +240,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.45167318
+      objectReference: {fileID: 0}
+    - target: {fileID: 995578904024236409, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4058093512723040004, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
         type: 3}
@@ -345,6 +350,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6767341085850228098, guid: 9d5ad78833b15e4479ad4cee5f5e0f30,
+        type: 3}
+      propertyPath: m_Name
+      value: GridLineUI - Graphic
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d5ad78833b15e4479ad4cee5f5e0f30, type: 3}

@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class CoordinateManipulation : MonoBehaviour
 {
-    public static (Coordinate coordinate, Vec.AxisID axis)? TryGetCoordinateAtPosition(CoordinateSystemUI coordinateSystemUI)
+    public static (Coordinate coordinate, Vec.AxisID axis)? TryGetCoordinateAtPosition(
+        CoordinateSystemUI coordinateSystemUI)
     {
         var dragged = TryToHitCoordinate(
             coordinateSystemUI,
@@ -94,7 +95,8 @@ public class CoordinateManipulation : MonoBehaviour
     }
 
     [CanBeNull]
-    private static (Coordinate,Vec.AxisID)? TryToHitCoordinate(IScreenDistanceCalculatorProvider screenDistanceProviders, Vector2 screenPos)
+    private static (Coordinate, Vec.AxisID)? TryToHitCoordinate(
+        IScreenDistanceCalculatorProvider screenDistanceProviders, Vector2 screenPos)
     {
         var providers = screenDistanceProviders.GetProvidersForAxis();
         (Coordinate hitCoordinate, Vec.AxisID axis)? hitResult = null;
@@ -121,9 +123,15 @@ public class CoordinateManipulation : MonoBehaviour
         if (distances.Count == 0)
             return null;
 
-        var closestCoordinate = distances
-            .OrderBy(distancesAndCoordinate => distancesAndCoordinate.ScreenDistanceToCoordinate).ToList()[0];
+        var orderedCoordinates = distances
+            .Where(d => !(d.Coordinate is Mue && d.Coordinate.IsCurrentlyDrawn))
+            .OrderBy(distancesAndCoordinate => distancesAndCoordinate.ScreenDistanceToCoordinate)
+            .ToList();
 
+        if (!orderedCoordinates.Any())
+            return null;
+
+        var closestCoordinate = orderedCoordinates[0];
         if (closestCoordinate.ScreenDistanceToCoordinate > snapRadius)
             return null;
 

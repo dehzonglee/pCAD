@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "paraSketch/GeometryStyle")]
 public class GeometryStyleAsset : ScriptableObject
 {
     public GeometryStyleSet Set;
+    public ColorAsset BackgroundColor;
 
     [Serializable]
     public class GeometryStyleSet : StyleSet<GeometryStyle>

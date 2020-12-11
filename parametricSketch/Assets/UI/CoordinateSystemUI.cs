@@ -31,7 +31,8 @@ namespace UI
         }
 
         public void UpdateUI(CoordinateSystem cs, CoordinateUIStyle coordinateUIStyle,
-            KeyboardInput.Model keyboardInput, Coordinate draggedCoordinate)
+            KeyboardInput.Model keyboardInput, Coordinate draggedCoordinate,
+            (Coordinate coordinate, Vec.AxisID axis)? hoveredCoordinate)
         {
             foreach (var a in Vec.XYZ)
             {
@@ -52,7 +53,7 @@ namespace UI
                     coordinateUIStyle,
                     referencedParameters,
                     keyboardInput.ActiveAxis == a,
-                    draggedCoordinate);
+                    draggedCoordinate, hoveredCoordinate);
             }
 
             _anchorUI.UpdateUI(cs.Anchor, coordinateUIStyle.Anchor);

@@ -25,3 +25,4 @@ MonoBehaviour:
       FillColorGrey: {fileID: 11400000, guid: d7ca87c2fab7ca0489b96d133bd3eddb, type: 2}
       FillColorWhite: {fileID: 11400000, guid: 909efbcb5a9c5c64aba37dbc96cf568a, type: 2}
       OutlineWidth: 1
+  BackgroundColor: {fileID: 11400000, guid: 32fd9c58b4b803942afc94ebe599a598, type: 2}

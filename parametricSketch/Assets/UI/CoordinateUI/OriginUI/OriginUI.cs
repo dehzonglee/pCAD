@@ -7,7 +7,7 @@ public class OriginUI : MonoBehaviour
 
     public void UpdateUI(Origin coordinate, CoordinateUI.LayoutInfo layoutInfo, Vector3 direction, float padding,
         float gap,
-        CoordinateUIStyle.OriginUIStyle style)
+        CoordinateUIStyle.OriginUIStyle style,bool showGridLine)
     {
         var state = SketchStyle.State.Default;
         _coordinate = coordinate;
@@ -17,7 +17,7 @@ public class OriginUI : MonoBehaviour
         var offset = layoutInfo.OrthogonalDirection * (layoutInfo.OrthogonalAnchor + layoutInfo.Index * gap - padding);
         var coordinateUIPositionWorld = direction * coordinate.Value + offset;
 
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, showGridLine);
         _coordinateGizmoUI.UpdateUI(coordinateUIPositionWorld, direction, style.CoordinateGizmoStyle, style.Colors,
             state, CoordinateGizmoUI.Type.Mark);
     }

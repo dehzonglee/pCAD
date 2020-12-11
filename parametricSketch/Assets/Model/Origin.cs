@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 
 [Serializable]
 public class Origin : Coordinate
@@ -19,14 +17,14 @@ public class Origin : Coordinate
     public Origin(float originPosition) : base(false, null, null, new List<Coordinate>())
     {
         _originPosition = originPosition;
-        Parameter = new Parameter(GUID.Generate().ToString(), 0f);
+        Parameter = new Parameter(Guid.NewGuid().ToString(), 0f);
     }
 
     // used during deserialization
     public Origin(string id, float originPosition) : base(id, false, null, null)
     {
         _originPosition = originPosition;
-        Parameter = new Parameter(GUID.Generate().ToString(), 0f);
+        Parameter = new Parameter(Guid.NewGuid().ToString(), 0f);
 //        Parameter = parameter;
     }
 

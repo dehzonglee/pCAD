@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -21,7 +19,7 @@ public class Lambda : Coordinate
     )
         : base(isCurrentlyDrawn, onDeleted, onChanged, new List<Coordinate> {parents.parent0, parents.parent1})
     {
-        Parameter = new Parameter(GUID.Generate().ToString(), lambda);
+        Parameter = new Parameter(Guid.NewGuid().ToString(), lambda);
     }
 
     // used during deserialization
@@ -34,7 +32,7 @@ public class Lambda : Coordinate
     )
         : base(id, isCurrentlyDrawn, onDeleted, onChanged)
     {
-        Parameter = new Parameter(GUID.Generate().ToString(), lambda);
+        Parameter = new Parameter(Guid.NewGuid().ToString(), lambda);
     }
 
 

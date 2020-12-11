@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "cursorUI", menuName = "parametricSketch/CursorUI", order = 1)]
 public class CursorUI : ScriptableObject

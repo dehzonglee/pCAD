@@ -4,11 +4,12 @@ using UnityEngine.UI;
 public class GridLineUI : MaskableGraphic
 {
     public void UpdateUI(Vector3 originWorld, Vector3 directionWorld,
-        CoordinateUIStyle.GridLineStyle lambdaStyleGridLineStyle, SketchStyle.State state)
+        CoordinateUIStyle.GridLineStyle lambdaStyleGridLineStyle, bool isVisible)
     {
-        _originScreen =WorldScreenTransformationHelper.WorldToScreenPoint(originWorld);
-        _directionScreen =WorldScreenTransformationHelper.WorldToScreenPoint( directionWorld);
+        _originScreen = WorldScreenTransformationHelper.WorldToScreenPoint(originWorld);
+        _directionScreen = WorldScreenTransformationHelper.WorldToScreenPoint(directionWorld);
         _style = lambdaStyleGridLineStyle;
+        _isVisible = isVisible;
         SetVerticesDirty();
     }
 
@@ -16,7 +17,9 @@ public class GridLineUI : MaskableGraphic
     {
         // quick fix: assume that rectangle is projected on the xz plane
         vh.Clear();
-        UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,_style.Color.Value);
+        if (_isVisible)
+            UIMeshGenerationHelper.AddScreenSpanningLine(vh, _originScreen, _directionScreen, _style.Width,
+                _style.Color.Value);
     }
 
     public float GetScreenDistanceToLine(Vector2 screenPosition)
@@ -26,12 +29,13 @@ public class GridLineUI : MaskableGraphic
         var p = screenPosition;
         var v = _directionScreen.normalized;
         var normalToPoint = (o - p) - Vector2.Dot((o - p), v) * v;
-        
-        
+
+
         return normalToPoint.magnitude;
     }
 
     private CoordinateUIStyle.GridLineStyle _style;
+    private bool _isVisible;
     private SketchStyle.State _state;
     private Vector2 _originScreen;
     private Vector2 _directionScreen;

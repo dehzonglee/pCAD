@@ -17,7 +17,7 @@ public class MueUI2D : MonoBehaviour
         CoordinateUIStyle.MueUIStyle style,
         bool hasKeyboardInputSelection,
         bool isReferencesByOtherParameter,
-        Coordinate draggedCoordinate
+        Coordinate draggedCoordinate, bool showGridLine
     )
     {
         SketchStyle.State state;
@@ -43,7 +43,7 @@ public class MueUI2D : MonoBehaviour
         var directionWorld = coordinateUIPositionWorld - parentCoordinateUIPositionWorld;
         var labelPosition = (coordinateUIPositionWorld + parentCoordinateUIPositionWorld) * 0.5f;
 
-        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, state);
+        _gridLineUI.UpdateUI(coordinateUIPositionWorld, layoutInfo.OrthogonalDirection, style.GridLineStyle, showGridLine);
 
         _targetGizmo.UpdateUI(coordinateUIPositionWorld, directionWorld, style.CoordinateGizmoStyle, style.Colors,
             state,

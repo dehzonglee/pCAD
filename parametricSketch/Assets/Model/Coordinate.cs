@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -34,7 +32,7 @@ public abstract class Coordinate
     {
         Parents = parents;
         IsCurrentlyDrawn = isCurrentlyDrawn;
-        ID = GUID.Generate().ToString();
+        ID = Guid.NewGuid().ToString();
         DeletedEvent += onDeleted;
         ChangedEvent += onChanged;
         SetParents(parents);
