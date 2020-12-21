@@ -21,10 +21,10 @@ Early mockup for a minimal parametric CAD tool
 
 
 
-<img align="left" src="C:\_source\parametric-sketch\gifs\pezo.gif" alt="pezo" style="zoom:50%;" />
+<img align="left" src="gifs\pezo.gif" alt="pezo" style="zoom:50%;" />
 
-<img align="left" src="C:\_source\parametric-sketch\gifs\syros.gif" alt="syros" style="zoom:50%;" />
+<img align="left" src="gifs\syros.gif" alt="syros" style="zoom:50%;" />
 
-<img align="left" src="C:\_source\parametric-sketch\gifs\school.gif" alt="school" style="zoom:50%;" />
+<img align="left" src="gifs\school.gif" alt="school" style="zoom:50%;" />
 
-<img align="left" src="C:\_source\parametric-sketch\gifs\open.gif" alt="open" style="zoom:50%;" />
+<img align="left" src="gifs\open.gif" alt="open" style="zoom:50%;" />
